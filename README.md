@@ -46,8 +46,8 @@ docker compose run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/s
 
 ## Köra på nya IG-mappar i samma utbildningsmapp
 
-Exempel: om ni har en ny IG-mapp `$HOME\fhireducation\fhireducation\min-nya-ig`  
-(alltså i samma mapp som `test-ig`).
+Exempel: om ni har en ny IG-mapp `min-nya-ig` i repo-roten, bredvid `test-ig`.  
+Om ni följt stegen ovan blir det normalt: `$HOME\fhireducation\fhireducation\min-nya-ig`.
 
 Bygg image en gång från repo-roten:
 
