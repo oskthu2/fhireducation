@@ -39,8 +39,39 @@ Om ni vill köra kommandona manuellt:
 ```powershell
 cd $HOME\fhireducation\fhireducation
 docker compose build ig-publisher
-docker compose run --rm --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig
+docker compose run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
 ```
+
+> `--rm` är borttaget så containern ligger kvar efter körningen.
+
+## Köra på nya IG-mappar i samma utbildningsmapp
+
+Exempel: om ni har en ny IG-mapp `$HOME\fhireducation\min-nya-ig`.
+
+Bygg image en gång från repo-roten:
+
+```powershell
+cd $HOME\fhireducation\fhireducation
+docker compose build ig-publisher
+```
+
+### Endast SUSHI
+
+```powershell
+docker compose run --entrypoint "" --volume "$HOME\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
+```
+
+### Endast IG Publisher
+
+```powershell
+docker compose run --volume "$HOME\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
+```
+
+### SUSHI + IG Publisher
+
+Kör först "Endast SUSHI", och kör sedan "Endast IG Publisher".
+
+> Varje ny IG-mapp behöver en `ig.ini` i mappens rot som pekar på rätt `ImplementationGuide-*.json`.
 
 ## Resultat
 
