@@ -1,0 +1,22 @@
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+ENV APPLICATION_USER=igpublisher
+ENV PUBLISHER_JAR_URL=https://github.com/HL7/fhir-ig-publisher/releases/latest/download/publisher.jar
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl git ruby-full build-essential zlib1g-dev nodejs npm ca-certificates && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm install -g fsh-sushi@3.16.5 && \
+    gem install jekyll && \
+    adduser --disabled-password --gecos "" "$APPLICATION_USER" && \
+    mkdir -p /home/$APPLICATION_USER/.fhir && \
+    chown -R "$APPLICATION_USER":"$APPLICATION_USER" /app /home/$APPLICATION_USER
+
+RUN curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar && test -s /app/publisher.jar
+
+USER $APPLICATION_USER
+
+ENTRYPOINT ["java", "-jar", "/app/publisher.jar"]

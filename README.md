@@ -24,8 +24,8 @@ cd fhireducation\test-ig
 
 ## Bygg IG:n med Docker
 
-Repot innehåller nu Docker-konfiguration för att bygga IG Publisher-imagen direkt från  
-`https://github.com/HL7/fhir-ig-publisher.git` och köra exempel-IG:n lokalt.
+Repot innehåller nu Docker-konfiguration för att bygga en lokal IG Publisher-image  
+som laddar ner senaste `publisher.jar` från HL7:s officiella release, och kör exempel-IG:n lokalt.
 
 Kör från repo-roten:
 
