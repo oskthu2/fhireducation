@@ -15,8 +15,7 @@ RUN apt-get update && \
     mkdir -p /home/$APPLICATION_USER/.fhir && \
     chown -R "$APPLICATION_USER":"$APPLICATION_USER" /app /home/$APPLICATION_USER
 
-RUN curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar
-RUN test -s /app/publisher.jar
+RUN curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar && test -s /app/publisher.jar
 
 USER $APPLICATION_USER
 
