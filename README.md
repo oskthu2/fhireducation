@@ -46,7 +46,8 @@ docker compose run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/s
 
 ## Köra på nya IG-mappar i samma utbildningsmapp
 
-Exempel: om ni har en ny IG-mapp `$HOME\fhireducation\min-nya-ig`.
+Exempel: om ni har en ny IG-mapp `$HOME\fhireducation\fhireducation\min-nya-ig`  
+(alltså i samma mapp som `test-ig`).
 
 Bygg image en gång från repo-roten:
 
@@ -55,16 +56,23 @@ cd $HOME\fhireducation\fhireducation
 docker compose build ig-publisher
 ```
 
+Eller kör scriptet direkt med valbar mapp:
+
+```powershell
+cd $HOME\fhireducation\fhireducation
+.\scripts\build-example-ig.ps1 -IgFolder min-nya-ig
+```
+
 ### Endast SUSHI
 
 ```powershell
-docker compose run --entrypoint "" --volume "$HOME\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
+docker compose run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
 ```
 
 ### Endast IG Publisher
 
 ```powershell
-docker compose run --volume "$HOME\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
+docker compose run --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
 ```
 
 ### SUSHI + IG Publisher
