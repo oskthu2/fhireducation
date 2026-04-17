@@ -1,0 +1,2 @@
+# Empty suppression list.
+# Keep this file present when IG parameter path-suppressed-warnings is configured.
