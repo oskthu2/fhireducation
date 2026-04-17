@@ -18,5 +18,4 @@ RUN apt-get update && \
 
 USER $APPLICATION_USER
 
-HEALTHCHECK CMD java -jar /app/publisher.jar
 ENTRYPOINT ["java", "-jar", "/app/publisher.jar"]
