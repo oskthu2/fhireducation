@@ -14,7 +14,7 @@ RUN apt-get update && \
     adduser --disabled-password --gecos "" "$APPLICATION_USER" && \
     mkdir -p /home/$APPLICATION_USER/.fhir && \
     chown -R "$APPLICATION_USER":"$APPLICATION_USER" /app /home/$APPLICATION_USER && \
-    curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar
+    curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar || { echo "Failed to download publisher.jar from $PUBLISHER_JAR_URL"; exit 1; }
 
 USER $APPLICATION_USER
 
