@@ -13,8 +13,10 @@ RUN apt-get update && \
     gem install jekyll && \
     adduser --disabled-password --gecos "" "$APPLICATION_USER" && \
     mkdir -p /home/$APPLICATION_USER/.fhir && \
-    chown -R "$APPLICATION_USER":"$APPLICATION_USER" /app /home/$APPLICATION_USER && \
-    curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar || { echo "Failed to download publisher.jar from $PUBLISHER_JAR_URL"; exit 1; }
+    chown -R "$APPLICATION_USER":"$APPLICATION_USER" /app /home/$APPLICATION_USER
+
+RUN curl -fsSL "$PUBLISHER_JAR_URL" -o /app/publisher.jar
+RUN test -s /app/publisher.jar
 
 USER $APPLICATION_USER
 
