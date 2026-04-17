@@ -1,0 +1,13 @@
+id: se.inera.education.testig
+canonical: http://example.org/fhir/se/inera/education/testig
+name: IneraEducationTestIG
+title: Inera Education Test Implementation Guide
+description: En minimal IG för FHIR-utbildning.
+status: draft
+version: 0.1.0
+fhirVersion: 4.0.1
+copyrightYear: 2026+
+releaseLabel: ci-build
+
+menu:
+  Home: index.html
