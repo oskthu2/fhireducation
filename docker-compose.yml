@@ -1,0 +1,7 @@
+services:
+  ig-publisher:
+    image: fhir-ig-publisher:test
+    build:
+      context: https://github.com/HL7/fhir-ig-publisher.git#master
+    volumes:
+      - ./test-ig:/usr/src/ig

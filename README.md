@@ -24,19 +24,22 @@ cd fhireducation\test-ig
 
 ## Bygg IG:n med Docker
 
-Bygg först Docker-imagen för IG Publisher om ni använder den lokalt från HL7:s repo:
+Repot innehåller nu Docker-konfiguration för att bygga IG Publisher-imagen direkt från  
+`https://github.com/HL7/fhir-ig-publisher.git` och köra exempel-IG:n lokalt.
+
+Kör från repo-roten:
 
 ```powershell
-cd $HOME\Desktop\fhireducation
-git clone https://github.com/HL7/fhir-ig-publisher.git
-cd fhir-ig-publisher
-docker build -t fhir-ig-publisher:test .
+cd $HOME\Desktop\fhireducation\fhireducation
+.\scripts\build-example-ig.ps1
 ```
 
-Gå sedan tillbaka till test-IG:n och kör bygget:
+Om ni vill köra kommandona manuellt:
 
 ```powershell
-docker run --rm --mount type=bind,src=$HOME\Desktop\fhireducation\fhireducation\test-ig,dst=/usr/src/ig fhir-ig-publisher:test -ig /usr/src/ig
+cd $HOME\Desktop\fhireducation\fhireducation
+docker compose build ig-publisher
+docker compose run --rm --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig
 ```
 
 ## Resultat
