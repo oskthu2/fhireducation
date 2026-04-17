@@ -1,12 +1,16 @@
 #!/usr/bin/env pwsh
 
+param(
+  [string]$IgFolder = "test-ig"
+)
+
 $ErrorActionPreference = "Stop"
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$IgPath = Join-Path $RepoRoot "test-ig"
+$IgPath = Join-Path $RepoRoot $IgFolder
 
 if (-not (Test-Path $IgPath)) {
-  throw "Could not find test-ig at path: $IgPath"
+  throw "Could not find IG folder '$IgFolder' at path: $IgPath"
 }
 
 docker compose -f (Join-Path $RepoRoot "docker-compose.yml") build ig-publisher
