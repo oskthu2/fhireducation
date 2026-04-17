@@ -1,5 +1,3 @@
-Alias: $SCT = http://snomed.info/sct
-
 Profile: EducationPatient
 Parent: Patient
 Id: education-patient
