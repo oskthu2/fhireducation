@@ -18,7 +18,7 @@ Skapa sedan en mapp på skrivbordet som heter `fhireducation`.
 
 ```powershell
 cd $HOME\Desktop\fhireducation
-git clone https://github.com/<din-org-eller-användare>/fhireducation.git
+git clone https://github.com/oskthu2/fhireducation.git
 cd fhireducation\test-ig
 ```
 
