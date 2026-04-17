@@ -10,14 +10,14 @@ Installera följande via företagsportalen:
 - Docker Desktop
 - Git
 
-Skapa sedan en mapp på skrivbordet som heter `fhireducation`.
+Skapa sedan en mapp i din hemkatalog C:\Users\<användarnamn> som heter `fhireducation`.
 
 ## Klona repot
 
 Öppna PowerShell och kör:
 
 ```powershell
-cd $HOME\Desktop\fhireducation
+cd $HOME\fhireducation
 git clone https://github.com/oskthu2/fhireducation.git
 cd fhireducation\test-ig
 ```
@@ -30,14 +30,14 @@ Repot innehåller nu Docker-konfiguration för att bygga IG Publisher-imagen dir
 Kör från repo-roten:
 
 ```powershell
-cd $HOME\Desktop\fhireducation\fhireducation
+cd $HOME\fhireducation\fhireducation
 .\scripts\build-example-ig.ps1
 ```
 
 Om ni vill köra kommandona manuellt:
 
 ```powershell
-cd $HOME\Desktop\fhireducation\fhireducation
+cd $HOME\fhireducation\fhireducation
 docker compose build ig-publisher
 docker compose run --rm --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig
 ```
