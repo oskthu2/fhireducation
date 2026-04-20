@@ -7,11 +7,9 @@ Det här repot används i FHIR-utbildningen.
 Installera följande via företagsportalen:
 
 - Visual Studio Code
-- Docker Desktop
-- Git
+- Docker Desktop (Starta Docker Desktop manuellt i windows innan du kör ingång)
+- Git (Git kräver en omstart för att funka i powershell)
 
-•	Git kräver en omstart för att funka i powershell
-•	Glöm inte starta Docker Desktop manuellt i windows innan du kör ingång
 •	Om powershell klagar på behörighet kan man behöva ändra en policy: skriv
 
 ```powershell
