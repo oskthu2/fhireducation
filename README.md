@@ -7,6 +7,7 @@ Det här repot används i FHIR-utbildningen.
 Installera följande via företagsportalen:
 
 - Visual Studio Code
+- PMPC (Linux subsystem for windows) krävs för Docker.  
 - Docker Desktop (Starta Docker Desktop manuellt i windows innan du kör ingång)
 - Git (Git kräver en omstart för att funka i powershell)
 
