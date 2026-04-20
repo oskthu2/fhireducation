@@ -10,6 +10,14 @@ Installera följande via företagsportalen:
 - Docker Desktop
 - Git
 
+•	Git kräver en omstart för att funka i powershell
+•	Glöm inte starta Docker Desktop manuellt i windows innan du kör ingång
+•	Om powershell klagar på behörighet kan man behöva ändra en policy: skriv
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+```
+
 Skapa sedan en mapp i din hemkatalog C:\Users\<användarnamn> som heter `fhireducation`.
 
 ## Klona repot
