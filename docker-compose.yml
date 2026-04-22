@@ -6,3 +6,7 @@ services:
       dockerfile: Dockerfile.ig-publisher
     volumes:
       - ./test-ig:/usr/src/ig
+      - ig-publisher-fhir-cache:/home/igpublisher/.fhir
+
+volumes:
+  ig-publisher-fhir-cache:
