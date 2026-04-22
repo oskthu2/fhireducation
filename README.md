@@ -33,6 +33,7 @@ cd fhireducation\test-ig
 
 Repot innehåller nu Docker-konfiguration för att bygga en lokal IG Publisher-image  
 som laddar ner senaste `publisher.jar` från HL7:s officiella release, och kör exempel-IG:n lokalt.
+Konfigurationen använder också en persistent Docker-volume för `~/.fhir`, så paket/terminologi-cache återanvänds mellan körningar.
 
 Kör från repo-roten:
 
@@ -50,6 +51,23 @@ docker compose run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/s
 ```
 
 > `--rm` är borttaget så containern ligger kvar efter körningen.
+
+## Håll containern igång för CLI-kommandon
+
+För att köra flera kommandon i samma container (utan att starta om varje gång):
+
+```powershell
+cd $HOME\fhireducation\fhireducation
+.\scripts\run-ig-cli.ps1 -Mode start -IgFolder test-ig
+```
+
+Detta startar en container som ligger kvar (alive) och monterar IG-mappen till `/usr/src/ig`.
+
+Stoppa containern när ni är klara:
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode stop
+```
 
 ## Köra på nya IG-mappar i samma utbildningsmapp
 
@@ -72,11 +90,27 @@ cd $HOME\fhireducation\fhireducation
 
 ### Endast SUSHI
 
+Via script:
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode sushi -IgFolder min-nya-ig
+```
+
+Manuellt via Docker:
+
 ```powershell
 docker compose run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
 ```
 
 ### Endast IG Publisher
+
+Via script:
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode publisher -IgFolder min-nya-ig
+```
+
+Manuellt via Docker:
 
 ```powershell
 docker compose run --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
@@ -84,7 +118,16 @@ docker compose run --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/s
 
 ### SUSHI + IG Publisher
 
-Kör först "Endast SUSHI", och kör sedan "Endast IG Publisher".
+Via script (i en körning):
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode sushi-publisher -IgFolder min-nya-ig
+```
+
+Manuellt via Docker (två steg):
+
+1. Kör först "Endast SUSHI"
+2. Kör sedan "Endast IG Publisher"
 
 > Varje ny IG-mapp behöver en `ig.ini` i mappens rot som pekar på rätt `ImplementationGuide-*.json`.
 
