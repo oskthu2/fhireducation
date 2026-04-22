@@ -12,6 +12,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $ComposeFile = Join-Path $RepoRoot "docker-compose.yml"
 $IgPath = Join-Path $RepoRoot $IgFolder
+$KeepAliveCommand = "tail -f /dev/null"
 
 function Invoke-DockerCommand {
   param(
@@ -30,11 +31,25 @@ function Test-ContainerExists {
   return [bool](docker ps -a --filter "name=^/${Name}$" --format "{{.Names}}")
 }
 
-function Ensure-ContainerRunning {
+function Assert-ContainerRunning {
   param([string]$Name)
   $isRunning = [bool](docker ps --filter "name=^/${Name}$" --format "{{.Names}}")
   if (-not $isRunning) {
     throw "Container '$Name' is not running. Start it first: .\scripts\run-ig-cli.ps1 -Mode start"
+  }
+}
+
+function Invoke-SushiCommand {
+  param([string]$Name)
+  Invoke-DockerCommand -Description "docker exec sushi" -Command {
+    docker exec $Name sushi --out /usr/src/ig /usr/src/ig
+  }
+}
+
+function Invoke-PublisherCommand {
+  param([string]$Name)
+  Invoke-DockerCommand -Description "docker exec publisher" -Command {
+    docker exec $Name java -jar /app/publisher.jar -ig /usr/src/ig/ig.ini
   }
 }
 
@@ -55,7 +70,7 @@ switch ($Mode) {
     }
 
     Invoke-DockerCommand -Description "docker compose run (start alive container)" -Command {
-      docker compose -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint "tail -f /dev/null" ig-publisher | Out-Null
+      docker compose -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint $KeepAliveCommand ig-publisher | Out-Null
     }
 
     Write-Host "Container '$ContainerName' is running and mounted to /usr/src/ig."
@@ -64,25 +79,17 @@ switch ($Mode) {
     Write-Host "Stop container: .\scripts\run-ig-cli.ps1 -Mode stop"
   }
   "sushi" {
-    Ensure-ContainerRunning -Name $ContainerName
-    Invoke-DockerCommand -Description "docker exec sushi" -Command {
-      docker exec $ContainerName sushi --out /usr/src/ig /usr/src/ig
-    }
+    Assert-ContainerRunning -Name $ContainerName
+    Invoke-SushiCommand -Name $ContainerName
   }
   "publisher" {
-    Ensure-ContainerRunning -Name $ContainerName
-    Invoke-DockerCommand -Description "docker exec publisher" -Command {
-      docker exec $ContainerName java -jar /app/publisher.jar -ig /usr/src/ig/ig.ini
-    }
+    Assert-ContainerRunning -Name $ContainerName
+    Invoke-PublisherCommand -Name $ContainerName
   }
   "sushi-publisher" {
-    Ensure-ContainerRunning -Name $ContainerName
-    Invoke-DockerCommand -Description "docker exec sushi" -Command {
-      docker exec $ContainerName sushi --out /usr/src/ig /usr/src/ig
-    }
-    Invoke-DockerCommand -Description "docker exec publisher" -Command {
-      docker exec $ContainerName java -jar /app/publisher.jar -ig /usr/src/ig/ig.ini
-    }
+    Assert-ContainerRunning -Name $ContainerName
+    Invoke-SushiCommand -Name $ContainerName
+    Invoke-PublisherCommand -Name $ContainerName
   }
   "stop" {
     if (Test-ContainerExists -Name $ContainerName) {
