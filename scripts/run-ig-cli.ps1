@@ -28,12 +28,14 @@ function Invoke-DockerCommand {
 
 function Test-ContainerExists {
   param([string]$Name)
-  return [bool](docker ps -a --filter "name=^${Name}$" --format "{{.Names}}")
+  $names = @(docker ps -a --format "{{.Names}}")
+  return $Name -in $names
 }
 
 function Assert-ContainerRunning {
   param([string]$Name)
-  $isRunning = [bool](docker ps --filter "name=^${Name}$" --format "{{.Names}}")
+  $runningNames = @(docker ps --format "{{.Names}}")
+  $isRunning = $Name -in $runningNames
   if (-not $isRunning) {
     throw "Container '$Name' is not running. Start it first: .\scripts\run-ig-cli.ps1 -Mode start"
   }
