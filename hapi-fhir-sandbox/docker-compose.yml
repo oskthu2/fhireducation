@@ -27,6 +27,20 @@ services:
       FHIR_BASE_URL: "http://hapi-fhir:8080/fhir"
     restart: "no"
 
+  cos-extractor:
+    build:
+      context: ./extractor
+    container_name: cos-extractor
+    profiles:
+      - extract
+    env_file:
+      - ./extractor/.env
+    environment:
+      EXTRACT_OUTPUT_DIR: /data
+    volumes:
+      - ./data:/data
+    restart: "no"
+
   fhir-client:
     image: nginx:alpine
     container_name: fhir-client
