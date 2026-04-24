@@ -1,16 +1,12 @@
 /**
  * COS → HAPI FHIR data extractor.
  *
- * Strategy for patient-linked resources:
- *   1. FHIR compartment search: GET /Patient/{id}/{ResourceType}
- *      - No code/status params needed → bypasses Observation "codes cannot be null"
- *      - No subject/patient param → bypasses Encounter _sid injection issue
- *   2. If compartment is unsupported (404 / not-supported), fall back to
- *      regular search with ref params (+LOINC code groups for Observation).
- *
- * Auth model (COS Quick Start v1.7):
- *   Token:  POST with Basic auth (base64 clientId:clientSecret)
- *   FHIR:   Bearer token + Ocp-Apim-Subscription-Key header
+ * Fetch strategy per resource type:
+ *   Patient    – GET /Patient (list) or GET /Patient/{id} per known patient
+ *   Observation – individual LOINC codes + status=final (same as coin-demo)
+ *                 compartment returns 0 on COS — skip it for Observation
+ *   Others     – compartment GET /Patient/{id}/{Type} first;
+ *                 fall back to ref-param search if compartment unsupported
  */
 
 import { writeFileSync, mkdirSync } from "fs";
@@ -47,39 +43,55 @@ function csv(s: string | undefined): string[] {
 }
 
 function defaultResourceTypes(): string[] {
-  // Encounter re-enabled: compartment search bypasses _sid injection issue.
-  // Observation: compartment search bypasses mandatory code + SNOMED-map bug.
-  return ["Patient", "Observation", "Encounter", "CarePlan", "Immunization", "ServiceRequest"];
+  return ["Patient", "Observation", "CarePlan", "Immunization", "ServiceRequest"];
 }
 
 // ── Skip list ───────────────────────────────────────────────────────────────
 
 const SKIP_TYPES = new Set([
-  // Gateway blocks patient-reference search and compartment returns nothing:
   "MedicationRequest", "MedicationDispense", "DiagnosticReport", "Task",
-  // Backend search unsupported + compartment also not listed:
   "ClinicalImpression",
-  // Not in CapabilityStatement:
+  // Encounter: _sid injection + no working search param combo found.
+  // Compartment GET /Patient/{id}/Encounter also fails on COS.
+  "Encounter",
   "Condition", "AllergyIntolerance", "DocumentReference",
 ]);
 
-// ── LOINC code groups (fallback for Observation if compartment fails) ────────────
+// ── Observation LOINC codes ───────────────────────────────────────────────────
 //
-// COS requires code param AND the system prefix to avoid a SNOMED-map 500.
-// Used only if compartment search is unsupported or returns nothing.
+// Sent one at a time with status=final, exactly as coin-demo does.
+// Codes that trigger COS’s internal SNOMED-map 500 are skipped automatically.
 
-const LOINC = "http://loinc.org";
-const loinc = (...codes: string[]) => codes.map(c => `${LOINC}|${c}`).join(",");
-
-const OBSERVATION_LOINC_GROUPS = [
-  loinc("20150-9", "19926-5", "19868-9", "40445-0"),           // spirometry
-  loinc("39156-5", "29463-7", "8302-2"),                        // BMI, weight, height
-  loinc("72166-2", "89919-2", "55284-4", "8867-4"),             // smoking, CAT, BP, HR
-  loinc("59408-5", "2339-0", "4548-4", "33914-3"),              // SpO2, glucose, HbA1c, eGFR
-  loinc("2160-0", "2951-2", "6298-4", "718-7", "6690-2", "777-3"), // creatinine, Na, K, Hb, WBC, plt
+const OBSERVATION_LOINC_CODES = [
+  // Spirometry
+  "20150-9",  // FEV1 measured
+  "19926-5",  // FEV1 % predicted
+  "19868-9",  // FVC measured
+  "40445-0",  // FEV1/FVC ratio
+  // Vitals
+  "39156-5",  // BMI
+  "29463-7",  // Body weight
+  "8302-2",   // Body height
+  "55284-4",  // Blood pressure
+  "8867-4",   // Heart rate
+  "59408-5",  // SpO2
+  // Clinical scores & status
+  "72166-2",  // Smoking status
+  "89919-2",  // CAT score
+  // Lab
+  "2339-0",   // Blood glucose
+  "4548-4",   // HbA1c
+  "33914-3",  // eGFR
+  "2160-0",   // Creatinine
+  "2951-2",   // Sodium
+  "6298-4",   // Potassium
+  "718-7",    // Hemoglobin
+  "6690-2",   // Leukocytes
+  "777-3",    // Platelets
 ];
 
 const STANDALONE_TYPES = new Set(["Patient", "Appointment", "Slot", "HealthcareService"]);
+const COS_PNR_SYSTEM = "urn:oid:1.2.752.129.2.1.3.1";
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 
@@ -114,7 +126,7 @@ type FhirBundle = {
 
 // ── HTTP helpers ─────────────────────────────────────────────────────────────
 
-function headers(token: string): Record<string, string> {
+function hdrs(token: string): Record<string, string> {
   return {
     Authorization: `Bearer ${token}`,
     "Ocp-Apim-Subscription-Key": cfg.apiKey,
@@ -126,7 +138,7 @@ async function fhirGet(path: string, params?: Record<string, string>): Promise<F
   const token = await getToken();
   const url = new URL(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/${path.replace(/^\//, "")}`);
   if (params) for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-  const res = await fetch(url.toString(), { headers: headers(token) });
+  const res = await fetch(url.toString(), { headers: hdrs(token) });
   if (!res.ok) throw new Error(`GET ${path} failed (${res.status}): ${await res.text()}`);
   return res.json() as Promise<FhirBundle>;
 }
@@ -136,58 +148,53 @@ async function fhirPost(resourceType: string, params: Record<string, string>): P
   const url = `${cfg.fhirBaseUrl.replace(/\/$/, "")}/${resourceType}/_search`;
   const res = await fetch(url, {
     method: "POST",
-    headers: { ...headers(token), "Content-Type": "application/x-www-form-urlencoded" },
+    headers: { ...hdrs(token), "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(params).toString(),
   });
   if (!res.ok) throw new Error(`POST ${resourceType}/_search failed (${res.status}): ${await res.text()}`);
   return res.json() as Promise<FhirBundle>;
 }
 
-async function collectPages(first: FhirBundle, limit: number): Promise<FhirResource[]> {
-  const results: FhirResource[] = (first.entry ?? []).map(e => e.resource);
-  const nextUrl = first.link?.find(l => l.relation === "next")?.url;
-  if (nextUrl && results.length < limit) {
+async function pages(first: FhirBundle, limit: number): Promise<FhirResource[]> {
+  const out: FhirResource[] = (first.entry ?? []).map(e => e.resource);
+  const next = first.link?.find(l => l.relation === "next")?.url;
+  if (next && out.length < limit) {
     try {
-      const res = await fetch(nextUrl, { headers: headers(await getToken()) });
-      if (res.ok) results.push(...((await res.json() as FhirBundle).entry ?? []).map(e => e.resource));
+      const res = await fetch(next, { headers: hdrs(await getToken()) });
+      if (res.ok) out.push(...((await res.json() as FhirBundle).entry ?? []).map(e => e.resource));
     } catch { /* stop */ }
   }
-  return results.slice(0, limit);
+  return out.slice(0, limit);
 }
 
-async function fetchByGet(path: string, params: Record<string, string> = {}): Promise<FhirResource[]> {
-  return collectPages(await fhirGet(path, params), cfg.countPerType);
+async function getList(path: string, params?: Record<string, string>): Promise<FhirResource[]> {
+  return pages(await fhirGet(path, params), cfg.countPerType);
 }
 
-async function fetchByPost(resourceType: string, params: Record<string, string>): Promise<FhirResource[]> {
-  return collectPages(await fhirPost(resourceType, params), cfg.countPerType);
+async function postSearch(rt: string, params: Record<string, string>): Promise<FhirResource[]> {
+  return pages(await fhirPost(rt, params), cfg.countPerType);
 }
 
 // ── CapabilityStatement ───────────────────────────────────────────────────────
 
-type CapSearchParam = { name: string; type: string };
-let _capCache: Map<string, CapSearchParam[]> | null = null;
+type CapParam = { name: string; type: string };
+let _cap: Map<string, CapParam[]> | null = null;
 
-async function getCapability(): Promise<Map<string, CapSearchParam[]>> {
-  if (_capCache) return _capCache;
-  _capCache = new Map();
+async function getCap(): Promise<Map<string, CapParam[]>> {
+  if (_cap) return _cap;
+  _cap = new Map();
   try {
-    const token = await getToken();
-    const res = await fetch(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/metadata`, { headers: headers(token) });
-    if (!res.ok) return _capCache;
-    const cs = await res.json() as {
-      rest?: Array<{ resource?: Array<{ type: string; searchParam?: CapSearchParam[] }> }>;
-    };
+    const res = await fetch(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/metadata`, { headers: hdrs(await getToken()) });
+    if (!res.ok) return _cap;
+    const cs = await res.json() as { rest?: Array<{ resource?: Array<{ type: string; searchParam?: CapParam[] }> }> };
     for (const rest of cs.rest ?? [])
       for (const r of rest.resource ?? [])
-        _capCache.set(r.type, r.searchParam ?? []);
+        _cap.set(r.type, r.searchParam ?? []);
   } catch { /* ignore */ }
-  return _capCache;
+  return _cap;
 }
 
-// ── Fetch helpers ────────────────────────────────────────────────────────────
-
-const COS_PNR_SYSTEM = "urn:oid:1.2.752.129.2.1.3.1";
+// ── Error classification ─────────────────────────────────────────────────────────
 
 function isRetryable(msg: string): boolean {
   return (
@@ -196,8 +203,7 @@ function isRetryable(msg: string): boolean {
     msg.includes("Invalid search criteria") ||
     msg.includes("Invalid/Unsupported Search parameters") ||
     msg.includes("HAPI-0302") ||
-    // COS 500: internal SNOMED-map failure when using bare LOINC codes.
-    // Try the next code group rather than aborting.
+    // COS 500: SNOMED translation failure — skip this code, try next.
     msg.includes("Code translations are not found")
   );
 }
@@ -208,99 +214,120 @@ function isCompartmentUnsupported(msg: string): boolean {
     msg.includes("not found") ||
     msg.includes("not-supported") ||
     msg.includes("not know how to handle") ||
+    msg.includes("Invalid search criteria") ||
     msg.includes("Unknown resource type") ||
     msg.includes("Compartment")
   );
 }
 
-// PRIMARY: FHIR compartment search GET /Patient/{id}/{ResourceType}
-// Bypasses _sid param injection (no search params → COS gateway has nothing to
-// append to) and the Observation mandatory-code restriction.
-async function fetchCompartment(
+// ── Patient-linked fetch strategies ──────────────────────────────────────────
+
+async function fetchObservations(
   patientId: string,
-  resourceType: string
-): Promise<FhirResource[] | null> {
+): Promise<FhirResource[]> {
+  // Fetch one LOINC code at a time with status=final, exactly as coin-demo does.
+  // Comma-separated codes trigger a COS internal SNOMED-map 500 on some codes.
+  const combined: FhirResource[] = [];
+  const skipped: string[] = [];
+  const failed: string[] = [];
+
+  for (const code of OBSERVATION_LOINC_CODES) {
+    try {
+      const results = await getList("Observation", {
+        patient: `Patient/${patientId}`,
+        code,
+        status: "final",
+      });
+      combined.push(...results);
+    } catch (err: unknown) {
+      const msg = (err as Error).message;
+      if (msg.includes("Code translations are not found")) {
+        skipped.push(code);
+      } else if (isRetryable(msg)) {
+        skipped.push(code);
+      } else {
+        failed.push(`${code}: ${msg.split("\n")[0]}`);
+      }
+    }
+  }
+
+  if (skipped.length > 0) {
+    process.stdout.write(`(${combined.length} found, ${skipped.length} codes skipped by COS) `);
+  }
+  if (failed.length > 0) {
+    console.warn(`\n  WARN unexpected errors for Observation codes: ${failed.join("; ")}`);
+  }
+  return combined;
+}
+
+async function fetchCompartment(patientId: string, resourceType: string): Promise<FhirResource[] | null> {
   try {
-    const results = await fetchByGet(`Patient/${patientId}/${resourceType}`);
-    return results; // may be empty array, that's fine
+    return await getList(`Patient/${patientId}/${resourceType}`);
   } catch (err: unknown) {
-    if (isCompartmentUnsupported((err as Error).message)) return null; // fall through
+    if (isCompartmentUnsupported((err as Error).message)) return null;
     throw err;
   }
+}
+
+async function fetchWithRefParams(
+  patientId: string,
+  pnr: string | undefined,
+  resourceType: string,
+): Promise<FhirResource[]> {
+  const cap = await getCap();
+  const supported = cap.get(resourceType)?.map(p => p.name) ?? [];
+  const candidates = supported.length > 0
+    ? supported.filter(n => n === "patient" || n === "subject" || n.startsWith("patient.") || n.startsWith("subject."))
+    : ["patient", "subject"];
+
+  const refSets: Record<string, string>[] = [];
+  for (const name of candidates) {
+    if (name === "patient") {
+      refSets.push({ patient: `Patient/${patientId}` });
+      if (pnr) refSets.push({ "patient.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
+    } else if (name === "subject") {
+      refSets.push({ subject: `Patient/${patientId}` });
+      if (pnr) refSets.push({ "subject.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
+    } else if ((name === "patient.identifier" || name === "subject.identifier") && pnr) {
+      refSets.push({ [name]: `${COS_PNR_SYSTEM}|${pnr}` });
+    }
+  }
+
+  const errors: string[] = [];
+  for (const p of refSets) {
+    try { return await getList(resourceType, p); }
+    catch (e: unknown) {
+      const msg = (e as Error).message;
+      errors.push(`GET: ${msg.split("\n")[0]}`);
+      if (!isRetryable(msg)) throw e;
+    }
+  }
+  for (const p of refSets) {
+    try { return await postSearch(resourceType, p); }
+    catch (e: unknown) {
+      const msg = (e as Error).message;
+      errors.push(`POST: ${msg.split("\n")[0]}`);
+      if (!isRetryable(msg)) throw e;
+    }
+  }
+  throw new Error(`All search strategies failed:\n  ` + errors.join("\n  "));
 }
 
 async function fetchPatientLinked(
   patientId: string,
   pnr: string | undefined,
-  resourceType: string
+  resourceType: string,
 ): Promise<FhirResource[]> {
-  // ── Strategy 1: compartment search ────────────────────────────────────────
-  const compartmentResults = await fetchCompartment(patientId, resourceType);
-  if (compartmentResults !== null) {
-    // Compartment worked (even if empty). Don't double-fetch with regular search.
-    return compartmentResults;
-  }
-
-  // ── Strategy 2: regular search with ref params ─────────────────────────
-  const capability = await getCapability();
-  const supportedNames = capability.get(resourceType)?.map(p => p.name) ?? [];
-
-  const refCandidates = supportedNames.length > 0
-    ? supportedNames.filter(n =>
-        n === "patient" || n === "subject" ||
-        n.startsWith("patient.") || n.startsWith("subject."))
-    : ["patient", "subject"];
-
-  const refParamSets: Record<string, string>[] = [];
-  for (const name of refCandidates) {
-    if (name === "patient") {
-      refParamSets.push({ patient: `Patient/${patientId}` });
-      if (pnr) refParamSets.push({ "patient.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
-    } else if (name === "subject") {
-      refParamSets.push({ subject: `Patient/${patientId}` });
-      if (pnr) refParamSets.push({ "subject.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
-    } else if ((name === "patient.identifier" || name === "subject.identifier") && pnr) {
-      refParamSets.push({ [name]: `${COS_PNR_SYSTEM}|${pnr}` });
-    }
-  }
-
-  // Observation fallback: try each LOINC code group
+  // Observation: individual code search (compartment returns 0 on COS)
   if (resourceType === "Observation") {
-    const combined: FhirResource[] = [];
-    for (const codes of OBSERVATION_LOINC_GROUPS) {
-      for (const refParams of refParamSets) {
-        try {
-          combined.push(...await fetchByGet(resourceType, { ...refParams, code: codes }));
-          break; // this refParam worked, move to next code group
-        } catch (err: unknown) {
-          const msg = (err as Error).message;
-          if (isRetryable(msg)) continue;
-          throw err;
-        }
-      }
-    }
-    return combined;
+    return fetchObservations(patientId);
   }
 
-  // Standard: try GET then POST for each ref param
-  const errors: string[] = [];
-  for (const refParams of refParamSets) {
-    try { return await fetchByGet(resourceType, refParams); }
-    catch (err: unknown) {
-      const msg = (err as Error).message;
-      errors.push(`GET: ${msg.split("\n")[0]}`);
-      if (!isRetryable(msg)) throw err;
-    }
-  }
-  for (const refParams of refParamSets) {
-    try { return await fetchByPost(resourceType, refParams); }
-    catch (err: unknown) {
-      const msg = (err as Error).message;
-      errors.push(`POST: ${msg.split("\n")[0]}`);
-      if (!isRetryable(msg)) throw err;
-    }
-  }
-  throw new Error(`All search strategies failed for ${resourceType}:\n  ` + errors.join("\n  "));
+  // All other types: compartment first, ref-param fallback
+  const compartment = await fetchCompartment(patientId, resourceType);
+  if (compartment !== null) return compartment;
+
+  return fetchWithRefParams(patientId, pnr, resourceType);
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -311,7 +338,7 @@ function cleanResource(r: FhirResource): FhirResource {
   return { ...r, meta: Object.keys(rest).length > 0 ? rest : undefined };
 }
 
-function transactionBundle(resources: FhirResource[]): object {
+function txBundle(resources: FhirResource[]): object {
   return {
     resourceType: "Bundle",
     type: "transaction",
@@ -324,7 +351,11 @@ function transactionBundle(resources: FhirResource[]): object {
 
 function dedup(resources: FhirResource[]): FhirResource[] {
   const seen = new Set<string>();
-  return resources.filter(r => { if (!r.id) return true; if (seen.has(r.id)) return false; seen.add(r.id); return true; });
+  return resources.filter(r => {
+    if (!r.id) return true;
+    if (seen.has(r.id)) return false;
+    seen.add(r.id); return true;
+  });
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -339,57 +370,64 @@ async function main() {
   mkdirSync(cfg.outputDir, { recursive: true });
 
   // Step 0: capabilities
-  process.stdout.write("Fetching server CapabilityStatement ... ");
-  const capability = await getCapability();
-  console.log(capability.size > 0 ? `${capability.size} resource types found\n` : "unavailable\n");
-  if (capability.size > 0) {
-    for (const rt of cfg.resourceTypes) {
-      const refs = (capability.get(rt) ?? []).filter(p =>
-        p.name === "patient" || p.name === "subject" ||
-        p.name.startsWith("patient.") || p.name.startsWith("subject.")
-      ).map(p => p.name);
-      console.log(`  ${rt}: [${refs.join(", ") || "no patient-ref params"}]`);
-    }
-    console.log("");
-  }
+  process.stdout.write("Fetching CapabilityStatement ... ");
+  const cap = await getCap();
+  console.log(cap.size > 0 ? `${cap.size} types\n` : "unavailable\n");
 
   // Step 1: resolve patients
-  const patientRecords: Array<{ fhirId: string; pnr?: string }> = [
+  const patients: Array<{ fhirId: string; pnr?: string }> = [
     ...cfg.patientIds.map(id => ({ fhirId: id })),
   ];
 
   if (cfg.patientIdentifiers.length > 0) {
+    // Explicit PNR list
     for (const ident of cfg.patientIdentifiers) {
       const pnr = ident.replace(/[-+\s]/g, "");
-      process.stdout.write(`Looking up patient ${pnr} ... `);
+      process.stdout.write(`Looking up ${pnr} ... `);
       try {
-        let bundle = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
-        if ((bundle.entry ?? []).length === 0) bundle = await fhirGet("Patient", { identifier: pnr });
-        const ids = (bundle.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
-        for (const id of ids) if (!patientRecords.some(p => p.fhirId === id)) patientRecords.push({ fhirId: id, pnr });
+        let b = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
+        if (!(b.entry ?? []).length) b = await fhirGet("Patient", { identifier: pnr });
+        const ids = (b.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
+        ids.forEach(id => { if (!patients.some(p => p.fhirId === id)) patients.push({ fhirId: id, pnr }); });
         console.log(`found ${ids.length}: ${ids.join(", ") || "(none)"}`);
-      } catch (err: unknown) { console.warn(`WARN: ${(err as Error).message}`); }
+      } catch (e: unknown) { console.warn(`WARN: ${(e as Error).message}`); }
     }
   } else if (cfg.patientIds.length === 0) {
-    const COS_SANDBOX_PATIENTS = [
-      "194609073277", "198001072381", "194902142696", "197702202396", "202103172389",
-    ];
-    console.log(`using ${COS_SANDBOX_PATIENTS.length} known COS sandbox patients`);
-    for (const pnr of COS_SANDBOX_PATIENTS) {
-      process.stdout.write(`  Looking up ${pnr} ... `);
-      try {
-        const bundle = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
-        const ids = (bundle.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
-        for (const id of ids) if (!patientRecords.some(p => p.fhirId === id)) patientRecords.push({ fhirId: id, pnr });
-        console.log(ids.length > 0 ? `found ${ids.join(", ")}` : "not found");
-      } catch (err: unknown) { console.warn(`WARN: ${(err as Error).message}`); }
+    // Try open patient listing first — COS may support it
+    process.stdout.write("Trying GET /Patient (open listing) ... ");
+    let discovered = false;
+    try {
+      const b = await fhirGet("Patient", { _count: String(cfg.countPerType) });
+      const ids = (b.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
+      if (ids.length > 0) {
+        console.log(`found ${ids.length} patients`);
+        ids.forEach(id => { if (!patients.some(p => p.fhirId === id)) patients.push({ fhirId: id }); });
+        discovered = true;
+      } else {
+        console.log("0 results — falling back to known list");
+      }
+    } catch { console.log("not supported — falling back to known list"); }
+
+    if (!discovered) {
+      // Known COS sandbox patients (developer.openservices.cambio.se/test-data)
+      const KNOWN = ["194609073277", "198001072381", "194902142696", "197702202396", "202103172389"];
+      console.log(`Looking up ${KNOWN.length} known sandbox patients ...`);
+      for (const pnr of KNOWN) {
+        process.stdout.write(`  ${pnr} ... `);
+        try {
+          const b = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
+          const ids = (b.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
+          ids.forEach(id => { if (!patients.some(p => p.fhirId === id)) patients.push({ fhirId: id, pnr }); });
+          console.log(ids.length ? `found ${ids.join(", ")}` : "not found");
+        } catch (e: unknown) { console.warn(`WARN: ${(e as Error).message}`); }
+      }
     }
   }
 
-  if (patientRecords.length === 0)
-    console.warn("\nNo patients resolved. Patient-linked resources will be skipped.\n");
+  if (!patients.length)
+    console.warn("\nNo patients resolved — patient-linked resources will be skipped.\n");
   else
-    console.log(`\nPatient IDs: ${patientRecords.map(p => p.fhirId).join(", ")}\n`);
+    console.log(`\nPatient IDs: ${patients.map(p => p.fhirId).join(", ")}\n`);
 
   // Step 2: fetch resources
   const collected: Record<string, FhirResource[]> = {};
@@ -399,51 +437,48 @@ async function main() {
     if (SKIP_TYPES.has(rt)) { console.log(`  ${rt} ... SKIP`); continue; }
 
     if (rt === "Patient") {
-      for (const { fhirId } of patientRecords) {
+      for (const { fhirId } of patients) {
         process.stdout.write(`  Patient/${fhirId} ... `);
         try {
-          const res = await fetch(
-            `${cfg.fhirBaseUrl.replace(/\/$/, "")}/Patient/${fhirId}`,
-            { headers: headers(await getToken()) }
-          );
+          const res = await fetch(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/Patient/${fhirId}`, { headers: hdrs(await getToken()) });
           if (res.ok) { collected[rt].push(await res.json() as FhirResource); console.log("found"); }
           else console.warn(`WARN: ${res.status}`);
-        } catch (err: unknown) { console.warn(`WARN: ${(err as Error).message}`); }
+        } catch (e: unknown) { console.warn(`WARN: ${(e as Error).message}`); }
       }
-    } else if (!STANDALONE_TYPES.has(rt) && patientRecords.length > 0) {
-      for (const { fhirId, pnr } of patientRecords) {
+    } else if (!STANDALONE_TYPES.has(rt) && patients.length) {
+      for (const { fhirId, pnr } of patients) {
         process.stdout.write(`  ${rt} for Patient/${fhirId} ... `);
         try {
           const resources = await fetchPatientLinked(fhirId, pnr, rt);
           collected[rt].push(...resources);
           console.log(`${resources.length} found`);
-        } catch (err: unknown) { console.warn(`WARN: ${(err as Error).message}`); }
+        } catch (e: unknown) { console.warn(`WARN: ${(e as Error).message}`); }
       }
     } else if (STANDALONE_TYPES.has(rt)) {
       process.stdout.write(`  ${rt} ... `);
       try {
-        const resources = await fetchByGet(rt);
-        collected[rt].push(...resources);
-        console.log(`${resources.length} found`);
-      } catch (err: unknown) { console.warn(`WARN: ${(err as Error).message}`); }
+        const r = await getList(rt);
+        collected[rt].push(...r);
+        console.log(`${r.length} found`);
+      } catch (e: unknown) { console.warn(`WARN: ${(e as Error).message}`); }
     }
 
     collected[rt] = dedup(collected[rt]);
   }
 
-  // Step 3: write bundles
+  // Step 3: write
   console.log("");
-  let totalFiles = 0, totalResources = 0;
+  let files = 0, total = 0;
   for (const [rt, resources] of Object.entries(collected)) {
-    if (resources.length === 0) continue;
+    if (!resources.length) continue;
     const file = `${cfg.outputDir}/${rt.toLowerCase()}.json`;
-    writeFileSync(file, JSON.stringify(transactionBundle(resources.map(cleanResource)), null, 2), "utf-8");
+    writeFileSync(file, JSON.stringify(txBundle(resources.map(cleanResource)), null, 2), "utf-8");
     console.log(`Wrote ${rt.toLowerCase()}.json  (${resources.length} resources)`);
-    totalFiles++; totalResources += resources.length;
+    files++; total += resources.length;
   }
 
-  console.log(`\n✓ ${totalResources} resources → ${totalFiles} bundle files in ${cfg.outputDir}`);
-  console.log("\nNext steps:\n  1. cd ..\n  2. bash start.sh\n  3. Open http://localhost:3000");
+  console.log(`\n✓ ${total} resources → ${files} files in ${cfg.outputDir}`);
+  console.log("\nNext: cd .. && bash start.sh  →  http://localhost:3000");
 }
 
 main().catch(err => { console.error("\nFatal:", (err as Error).message); process.exit(1); });
