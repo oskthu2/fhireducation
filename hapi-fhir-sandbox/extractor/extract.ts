@@ -52,43 +52,82 @@ function csv(s: string | undefined): string[] {
 }
 
 function defaultResourceTypes(): string[] {
-  // Types confirmed reachable via COS open FHIR endpoint as of 2026-04.
-  // See SKIP_TYPES below for types that are blocked or unsupported.
   return [
     "Patient",
-    "Observation",         // vital signs + lab results
-    "Encounter",           // care contacts / admissions (POST search bypasses _sid)
-    "ClinicalImpression",  // journal notes equivalent in COSMIC
+    "Observation",
+    "Encounter",
     "CarePlan",
     "Immunization",
     "ServiceRequest",
   ];
 }
 
-// Types confirmed unreachable via COS: print a SKIP line and move on.
-// Update this set based on your own CapabilityStatement output.
+// Resource types confirmed unreachable via COS open FHIR.
 const SKIP_TYPES = new Set([
   // Gateway blocks all patient-reference search combos ("not-supported"):
   "MedicationRequest",
   "MedicationDispense",
   "DiagnosticReport",
   "Task",
+  // Backend search completely unsupported (all param combinations rejected):
+  "ClinicalImpression",
   // Not in server CapabilityStatement (404 "Unknown resource type"):
   "Condition",
   "AllergyIntolerance",
   "DocumentReference",
 ]);
 
-// Resource types where GET with _sid-injected params fails but POST (no _sid
-// in body) succeeds. An entry with [{}] means no extra params — just force the
-// GET→POST fallback path for that type.
-const EXTRA_REQUIRED_PARAMS: Map<string, Record<string, string>[]> = new Map([
-  // Encounter: GET fails with "Invalid search criteria" due to _sid injection;
-  // POST with just the patient reference in the body works.
-  ["Encounter", [{}]],
+// ── COS-specific search constraints ──────────────────────────────────────────
+//
+// The COS APIM gateway injects an "_sid" session param into every request.
+// This causes HAPI to reject searches whose param set is not explicitly
+// declared in the CapabilityStatement ("not know how to handle").
+//
+// OBSERVATION: COS backend requires a "code" param — searching without one
+// returns 400 "codes cannot be null". We therefore fetch in pre-defined LOINC
+// code groups and merge the results.
+//
+// ENCOUNTER: COS backend requires "status" alongside "subject". Without it
+// the search is rejected. Fetch once per status value and merge.
+
+// LOINC code groups. Each group is fetched as a single comma-separated "code"
+// parameter. Add more LOINC codes here to expand coverage.
+const OBSERVATION_LOINC_GROUPS: string[] = [
+  // Spirometry / lung function
+  "20150-9,19926-5,19868-9,40445-0",
+  // Vitals: BMI, body weight, body height
+  "39156-5,29463-7,8302-2",
+  // Smoking status, COPD Assessment Test (CAT), blood pressure, heart rate
+  "72166-2,89919-2,55284-4,8867-4",
+  // SpO2, blood glucose, HbA1c, eGFR
+  "59408-5,2339-0,4548-4,33914-3",
+  // Creatinine, Na+, K+, Hb, leukocytes, platelets
+  "2160-0,2951-2,6298-4,718-7,6690-2,777-3",
+];
+
+// Extra search parameters that MUST be present for a resource type.
+// Each entry is tried as a separate request; results are merged.
+// The {patient/subject} reference is added automatically by fetchPatientLinked.
+const REQUIRED_EXTRA_PARAMS: Map<string, Record<string, string>[]> = new Map([
+  [
+    "Observation",
+    // COS 400 "codes cannot be null" — code is mandatory for Observation search.
+    OBSERVATION_LOINC_GROUPS.map(codes => ({ code: codes })),
+  ],
+  [
+    "Encounter",
+    // COS requires status alongside subject for Encounter search.
+    // Confirmed by fhir-tools.ts in coin-demo (always uses status=finished).
+    [
+      { status: "finished" },
+      { status: "in-progress" },
+      { status: "arrived" },
+      { status: "planned" },
+    ],
+  ],
 ]);
 
-// Resource types that do NOT require a patient reference for searching
+// Resource types that do NOT require a patient reference
 const STANDALONE_TYPES = new Set(["Patient", "Appointment", "Slot", "HealthcareService"]);
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -120,12 +159,16 @@ async function getToken(): Promise<string> {
   return _token;
 }
 
-// ── FHIR GET ─────────────────────────────────────────────────────────────────
+// ── FHIR types ────────────────────────────────────────────────────────────────
 
 type FhirResource = Record<string, unknown> & { resourceType: string; id?: string };
-type FhirBundle  = { resourceType: "Bundle"; entry?: Array<{ resource: FhirResource }>; link?: Array<{ relation: string; url: string }> };
+type FhirBundle  = {
+  resourceType: "Bundle";
+  entry?: Array<{ resource: FhirResource }>;
+  link?: Array<{ relation: string; url: string }>;
+};
 
-// ── FHIR search (GET) ────────────────────────────────────────────────────────
+// ── FHIR GET ─────────────────────────────────────────────────────────────────
 
 async function fhirGet(path: string, params?: Record<string, string>): Promise<FhirBundle> {
   const token = await getToken();
@@ -133,7 +176,6 @@ async function fhirGet(path: string, params?: Record<string, string>): Promise<F
   if (params) {
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
   }
-
   const res = await fetch(url.toString(), {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -141,21 +183,18 @@ async function fhirGet(path: string, params?: Record<string, string>): Promise<F
       Accept: "application/fhir+json",
     },
   });
-
   if (!res.ok) throw new Error(`GET ${path} failed (${res.status}): ${await res.text()}`);
   return res.json() as Promise<FhirBundle>;
 }
 
 // ── FHIR _search (POST) ───────────────────────────────────────────────────────
-// The COS APIM gateway injects _sid into GET query params, which causes the
-// HAPI backend to reject searches with unknown param combinations. POST body
-// params are not touched by the gateway, so the backend sees only our params.
+// The COS APIM gateway injects _sid into GET query strings. When the FHIR
+// backend does not list _sid as a supported param for a resource type, it
+// rejects the search. POST body params bypass this for some resource types.
 
 async function fhirPost(resourceType: string, params: Record<string, string>): Promise<FhirBundle> {
   const token = await getToken();
   const url = `${cfg.fhirBaseUrl.replace(/\/$/, "")}/${resourceType}/_search`;
-  const body = new URLSearchParams(params);
-
   const res = await fetch(url, {
     method: "POST",
     headers: {
@@ -164,213 +203,218 @@ async function fhirPost(resourceType: string, params: Record<string, string>): P
       "Content-Type": "application/x-www-form-urlencoded",
       Accept: "application/fhir+json",
     },
-    body: body.toString(),
+    body: new URLSearchParams(params).toString(),
   });
-
   if (!res.ok) throw new Error(`POST ${resourceType}/_search failed (${res.status}): ${await res.text()}`);
   return res.json() as Promise<FhirBundle>;
 }
 
-// ── Fetch with pagination ─────────────────────────────────────────────────────
+// ── Pagination ────────────────────────────────────────────────────────────────
 
-async function collectPages(bundle: FhirBundle, token: () => Promise<string>, apiKey: string, limit: number): Promise<FhirResource[]> {
-  const results: FhirResource[] = [];
-  for (const e of bundle.entry ?? []) results.push(e.resource);
-
-  const nextUrl = bundle.link?.find(l => l.relation === "next")?.url;
+async function collectPages(first: FhirBundle, limit: number): Promise<FhirResource[]> {
+  const results: FhirResource[] = (first.entry ?? []).map(e => e.resource);
+  const nextUrl = first.link?.find(l => l.relation === "next")?.url;
   if (nextUrl && results.length < limit) {
     try {
-      const t = await token();
+      const t = await getToken();
       const res = await fetch(nextUrl, {
         headers: {
           Authorization: `Bearer ${t}`,
-          "Ocp-Apim-Subscription-Key": apiKey,
+          "Ocp-Apim-Subscription-Key": cfg.apiKey,
           Accept: "application/fhir+json",
         },
       });
       if (res.ok) {
         const page2 = await res.json() as FhirBundle;
-        for (const e of page2.entry ?? []) results.push(e.resource);
+        results.push(...(page2.entry ?? []).map(e => e.resource));
       }
-    } catch { /* ignore pagination errors */ }
+    } catch { /* stop pagination on network error */ }
   }
-
   return results.slice(0, limit);
 }
 
-async function fetchResources(
+async function fetchByGet(
   resourceType: string,
-  params: Record<string, string> = {}
+  params: Record<string, string>
 ): Promise<FhirResource[]> {
-  // COS rejects _count; omit it and rely on server's default page size.
   const bundle = await fhirGet(resourceType, params);
-  return collectPages(bundle, getToken, cfg.apiKey, cfg.countPerType);
+  return collectPages(bundle, cfg.countPerType);
 }
 
-async function fetchResourcesPost(
+async function fetchByPost(
   resourceType: string,
   params: Record<string, string>
 ): Promise<FhirResource[]> {
   const bundle = await fhirPost(resourceType, params);
-  return collectPages(bundle, getToken, cfg.apiKey, cfg.countPerType);
+  return collectPages(bundle, cfg.countPerType);
 }
 
-// ── Server capability discovery ───────────────────────────────────────────────
-// Fetches the FHIR CapabilityStatement (/metadata) to find which search params
-// each resource type actually supports. Results are cached for the run.
+// ── CapabilityStatement ───────────────────────────────────────────────────────
 
-type CapabilitySearchParam = { name: string; type: string };
-let _capabilityCache: Map<string, CapabilitySearchParam[]> | null = null;
+type CapSearchParam = { name: string; type: string };
+let _capCache: Map<string, CapSearchParam[]> | null = null;
 
-async function getCapability(): Promise<Map<string, CapabilitySearchParam[]>> {
-  if (_capabilityCache) return _capabilityCache;
-  _capabilityCache = new Map();
+async function getCapability(): Promise<Map<string, CapSearchParam[]>> {
+  if (_capCache) return _capCache;
+  _capCache = new Map();
   try {
     const token = await getToken();
-    const url = `${cfg.fhirBaseUrl.replace(/\/$/, "")}/metadata`;
-    const res = await fetch(url, {
+    const res = await fetch(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/metadata`, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Ocp-Apim-Subscription-Key": cfg.apiKey,
         Accept: "application/fhir+json",
       },
     });
-    if (!res.ok) return _capabilityCache;
+    if (!res.ok) return _capCache;
     const cs = await res.json() as {
-      rest?: Array<{
-        resource?: Array<{ type: string; searchParam?: CapabilitySearchParam[] }>;
-      }>;
+      rest?: Array<{ resource?: Array<{ type: string; searchParam?: CapSearchParam[] }> }>;
     };
     for (const rest of cs.rest ?? []) {
-      for (const resource of rest.resource ?? []) {
-        _capabilityCache.set(resource.type, resource.searchParam ?? []);
+      for (const r of rest.resource ?? []) {
+        _capCache.set(r.type, r.searchParam ?? []);
       }
     }
-  } catch { /* silently ignore; fall back to heuristic param sets */ }
-  return _capabilityCache;
+  } catch { /* ignore */ }
+  return _capCache;
 }
 
 // ── Fetch patient-linked resources ───────────────────────────────────────────
-// Builds the param set from CapabilityStatement search params, then tries each
-// patient-reference param that the server advertises. Falls back to a default
-// set when the CapabilityStatement is unavailable.
+
+const COS_PNR_SYSTEM = "urn:oid:1.2.752.129.2.1.3.1";
+
+// Whether an error message is "try the next param set" vs a hard failure.
+function isRetryable(msg: string): boolean {
+  return (
+    msg.includes("not-supported") ||
+    msg.includes("not know how to handle") ||
+    msg.includes("Invalid search criteria") ||
+    msg.includes("Invalid/Unsupported Search parameters") ||
+    msg.includes("HAPI-0302")  // HAPI unknown search param
+  );
+}
 
 async function fetchPatientLinked(
   patientId: string,
   pnr: string | undefined,
   resourceType: string
 ): Promise<FhirResource[]> {
-  const COS_PNR_SYSTEM = "urn:oid:1.2.752.129.2.1.3.1";
   const capability = await getCapability();
-  const supportedParams = capability.get(resourceType)?.map(p => p.name) ?? [];
+  const supportedNames = capability.get(resourceType)?.map(p => p.name) ?? [];
 
-  // Build candidate param sets from capability first, then defaults as fallback.
-  const refCandidates = supportedParams.length > 0
-    ? supportedParams.filter(n => n === "patient" || n === "subject" ||
+  // Build reference param candidates (direct ID + chained identifier)
+  const refCandidates = supportedNames.length > 0
+    ? supportedNames.filter(n =>
+        n === "patient" || n === "subject" ||
         n.startsWith("patient.") || n.startsWith("subject."))
     : ["patient", "subject"];
 
-  const patientRefParams: Record<string, string>[] = [];
+  const refParamSets: Record<string, string>[] = [];
   for (const name of refCandidates) {
     if (name === "patient") {
-      patientRefParams.push({ patient: `Patient/${patientId}` });
-      // Also try chained identifier — COS may only accept the chained form
-      // (evidence from run-1: MedicationRequest expected "subject.identifier")
-      if (pnr) patientRefParams.push({ "patient.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
+      refParamSets.push({ patient: `Patient/${patientId}` });
+      if (pnr) refParamSets.push({ "patient.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
     } else if (name === "subject") {
-      patientRefParams.push({ subject: `Patient/${patientId}` });
-      if (pnr) patientRefParams.push({ "subject.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
-    } else if ((name === "subject.identifier" || name === "patient.identifier") && pnr) {
-      patientRefParams.push({ [name]: `${COS_PNR_SYSTEM}|${pnr}` });
+      refParamSets.push({ subject: `Patient/${patientId}` });
+      if (pnr) refParamSets.push({ "subject.identifier": `${COS_PNR_SYSTEM}|${pnr}` });
+    } else if ((name === "patient.identifier" || name === "subject.identifier") && pnr) {
+      refParamSets.push({ [name]: `${COS_PNR_SYSTEM}|${pnr}` });
     }
   }
 
-  // Treat these error patterns as "try next param combination" rather than fatal.
-  // "Invalid search criteria" (400) is thrown when _sid injection pollutes the
-  // GET query string; the same params in a POST body (no _sid) may succeed.
-  const isRetryable = (msg: string) =>
-    msg.includes("not-supported") ||
-    msg.includes("not know how to handle") ||
-    msg.includes("Invalid search criteria") ||
-    msg.includes("Invalid/Unsupported Search parameters");
+  const extraParamSets = REQUIRED_EXTRA_PARAMS.get(resourceType);
 
-  // Types in EXTRA_REQUIRED_PARAMS always go through GET→POST fallback.
-  // An empty extra-params object {} means: just force that fallback for the type.
-  const extraParamSets = EXTRA_REQUIRED_PARAMS.get(resourceType);
   if (extraParamSets) {
+    // For resource types with required extra params (Observation, Encounter, …)
+    // iterate over each extra-params set and attempt GET then POST for each.
     const combined: FhirResource[] = [];
+    const groupErrors: string[] = [];
+
     for (const extra of extraParamSets) {
+      const label = Object.keys(extra).length > 0
+        ? Object.entries(extra).map(([k, v]) => `${k}=${v}`).join("&")
+        : "(no extra params)";
       let fetched = false;
-      for (const refParams of patientRefParams) {
+      const attemptErrors: string[] = [];
+
+      for (const refParams of refParamSets) {
         const params = { ...refParams, ...extra };
+
+        // Phase 1: GET
         try {
-          const resources = await fetchResources(resourceType, params);
+          const resources = await fetchByGet(resourceType, params);
           combined.push(...resources);
           fetched = true;
           break;
         } catch (err: unknown) {
           const msg = (err as Error).message;
-          if (isRetryable(msg)) continue;
-          // Unexpected error: try POST before moving to next refParams
-          try {
-            const resources = await fetchResourcesPost(resourceType, params);
-            combined.push(...resources);
-            fetched = true;
-            break;
-          } catch (postErr: unknown) {
-            const pmsg = (postErr as Error).message;
-            if (isRetryable(pmsg)) continue;
-            // Still failing — continue to next refParams rather than aborting
-            continue;
-          }
+          attemptErrors.push(`GET ${JSON.stringify(params)}: ${msg.split("\n")[0]}`);
+          if (!isRetryable(msg)) throw err;
+        }
+
+        // Phase 2: POST (gateway may not inject _sid into POST body)
+        try {
+          const resources = await fetchByPost(resourceType, params);
+          combined.push(...resources);
+          fetched = true;
+          break;
+        } catch (err: unknown) {
+          const msg = (err as Error).message;
+          attemptErrors.push(`POST ${JSON.stringify(params)}: ${msg.split("\n")[0]}`);
+          if (!isRetryable(msg)) throw err;
         }
       }
+
       if (!fetched) {
-        const label = Object.keys(extra).length > 0 ? JSON.stringify(extra) : "plain patient ref";
-        process.stdout.write(`(no results for ${label}) `);
+        groupErrors.push(`  [${label}] all attempts failed:\n    ` + attemptErrors.join("\n    "));
       }
+    }
+
+    if (combined.length === 0 && groupErrors.length > 0) {
+      // Surface the errors so the caller prints them, but don't throw —
+      // other resource types should still be attempted.
+      const summary = groupErrors.join("\n");
+      console.warn(`\nWARN: no results fetched for ${resourceType}. Details:\n${summary}`);
     }
     return combined;
   }
 
-  const isNotSupported = isRetryable;  // alias for the phases below
-
+  // Standard path: try GET with each ref param set, then POST fallback.
   const lastErrors: string[] = [];
 
-  // Phase 1: try GET with each param set
-  for (const params of patientRefParams) {
+  for (const refParams of refParamSets) {
     try {
-      return await fetchResources(resourceType, params);
+      return await fetchByGet(resourceType, refParams);
     } catch (err: unknown) {
       const msg = (err as Error).message;
-      if (isNotSupported(msg)) { lastErrors.push(`GET ${JSON.stringify(params)}: ${msg.split("\n")[0]}`); continue; }
-      throw err;
+      lastErrors.push(`GET ${JSON.stringify(refParams)}: ${msg.split("\n")[0]}`);
+      if (!isRetryable(msg)) throw err;
     }
   }
 
-  // Phase 2: try POST _search with each param set (gateway doesn't inject _sid into POST body)
-  for (const params of patientRefParams) {
+  for (const refParams of refParamSets) {
     try {
-      return await fetchResourcesPost(resourceType, params);
+      return await fetchByPost(resourceType, refParams);
     } catch (err: unknown) {
       const msg = (err as Error).message;
-      if (isNotSupported(msg)) { lastErrors.push(`POST ${JSON.stringify(params)}: ${msg.split("\n")[0]}`); continue; }
-      throw err;
+      lastErrors.push(`POST ${JSON.stringify(refParams)}: ${msg.split("\n")[0]}`);
+      if (!isRetryable(msg)) throw err;
     }
   }
 
-  throw new Error(`No supported patient search param found for ${resourceType}. Tried:\n    ${lastErrors.join("\n    ")}`);
+  throw new Error(
+    `No supported patient search param found for ${resourceType}. Tried:\n    ` +
+    lastErrors.join("\n    ")
+  );
 }
 
-// ── Strip server-generated metadata ──────────────────────────────────────────
+// ── Helpers ───────────────────────────────────────────────────────────────────
 
 function cleanResource(r: FhirResource): FhirResource {
   if (!r.meta) return r;
   const { lastUpdated, versionId, source, ...rest } = r.meta as Record<string, unknown>;
   return { ...r, meta: Object.keys(rest).length > 0 ? rest : undefined };
 }
-
-// ── Build transaction bundle ──────────────────────────────────────────────────
 
 function transactionBundle(resources: FhirResource[]): object {
   return {
@@ -385,8 +429,6 @@ function transactionBundle(resources: FhirResource[]): object {
     })),
   };
 }
-
-// ── Deduplication ─────────────────────────────────────────────────────────────
 
 function dedup(resources: FhirResource[]): FhirResource[] {
   const seen = new Set<string>();
@@ -403,7 +445,7 @@ function dedup(resources: FhirResource[]): FhirResource[] {
 async function main() {
   console.log("COS → HAPI FHIR extractor");
   console.log("==========================\n");
-  console.log(`Output dir:   ${cfg.outputDir}`);
+  console.log(`Output dir:     ${cfg.outputDir}`);
   console.log(`Resource types: ${cfg.resourceTypes.join(", ")}`);
   console.log(`Max per type:   ${cfg.countPerType}\n`);
 
@@ -417,15 +459,12 @@ async function main() {
     console.log(`${capability.size} resource types found\n`);
     for (const rt of cfg.resourceTypes) {
       const params = capability.get(rt);
-      if (params) {
-        const refs = params.filter(p =>
-          p.name === "patient" || p.name === "subject" ||
-          p.name.startsWith("patient.") || p.name.startsWith("subject.")
-        ).map(p => p.name);
-        console.log(`  ${rt}: patient-ref params = [${refs.join(", ") || "none"}]`);
-      } else {
-        console.log(`  ${rt}: not in CapabilityStatement`);
-      }
+      const refs = (params ?? []).filter(p =>
+        p.name === "patient" || p.name === "subject" ||
+        p.name.startsWith("patient.") || p.name.startsWith("subject.")
+      ).map(p => p.name);
+      const note = params ? `[${refs.join(", ") || "none"}]` : "not in CapabilityStatement";
+      console.log(`  ${rt}: patient-ref params = ${note}`);
     }
   } else {
     console.log("unavailable (will use defaults)\n");
@@ -434,29 +473,22 @@ async function main() {
 
   // ── Step 1: resolve patient FHIR IDs ──────────────────────────────────────
 
-  // Map fhirId → pnr so we can use pnr-based search params as a fallback.
   const patientRecords: Array<{ fhirId: string; pnr?: string }> = [
     ...cfg.patientIds.map(id => ({ fhirId: id })),
   ];
 
-  // If specific identifiers or IDs were given, look those up.
-  // Otherwise, fetch up to countPerType patients from a plain listing.
   if (cfg.patientIdentifiers.length > 0) {
     for (const ident of cfg.patientIdentifiers) {
       const pnr = ident.replace(/[-+\s]/g, "");
       process.stdout.write(`Looking up patient ${pnr} ... `);
       try {
-        let bundle = await fhirGet("Patient", {
-          identifier: `urn:oid:1.2.752.129.2.1.3.1|${pnr}`,
-        });
+        let bundle = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
         if ((bundle.entry ?? []).length === 0) {
           bundle = await fhirGet("Patient", { identifier: pnr });
         }
         const ids = (bundle.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
         for (const id of ids) {
-          if (!patientRecords.some(p => p.fhirId === id)) {
-            patientRecords.push({ fhirId: id, pnr });
-          }
+          if (!patientRecords.some(p => p.fhirId === id)) patientRecords.push({ fhirId: id, pnr });
         }
         console.log(`found ${ids.length}: ${ids.join(", ") || "(none)"}`);
       } catch (err: unknown) {
@@ -464,28 +496,22 @@ async function main() {
       }
     }
   } else if (cfg.patientIds.length === 0) {
-    // The COS sandbox exposes exactly 5 fixed test patients and provides no
-    // bulk listing endpoint. Use the known personnummer as the default set.
-    // Source: https://developer.openservices.cambio.se/test-data
+    // COS sandbox has exactly 5 fixed test patients; no bulk listing is available.
     const COS_SANDBOX_PATIENTS = [
-      "194609073277", // Richard Lindeskog
-      "198001072381", // Bianca Fredriksson
-      "194902142696", // Lars Björk
-      "197702202396", // Kim Sundström
-      "202103172389", // Leah Nordberg (child)
+      "194609073277",  // Richard Lindeskog
+      "198001072381",  // Bianca Fredriksson
+      "194902142696",  // Lars Björk
+      "197702202396",  // Kim Sundström
+      "202103172389",  // Leah Nordberg (child)
     ];
-    const pnrsToFetch = COS_SANDBOX_PATIENTS.slice(0, cfg.countPerType);
-    console.log(`using ${pnrsToFetch.length} known COS sandbox patients`);
-    const COS_PNR_SYSTEM = "urn:oid:1.2.752.129.2.1.3.1";
-    for (const pnr of pnrsToFetch) {
+    console.log(`using ${COS_SANDBOX_PATIENTS.length} known COS sandbox patients`);
+    for (const pnr of COS_SANDBOX_PATIENTS) {
       process.stdout.write(`  Looking up ${pnr} ... `);
       try {
         const bundle = await fhirGet("Patient", { identifier: `${COS_PNR_SYSTEM}|${pnr}` });
         const ids = (bundle.entry ?? []).map(e => e.resource.id).filter(Boolean) as string[];
         for (const id of ids) {
-          if (!patientRecords.some(p => p.fhirId === id)) {
-            patientRecords.push({ fhirId: id, pnr });
-          }
+          if (!patientRecords.some(p => p.fhirId === id)) patientRecords.push({ fhirId: id, pnr });
         }
         console.log(ids.length > 0 ? `found ${ids.join(", ")}` : "not found");
       } catch (err: unknown) {
@@ -495,32 +521,31 @@ async function main() {
   }
 
   if (patientRecords.length === 0) {
-    console.warn("\nNo patients found. Patient-linked resources will be skipped.\n");
+    console.warn("\nNo patients resolved. Patient-linked resources will be skipped.\n");
   } else {
     console.log(`\nPatient IDs: ${patientRecords.map(p => p.fhirId).join(", ")}\n`);
   }
 
-  // ── Step 2: fetch resources per type ─────────────────────────────────────
+  // ── Step 2: fetch resources ────────────────────────────────────────────────
 
   const collected: Record<string, FhirResource[]> = {};
   for (const rt of cfg.resourceTypes) collected[rt] = [];
 
   for (const rt of cfg.resourceTypes) {
-    const isStandalone = STANDALONE_TYPES.has(rt);
-
     if (SKIP_TYPES.has(rt)) {
-      console.log(`  ${rt} ... SKIP (not reachable via COS open FHIR — see SKIP_TYPES in extract.ts)`);
+      console.log(`  ${rt} ... SKIP (not reachable via COS — see SKIP_TYPES)`);
       continue;
     }
 
+    const isStandalone = STANDALONE_TYPES.has(rt);
+
     if (rt === "Patient") {
-      // COS does not support listing Patient; read each by direct GET /Patient/{id}.
+      // COS does not support listing Patient; read each resource individually.
       for (const { fhirId } of patientRecords) {
         process.stdout.write(`  Patient/${fhirId} ... `);
         try {
           const token = await getToken();
-          const url = `${cfg.fhirBaseUrl.replace(/\/$/, "")}/Patient/${fhirId}`;
-          const res = await fetch(url, {
+          const res = await fetch(`${cfg.fhirBaseUrl.replace(/\/$/, "")}/Patient/${fhirId}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Ocp-Apim-Subscription-Key": cfg.apiKey,
@@ -531,7 +556,7 @@ async function main() {
             collected[rt].push(await res.json() as FhirResource);
             console.log("found");
           } else {
-            console.warn(`WARN: ${res.status}`);
+            console.warn(`WARN: ${res.status} ${await res.text()}`);
           }
         } catch (err: unknown) {
           console.warn(`WARN: ${(err as Error).message}`);
@@ -548,10 +573,10 @@ async function main() {
           console.warn(`WARN: ${(err as Error).message}`);
         }
       }
-    } else if (isStandalone && patientRecords.length === 0) {
+    } else if (isStandalone) {
       process.stdout.write(`  ${rt} ... `);
       try {
-        const resources = await fetchResources(rt);
+        const resources = await fetchByGet(rt);
         collected[rt].push(...resources);
         console.log(`${resources.length} found`);
       } catch (err: unknown) {
@@ -562,7 +587,7 @@ async function main() {
     collected[rt] = dedup(collected[rt]);
   }
 
-  // ── Step 3: write bundles ─────────────────────────────────────────────────
+  // ── Step 3: write bundles ──────────────────────────────────────────────────
 
   console.log("");
   let totalFiles = 0;
