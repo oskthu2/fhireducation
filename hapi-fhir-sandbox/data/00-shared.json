@@ -1,0 +1,85 @@
+{
+  "resourceType": "Bundle",
+  "type": "transaction",
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "org-slso",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/organization-base-inera"] },
+        "identifier": [{ "system": "http://terminology.hl7.se/sid/se-hsaid-organization", "value": "SE2321000016-000E" }],
+        "active": true,
+        "name": "Stockholms läns sjukvårdsområde"
+      },
+      "request": { "method": "PUT", "url": "Organization/org-slso" }
+    },
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "org-unit-lung",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/organization-base-inera"] },
+        "identifier": [{ "system": "http://terminology.hl7.se/sid/se-hsaid-careunit", "value": "SE2321000016-AB01" }],
+        "active": true,
+        "name": "Lungmedicinska mottagningen, Danderyds sjukhus",
+        "partOf": { "reference": "Organization/org-slso" }
+      },
+      "request": { "method": "PUT", "url": "Organization/org-unit-lung" }
+    },
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "org-unit-primary",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/organization-base-inera"] },
+        "identifier": [{ "system": "http://terminology.hl7.se/sid/se-hsaid-careunit", "value": "SE2321000016-AB02" }],
+        "active": true,
+        "name": "Kungsholmens vårdcentral",
+        "partOf": { "reference": "Organization/org-slso" }
+      },
+      "request": { "method": "PUT", "url": "Organization/org-unit-primary" }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "practitioner-lindqvist",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/practitioner-base-inera"] },
+        "identifier": [{ "system": "http://terminology.hl7.se/sid/se-hsa-personalid", "value": "SE2321000016-AL7890" }],
+        "name": [{ "use": "official", "family": "Lindqvist", "given": ["Anna"], "prefix": ["Dr."] }]
+      },
+      "request": { "method": "PUT", "url": "Practitioner/practitioner-lindqvist" }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "practitioner-berg",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/practitioner-base-inera"] },
+        "identifier": [{ "system": "http://terminology.hl7.se/sid/se-hsa-personalid", "value": "SE2321000016-PB4512" }],
+        "name": [{ "use": "official", "family": "Berg", "given": ["Per"], "prefix": ["Dr."] }]
+      },
+      "request": { "method": "PUT", "url": "Practitioner/practitioner-berg" }
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "role-lindqvist-lung",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/practitioner-role-base-inera"] },
+        "practitioner": { "reference": "Practitioner/practitioner-lindqvist" },
+        "organization": { "reference": "Organization/org-unit-lung" },
+        "code": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "309343006", "display": "Physician" }] }],
+        "specialty": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "418112009", "display": "Pulmonology" }] }]
+      },
+      "request": { "method": "PUT", "url": "PractitionerRole/role-lindqvist-lung" }
+    },
+    {
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "role-berg-primary",
+        "meta": { "profile": ["https://inera.se/fhir/core/StructureDefinition/practitioner-role-base-inera"] },
+        "practitioner": { "reference": "Practitioner/practitioner-berg" },
+        "organization": { "reference": "Organization/org-unit-primary" },
+        "code": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "309343006", "display": "Physician" }] }],
+        "specialty": [{ "coding": [{ "system": "http://snomed.info/sct", "code": "419192003", "display": "Internal medicine" }] }]
+      },
+      "request": { "method": "PUT", "url": "PractitionerRole/role-berg-primary" }
+    }
+  ]
+}
