@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FHIR Sandbox</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #f0f2f5; color: #333; }
+
+    header {
+      background: #1a4e7a;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    header h1 { font-size: 1.1rem; white-space: nowrap; }
+    header label { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; }
+    #server-url {
+      flex: 1;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      min-width: 0;
+    }
+    #server-status { font-size: 0.8rem; white-space: nowrap; }
+
+    .layout { display: flex; height: calc(100vh - 46px); overflow: hidden; }
+
+    .sidebar {
+      width: 400px;
+      min-width: 300px;
+      background: white;
+      border-right: 1px solid #dde;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 2px solid #e8eaf0;
+      background: #f8f9fc;
+      flex-shrink: 0;
+    }
+    .tab {
+      padding: 10px 14px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .tab:hover { color: #1a4e7a; }
+    .tab.active { color: #1a4e7a; border-bottom-color: #1a4e7a; }
+
+    .pane { padding: 16px; overflow-y: auto; flex: 1; }
+
+    .fg {
+      margin-bottom: 14px;
+    }
+    .fg label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 5px;
+    }
+    input[type=text], select, textarea {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #cdd;
+      border-radius: 5px;
+      font-size: 0.88rem;
+      background: #fafbfc;
+      transition: border-color 0.15s;
+    }
+    input[type=text]:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1a4e7a;
+      background: white;
+    }
+    textarea {
+      height: 180px;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      font-size: 0.8rem;
+      resize: vertical;
+    }
+
+    .rt-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+    .rt-chip {
+      padding: 2px 7px;
+      font-size: 0.7rem;
+      background: #eef2fa;
+      border: 1px solid #c8d8f0;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #2255aa;
+    }
+    .rt-chip:hover { background: #d8e8f8; }
+
+    .btn {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    .btn-primary { background: #1a4e7a; color: white; }
+    .btn-primary:hover { background: #153e62; }
+    .btn-danger { background: #c0392b; color: white; }
+    .btn-danger:hover { background: #a93226; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .GET    { background: #4a90d9; color: white; }
+    .POST   { background: #27ae60; color: white; }
+    .PUT    { background: #e67e22; color: white; }
+    .DELETE { background: #e74c3c; color: white; }
+
+    /* Response panel */
+    .response {
+      flex: 1;
+      background: #1e2227;
+      color: #abb2bf;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .res-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      background: #252930;
+      border-bottom: 1px solid #353a42;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+    }
+    .res-url {
+      color: #788;
+      word-break: break-all;
+      flex: 1;
+      min-width: 0;
+    }
+    .status {
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .s2xx { background: #1b4332; color: #6fcf97; }
+    .s4xx, .s5xx { background: #4a1010; color: #e57373; }
+    .s0   { background: #333; color: #aaa; }
+    .elapsed { color: #556; font-size: 0.73rem; }
+
+    .res-body {
+      padding: 14px;
+      overflow: auto;
+      flex: 1;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      font-size: 0.8rem;
+      line-height: 1.5;
+      white-space: pre;
+    }
+    .empty { color: #445; text-align: center; padding: 60px 20px; font-size: 0.9rem; }
+
+    /* JSON syntax highlighting */
+    .j-key    { color: #61afef; }
+    .j-str    { color: #98c379; }
+    .j-num    { color: #d19a66; }
+    .j-bool   { color: #c678dd; }
+    .j-null   { color: #c678dd; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>FHIR Sandbox</h1>
+  <label>Server</label>
+  <input id="server-url" type="text" value="http://localhost:8080/fhir" />
+  <span id="server-status">&#9679; checking...</span>
+</header>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="tabs">
+      <div class="tab active" data-tab="search">Search</div>
+      <div class="tab" data-tab="read">Read</div>
+      <div class="tab" data-tab="create">Create</div>
+      <div class="tab" data-tab="update">Update</div>
+      <div class="tab" data-tab="delete">Delete</div>
+      <div class="tab" data-tab="raw">Raw</div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="pane" id="pane-search">
+      <div class="fg">
+        <label>Resource Type</label>
+        <input id="s-type" type="text" value="Patient" />
+        <div class="rt-grid" id="rt-search"></div>
+      </div>
+      <div class="fg">
+        <label>Search parameters (e.g. name=Smith&amp;_count=10)</label>
+        <input id="s-params" type="text" placeholder="_count=20" />
+      </div>
+      <button class="btn btn-primary" onclick="doSearch()">
+        <span class="badge GET">GET</span>Search
+      </button>
+    </div>
+
+    <!-- READ -->
+    <div class="pane" id="pane-read" style="display:none">
+      <div class="fg">
+        <label>Resource Type</label>
+        <input id="r-type" type="text" value="Patient" />
+        <div class="rt-grid" id="rt-read"></div>
+      </div>
+      <div class="fg">
+        <label>Resource ID</label>
+        <input id="r-id" type="text" placeholder="e.g. patient-001" />
+      </div>
+      <button class="btn btn-primary" onclick="doRead()">
+        <span class="badge GET">GET</span>Read
+      </button>
+    </div>
+
+    <!-- CREATE -->
+    <div class="pane" id="pane-create" style="display:none">
+      <div class="fg">
+        <label>Resource Type</label>
+        <input id="c-type" type="text" value="Patient" />
+        <div class="rt-grid" id="rt-create"></div>
+      </div>
+      <div class="fg">
+        <label>Resource JSON</label>
+        <textarea id="c-body" placeholder='{&#10;  "resourceType": "Patient",&#10;  "name": [{"family": "Smith", "given": ["John"]}]&#10;}'></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="doCreate()">
+        <span class="badge POST">POST</span>Create
+      </button>
+    </div>
+
+    <!-- UPDATE -->
+    <div class="pane" id="pane-update" style="display:none">
+      <div class="fg">
+        <label>Resource Type</label>
+        <input id="u-type" type="text" value="Patient" />
+        <div class="rt-grid" id="rt-update"></div>
+      </div>
+      <div class="fg">
+        <label>Resource ID</label>
+        <input id="u-id" type="text" placeholder="e.g. patient-001" />
+      </div>
+      <div class="fg">
+        <label>Resource JSON</label>
+        <textarea id="u-body"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="doUpdate()">
+        <span class="badge PUT">PUT</span>Update
+      </button>
+    </div>
+
+    <!-- DELETE -->
+    <div class="pane" id="pane-delete" style="display:none">
+      <div class="fg">
+        <label>Resource Type</label>
+        <input id="d-type" type="text" value="Patient" />
+        <div class="rt-grid" id="rt-delete"></div>
+      </div>
+      <div class="fg">
+        <label>Resource ID</label>
+        <input id="d-id" type="text" placeholder="e.g. patient-001" />
+      </div>
+      <button class="btn btn-danger" onclick="doDelete()">
+        <span class="badge DELETE">DEL</span>Delete
+      </button>
+    </div>
+
+    <!-- RAW -->
+    <div class="pane" id="pane-raw" style="display:none">
+      <div class="fg">
+        <label>Method</label>
+        <select id="raw-method">
+          <option>GET</option>
+          <option>POST</option>
+          <option>PUT</option>
+          <option>DELETE</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Path (appended to base URL)</label>
+        <input id="raw-path" type="text" placeholder="/Patient?name=Smith" />
+      </div>
+      <div class="fg">
+        <label>Body (for POST / PUT)</label>
+        <textarea id="raw-body"></textarea>
+      </div>
+      <button class="btn btn-primary" onclick="doRaw()">Execute</button>
+    </div>
+  </div>
+
+  <div class="response" id="response">
+    <div class="empty">Make a request to see the response here.</div>
+  </div>
+</div>
+
+<script>
+const RESOURCE_TYPES = [
+  'Patient','Practitioner','Organization','Encounter','Observation',
+  'Condition','Medication','MedicationRequest','AllergyIntolerance','Procedure',
+  'DiagnosticReport','CarePlan','ServiceRequest','Coverage','Immunization',
+  'Location','Device','Specimen','RelatedPerson','CareTeam','Bundle'
+];
+
+function populateRTGrid(gridId, inputId) {
+  const grid = document.getElementById(gridId);
+  RESOURCE_TYPES.forEach(rt => {
+    const chip = document.createElement('span');
+    chip.className = 'rt-chip';
+    chip.textContent = rt;
+    chip.onclick = () => { document.getElementById(inputId).value = rt; };
+    grid.appendChild(chip);
+  });
+}
+const rtMappings = [
+  ['rt-search','s-type'], ['rt-read','r-type'],
+  ['rt-create','c-type'], ['rt-update','u-type'], ['rt-delete','d-type']
+];
+rtMappings.forEach(([g,i]) => populateRTGrid(g, i));
+
+// Tab switching
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
+    tab.classList.add('active');
+    document.getElementById('pane-' + tab.dataset.tab).style.display = '';
+  });
+});
+
+// Server status check
+async function checkServer() {
+  const base = document.getElementById('server-url').value.replace(/\/$/, '');
+  const el = document.getElementById('server-status');
+  try {
+    const r = await fetch(base + '/metadata');
+    el.textContent = r.ok ? '● Online' : '● Error ' + r.status;
+    el.style.color = r.ok ? '#6fcf97' : '#e57373';
+  } catch {
+    el.textContent = '● Offline';
+    el.style.color = '#e57373';
+  }
+}
+checkServer();
+setInterval(checkServer, 15000);
+document.getElementById('server-url').addEventListener('change', checkServer);
+
+function base() {
+  return document.getElementById('server-url').value.replace(/\/$/, '');
+}
+
+async function req(method, url, body) {
+  const panel = document.getElementById('response');
+  panel.innerHTML = '<div class="res-header"><span style="color:#667">Loading...</span></div>';
+  const opts = {
+    method,
+    headers: { 'Content-Type': 'application/fhir+json', 'Accept': 'application/fhir+json' }
+  };
+  if (body) opts.body = body;
+  const t0 = Date.now();
+  try {
+    const r = await fetch(url, opts);
+    const elapsed = Date.now() - t0;
+    let text = await r.text();
+    let formatted;
+    try {
+      formatted = syntaxHighlight(JSON.stringify(JSON.parse(text), null, 2));
+    } catch {
+      formatted = escHtml(text);
+    }
+    const sc = r.status < 300 ? 's2xx' : r.status < 500 ? 's4xx' : 's5xx';
+    panel.innerHTML =
+      `<div class="res-header">
+        <span class="badge ${method}">${method}</span>
+        <span class="res-url">${escHtml(url)}</span>
+        <span class="status ${sc}">${r.status} ${r.statusText}</span>
+        <span class="elapsed">${elapsed}ms</span>
+      </div>
+      <div class="res-body">${formatted}</div>`;
+  } catch (e) {
+    panel.innerHTML =
+      `<div class="res-header"><span class="status s4xx">Network Error</span></div>
+       <div class="res-body" style="color:#e57373">${escHtml(e.message)}</div>`;
+  }
+}
+
+function syntaxHighlight(json) {
+  return escHtml(json).replace(
+    /(&quot;(\\u[a-fA-F0-9]{4}|\\[^u]|[^\\&])*&quot;(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+    m => {
+      let cls = 'j-num';
+      if (m.startsWith('&quot;')) cls = m.endsWith(':') ? 'j-key' : 'j-str';
+      else if (m === 'true' || m === 'false') cls = 'j-bool';
+      else if (m === 'null') cls = 'j-null';
+      return `<span class="${cls}">${m}</span>`;
+    }
+  );
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function doSearch() {
+  const type   = document.getElementById('s-type').value.trim();
+  const params = document.getElementById('s-params').value.trim();
+  req('GET', base() + '/' + type + (params ? '?' + params : ''));
+}
+function doRead() {
+  const type = document.getElementById('r-type').value.trim();
+  const id   = document.getElementById('r-id').value.trim();
+  req('GET', base() + '/' + type + (id ? '/' + id : ''));
+}
+function doCreate() {
+  const type = document.getElementById('c-type').value.trim();
+  req('POST', base() + '/' + type, document.getElementById('c-body').value);
+}
+function doUpdate() {
+  const type = document.getElementById('u-type').value.trim();
+  const id   = document.getElementById('u-id').value.trim();
+  req('PUT', base() + '/' + type + '/' + id, document.getElementById('u-body').value);
+}
+function doDelete() {
+  const type = document.getElementById('d-type').value.trim();
+  const id   = document.getElementById('d-id').value.trim();
+  if (!confirm('Delete ' + type + '/' + id + '?')) return;
+  req('DELETE', base() + '/' + type + '/' + id);
+}
+function doRaw() {
+  const method = document.getElementById('raw-method').value;
+  const path   = document.getElementById('raw-path').value;
+  const body   = document.getElementById('raw-body').value;
+  req(method, base() + path, body || undefined);
+}
+</script>
+</body>
+</html>
