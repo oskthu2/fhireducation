@@ -4,7 +4,8 @@ param(
   [string]$IgFolder = "test-ig",
   [ValidateSet("start", "sushi", "publisher", "sushi-publisher", "stop")]
   [string]$Mode = "start",
-  [string]$ContainerName = "ig-publisher-cli"
+  [string]$ContainerName = "ig-publisher-cli",
+  [string]$EnvFile = ".env.fhir"
 )
 
 $ErrorActionPreference = "Stop"
@@ -12,6 +13,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $ComposeFile = Join-Path $RepoRoot "docker-compose.yml"
 $IgPath = Join-Path $RepoRoot $IgFolder
+$EnvFilePath = Join-Path $RepoRoot $EnvFile
 $KeepAliveCommand = "tail -f /dev/null"
 
 function Invoke-DockerCommand {
@@ -55,14 +57,66 @@ function Invoke-PublisherCommand {
   }
 }
 
+function Get-FhirVersion {
+  param([string]$Path)
+
+  $rawValue = $null
+  foreach ($line in Get-Content $Path) {
+    $trimmed = $line.Trim()
+    if ($trimmed -eq "" -or $trimmed.StartsWith("#")) {
+      continue
+    }
+    $parts = $trimmed -split "=", 2
+    if ($parts.Count -eq 2 -and $parts[0].Trim() -eq "FHIR_VERSION") {
+      $rawValue = $parts[1].Trim()
+      break
+    }
+  }
+
+  if (-not $rawValue) {
+    throw "FHIR_VERSION is missing in env file '$Path'."
+  }
+
+  switch ($rawValue.ToLowerInvariant()) {
+    "v4" { return "4.0.1" }
+    "v5" { return "5.0.0" }
+    "v6" { return "6.0.0-ballot3" }
+    default { return $rawValue }
+  }
+}
+
+function Set-IgFhirVersion {
+  param(
+    [string]$SushiConfigPath,
+    [string]$FhirVersion
+  )
+
+  if (-not (Test-Path $SushiConfigPath)) {
+    throw "Could not find sushi-config.yaml at path: $SushiConfigPath"
+  }
+
+  $content = Get-Content -Raw $SushiConfigPath
+  $updated = [regex]::Replace($content, "(?m)^fhirVersion:\s*.*$", "fhirVersion: $FhirVersion")
+  Set-Content -Path $SushiConfigPath -Value $updated
+}
+
 if ($Mode -ne "stop" -and -not (Test-Path $IgPath)) {
   throw "Could not find IG folder '$IgFolder' at path: $IgPath"
+}
+
+if ($Mode -ne "stop" -and -not (Test-Path $EnvFilePath)) {
+  throw "Could not find env file '$EnvFile' at path: $EnvFilePath"
+}
+
+if ($Mode -ne "stop") {
+  $selectedFhirVersion = Get-FhirVersion -Path $EnvFilePath
+  Set-IgFhirVersion -SushiConfigPath (Join-Path $IgPath "sushi-config.yaml") -FhirVersion $selectedFhirVersion
 }
 
 switch ($Mode) {
   "start" {
     Invoke-DockerCommand -Description "docker compose build ig-publisher" -Command {
-      docker compose -f $ComposeFile build ig-publisher
+      docker compose --env-file $EnvFilePath -f $ComposeFile build ig-publisher
     }
 
     if (Test-ContainerExists -Name $ContainerName) {
@@ -72,7 +126,7 @@ switch ($Mode) {
     }
 
     Invoke-DockerCommand -Description "docker compose run (start alive container)" -Command {
-      docker compose -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint $KeepAliveCommand ig-publisher | Out-Null
+      docker compose --env-file $EnvFilePath -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint $KeepAliveCommand ig-publisher | Out-Null
     }
 
     Write-Host "Container '$ContainerName' is running and mounted to /usr/src/ig."
