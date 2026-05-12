@@ -4,9 +4,20 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.ig-publisher
+    env_file:
+      - ./.env.fhir
     volumes:
       - ./test-ig:/usr/src/ig
       - ig-publisher-fhir-cache:/home/igpublisher/.fhir
+  test-client:
+    image: fhir-test-client:test
+    build:
+      context: .
+      dockerfile: Dockerfile.test-client
+    env_file:
+      - ./.env.fhir
+    ports:
+      - "${TEST_CLIENT_PORT:-8080}:80"
 
 volumes:
   ig-publisher-fhir-cache:
