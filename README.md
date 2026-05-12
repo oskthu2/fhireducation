@@ -35,6 +35,15 @@ Repot innehåller nu Docker-konfiguration för att bygga en lokal IG Publisher-i
 som laddar ner senaste `publisher.jar` från HL7:s officiella release, och kör exempel-IG:n lokalt.
 Konfigurationen använder också en persistent Docker-volume för `~/.fhir`, så paket/terminologi-cache återanvänds mellan körningar.
 
+FHIR-version styrs via env-filen i repo-roten:
+
+```powershell
+# Tillåtna värden: v4, v5, v6
+notepad .\.env.fhir
+```
+
+`FHIR_VERSION` används både för IG-byggkedjan och den lokala test-klienten/testdata.
+
 Kör från repo-roten:
 
 ```powershell
@@ -47,7 +56,7 @@ Om ni vill köra kommandona manuellt:
 ```powershell
 cd $HOME\fhireducation\fhireducation
 docker compose build ig-publisher
-docker compose run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
+docker compose --env-file .\.env.fhir run --volume "${PWD}\test-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
 ```
 
 > `--rm` är borttaget så containern ligger kvar efter körningen.
@@ -99,7 +108,7 @@ Via script:
 Manuellt via Docker:
 
 ```powershell
-docker compose run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
+docker compose --env-file .\.env.fhir run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
 ```
 
 ### Endast IG Publisher
@@ -113,7 +122,7 @@ Via script:
 Manuellt via Docker:
 
 ```powershell
-docker compose run --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
+docker compose --env-file .\.env.fhir run --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher -ig /usr/src/ig/ig.ini
 ```
 
 ### SUSHI + IG Publisher
@@ -130,6 +139,19 @@ Manuellt via Docker (två steg):
 2. Kör sedan "Endast IG Publisher"
 
 > Varje ny IG-mapp behöver en `ig.ini` i mappens rot som pekar på rätt `ImplementationGuide-*.json`.
+
+## Lokal test-klient med versionsstyrd testdata
+
+Starta test-klienten:
+
+```powershell
+cd $HOME\fhireducation\fhireducation
+docker compose --env-file .\.env.fhir up --build -d test-client
+```
+
+Öppna sedan `http://localhost:8080` (eller porten i `TEST_CLIENT_PORT` i `.env.fhir`).
+
+Sidan visar vald `FHIR_VERSION` och laddar motsvarande testdata (`test-data/v4|v5|v6`).
 
 ## Resultat
 

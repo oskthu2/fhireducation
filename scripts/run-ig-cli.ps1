@@ -4,7 +4,8 @@ param(
   [string]$IgFolder = "test-ig",
   [ValidateSet("start", "sushi", "publisher", "sushi-publisher", "stop")]
   [string]$Mode = "start",
-  [string]$ContainerName = "ig-publisher-cli"
+  [string]$ContainerName = "ig-publisher-cli",
+  [string]$EnvFile = ".env.fhir"
 )
 
 $ErrorActionPreference = "Stop"
@@ -12,7 +13,10 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Split-Path -Parent $PSScriptRoot
 $ComposeFile = Join-Path $RepoRoot "docker-compose.yml"
 $IgPath = Join-Path $RepoRoot $IgFolder
+$EnvFilePath = Join-Path $RepoRoot $EnvFile
 $KeepAliveCommand = "tail -f /dev/null"
+
+. (Join-Path $PSScriptRoot "fhir-version-utils.ps1")
 
 function Invoke-DockerCommand {
   param(
@@ -59,10 +63,19 @@ if ($Mode -ne "stop" -and -not (Test-Path $IgPath)) {
   throw "Could not find IG folder '$IgFolder' at path: $IgPath"
 }
 
+if ($Mode -ne "stop" -and -not (Test-Path $EnvFilePath)) {
+  throw "Could not find env file '$EnvFile' at path: $EnvFilePath"
+}
+
+if ($Mode -ne "stop") {
+  $selectedFhirVersion = Get-FhirVersionFromEnvFile -Path $EnvFilePath
+  Set-IgFhirVersionInSushiConfig -SushiConfigPath (Join-Path $IgPath "sushi-config.yaml") -FhirVersion $selectedFhirVersion
+}
+
 switch ($Mode) {
   "start" {
     Invoke-DockerCommand -Description "docker compose build ig-publisher" -Command {
-      docker compose -f $ComposeFile build ig-publisher
+      docker compose --env-file $EnvFilePath -f $ComposeFile build ig-publisher
     }
 
     if (Test-ContainerExists -Name $ContainerName) {
@@ -72,7 +85,7 @@ switch ($Mode) {
     }
 
     Invoke-DockerCommand -Description "docker compose run (start alive container)" -Command {
-      docker compose -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint $KeepAliveCommand ig-publisher | Out-Null
+      docker compose --env-file $EnvFilePath -f $ComposeFile run -d --name $ContainerName --volume "${IgPath}:/usr/src/ig" --entrypoint $KeepAliveCommand ig-publisher | Out-Null
     }
 
     Write-Host "Container '$ContainerName' is running and mounted to /usr/src/ig."
