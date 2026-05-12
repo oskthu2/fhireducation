@@ -39,7 +39,7 @@ FHIR-version styrs via env-filen i repo-roten:
 
 ```powershell
 # Tillåtna värden: v4, v5, v6
-notepad .\env.fhir
+notepad .\.env.fhir
 ```
 
 `FHIR_VERSION` används både för IG-byggkedjan och den lokala test-klienten/testdata.
@@ -108,7 +108,7 @@ Via script:
 Manuellt via Docker:
 
 ```powershell
-docker compose run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
+docker compose --env-file .\.env.fhir run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --out /usr/src/ig /usr/src/ig
 ```
 
 ### Endast IG Publisher

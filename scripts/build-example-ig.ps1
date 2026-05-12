@@ -60,7 +60,9 @@ function Set-IgFhirVersion {
 
   $content = Get-Content -Raw $SushiConfigPath
   $updated = [regex]::Replace($content, "(?m)^fhirVersion:\s*.*$", "fhirVersion: $FhirVersion")
-  Set-Content -Path $SushiConfigPath -Value $updated
+  if ($updated -ne $content) {
+    Set-Content -Path $SushiConfigPath -Value $updated -NoNewline
+  }
 }
 
 $selectedFhirVersion = Get-FhirVersion -Path $EnvFilePath
