@@ -83,6 +83,36 @@ Stoppa containern när ni är klara:
 Exempel: om ni har en ny IG-mapp `min-nya-ig` i repo-roten, bredvid `test-ig`.  
 Om ni följt stegen ovan blir det normalt: `$HOME\fhireducation\fhireducation\min-nya-ig`.
 
+### Skapa en ny IG med SUSHI init
+
+Skapa mappen och initiera en tom IG-struktur med `sushi --init`:
+
+```powershell
+cd $HOME\fhireducation\fhireducation
+mkdir min-nya-ig
+.\scripts\run-ig-cli.ps1 -Mode start -IgFolder min-nya-ig
+```
+
+Kör sedan `sushi --init` inne i containern (svarar interaktivt på några frågor om namn, id och FHIR-version):
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode shell -IgFolder min-nya-ig
+# Inne i containern:
+sushi --init /usr/src/ig
+exit
+```
+
+Alternativt manuellt via Docker:
+
+```powershell
+docker compose --env-file .\.env.fhir run --entrypoint "" --volume "$HOME\fhireducation\fhireducation\min-nya-ig:/usr/src/ig" ig-publisher sushi --init /usr/src/ig
+```
+
+Detta skapar grundstrukturen (`sushi-config.yaml`, `input/fsh/`, `ig.ini` m.m.) i `min-nya-ig`.  
+Därefter kan ni bygga IG:n med scripten nedan.
+
+### Bygga en befintlig IG-mapp
+
 Bygg image en gång från repo-roten:
 
 ```powershell
