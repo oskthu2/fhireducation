@@ -181,28 +181,9 @@ Manuellt via Docker (två steg):
 
 > Varje ny IG-mapp behöver en `ig.ini` i mappens rot som pekar på rätt `ImplementationGuide-*.json`.
 
-## Lokal test-klient med versionsstyrd testdata
+## HAPI FHIR Sandbox
 
-Det finns två separata miljöer för att utforska FHIR lokalt:
-
-### 1. Enkel test-klient (utan FHIR-server)
-
-En statisk webbsida som visar exempeldata direkt från filerna i `test-data/`. Ingen FHIR-server krävs.
-
-```powershell
-cd $HOME\fhireducation\fhireducation
-docker compose --env-file .\.env.fhir up --build -d test-client
-```
-
-Öppna sedan `http://localhost:8080` (eller porten i `TEST_CLIENT_PORT` i `.env.fhir`).
-
-Sidan visar vald `FHIR_VERSION` och laddar motsvarande testdata (`test-data/v4|v5|v6`).
-
-### 2. HAPI FHIR Sandbox (med riktig FHIR-server)
-
-En fullständig lokal FHIR-sandlåda med HAPI FHIR-server, fem syntetiska testpatienter och en webb-klient. Stöder R4, R5 och R6.
-
-Se [hapi-fhir-sandbox/README.md](hapi-fhir-sandbox/README.md) för instruktioner.
+För att utforska FHIR mot en riktig lokal server med testpatienter, se [hapi-fhir-sandbox/README.md](hapi-fhir-sandbox/README.md).
 
 ## Resultat
 

@@ -1,8 +1,0 @@
-FROM nginx:1.27-alpine
-
-COPY test-client/index.html.template /usr/share/nginx/html/index.html.template
-COPY test-client/docker-entrypoint.sh /docker-entrypoint.d/40-load-fhir-test-data.sh
-COPY test-data /opt/test-data
-
-RUN sed -i 's/\r//' /docker-entrypoint.d/40-load-fhir-test-data.sh && \
-    chmod +x /docker-entrypoint.d/40-load-fhir-test-data.sh
