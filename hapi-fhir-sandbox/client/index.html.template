@@ -18,6 +18,16 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.3);
     }
     header h1 { font-size: 1.1rem; white-space: nowrap; }
+    .fhir-version-badge {
+      background: #2e7d32;
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
     header label { font-size: 0.8rem; opacity: 0.75; white-space: nowrap; }
     #server-url {
       flex: 1;
@@ -202,8 +212,9 @@
 
 <header>
   <h1>FHIR Sandbox</h1>
+  <span class="fhir-version-badge">FHIR ${FHIR_VERSION}</span>
   <label>Server</label>
-  <input id="server-url" type="text" value="http://localhost:8080/fhir" />
+  <input id="server-url" type="text" value="http://localhost:${FHIR_API_PORT}/fhir" />
   <span id="server-status">&#9679; checking...</span>
 </header>
 

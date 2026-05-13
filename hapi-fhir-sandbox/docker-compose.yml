@@ -3,14 +3,14 @@ services:
     image: hapiproject/hapi:latest
     container_name: hapi-fhir
     ports:
-      - "8080:8080"
+      - "${FHIR_API_PORT:-8080}:8080"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:h2:mem:hapi;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE"
       SPRING_DATASOURCE_USERNAME: sa
       SPRING_DATASOURCE_PASSWORD: ""
       SPRING_DATASOURCE_DRIVERCLASSNAME: org.h2.Driver
       SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: ca.uhn.fhir.jpa.model.dialect.HapiFhirH2Dialect
-      HAPI_FHIR_FHIR_VERSION: R4
+      HAPI_FHIR_FHIR_VERSION: "${FHIR_VERSION:-R4}"
       HAPI_FHIR_ALLOW_MULTIPLE_DELETE: "true"
 
   fhir-loader:
@@ -25,15 +25,20 @@ services:
       - ./data:/data:ro
     environment:
       FHIR_BASE_URL: "http://hapi-fhir:8080/fhir"
+      FHIR_VERSION: "${FHIR_VERSION:-R4}"
     restart: "no"
 
   fhir-client:
     image: nginx:alpine
     container_name: fhir-client
     ports:
-      - "3000:80"
+      - "${CLIENT_PORT:-3000}:80"
+    command: ["/bin/sh", "-c", "envsubst '$$FHIR_VERSION $$FHIR_API_PORT' < /templates/index.html.template > /usr/share/nginx/html/index.html && nginx -g 'daemon off;'"]
+    environment:
+      FHIR_VERSION: "${FHIR_VERSION:-R4}"
+      FHIR_API_PORT: "${FHIR_API_PORT:-8080}"
     volumes:
-      - ./client/index.html:/usr/share/nginx/html/index.html:ro
+      - ./client/index.html.template:/templates/index.html.template:ro
       - ./client/nginx.conf:/etc/nginx/conf.d/default.conf:ro
     depends_on:
       - hapi-fhir

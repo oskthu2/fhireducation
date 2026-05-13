@@ -4,14 +4,27 @@ En lokal FHIR R4-sandlåda med fem syntetiska testpatienter som följer [Inera C
 
 ## Kom igång
 
+Kopiera env-filen och anpassa vid behov:
+
+```bash
+# Standardvärden finns i .env – redigera den för att ändra port eller FHIR-version
+# Tillåtna värden för FHIR_VERSION: R4, R5
+# (R6 är inte stabilt stödd i HAPI ännu)
+notepad .env   # eller valfri editor
+```
+
+Starta sedan sandlådan:
+
 ```bash
 bash start.sh
 ```
 
 | Tjänst | URL |
 |--------|-----|
-| HAPI FHIR API | http://localhost:8080/fhir |
-| Webb-klient | http://localhost:3000 |
+| HAPI FHIR API | http://localhost:8080/fhir (eller `FHIR_API_PORT` i `.env`) |
+| Webb-klient | http://localhost:3000 (eller `CLIENT_PORT` i `.env`) |
+
+Webb-klienten visar aktiv FHIR-version som en grön badge i headern.
 
 För att starta om med tom databas: `docker compose down && docker compose up -d`
 
@@ -38,14 +51,25 @@ Alla resurser deklarerar relevanta Inera Core-profiler i `meta.profile`.
 
 ## Datafiler
 
+Testdata finns per FHIR-version under `data/r4/`, `data/r5/` och `data/r6/`.
+
+Den aktiva versionen väljs via `FHIR_VERSION` i `.env`.
+
+Huvudsaklig skillnad mellan versioner:
+- **R4**: Använder `MedicationStatement`
+- **R5**: Använder `MedicationUsage` (resursen bytte namn i R5) med uppdaterade fältnamn (`medication.concept`, `reason` som CodeableReference)
+- **R6**: Samma struktur som R5 (R6 är fortfarande i draft)
+
 ```
 data/
-  00-shared.json          # Organisation, Läkare, Befattning
-  01-arne-arnesson.json   # Patient + Conditions + Meds + Obs + CarePlan
-  02-britta-bjork.json
-  03-clas-carlsson.json
-  04-diana-dahl.json
-  05-erik-eriksson.json   # + AllergyIntolerance + Immunization
+  r4/
+    00-shared.json          # Organisation, Läkare, Befattning
+    01-arne-arnesson.json
+    ...
+  r5/                       # MedicationStatement → MedicationUsage
+    ...
+  r6/                       # Samma som r5
+    ...
 ```
 
 För att ladda om data manuellt:
