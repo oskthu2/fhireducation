@@ -165,6 +165,6 @@ När bygget är klart finns resultatet i mappen `output`.
 
 Öppna gärna hela repot i Visual Studio Code och titta särskilt på:
 
-- `sushi-config.yaml`
-- `input/fsh/profiles.fsh`
-- `input/pagecontent/index.md`
+- `test-ig/sushi-config.yaml`
+- `test-ig/input/fsh/profiles.fsh`
+- `test-ig/input/pagecontent/index.md`

@@ -1,6 +1,6 @@
 # HAPI FHIR Sandbox – Inera Core testdata
 
-En lokal FHIR R4-sandlåda med fem syntetiska testpatienter som följer [Inera Core Implementation Guide](https://inera.se/fhir/core) (se.inera.core v0.2.0).
+En lokal FHIR-sandlåda (R4/R5/R6) med fem syntetiska testpatienter som följer [Inera Core Implementation Guide](https://inera.se/fhir/core) (se.inera.core v0.2.0).
 
 ## Kom igång
 
@@ -8,8 +8,7 @@ Kopiera env-filen och anpassa vid behov:
 
 ```bash
 # Standardvärden finns i .env – redigera den för att ändra port eller FHIR-version
-# Tillåtna värden för FHIR_VERSION: R4, R5
-# (R6 är inte stabilt stödd i HAPI ännu)
+# Tillåtna värden för FHIR_VERSION: R4, R5, R6
 notepad .env   # eller valfri editor
 ```
 
