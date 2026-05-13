@@ -56,8 +56,8 @@ Testdata finns per FHIR-version under `data/r4/`, `data/r5/` och `data/r6/`.
 Den aktiva versionen väljs via `FHIR_VERSION` i `.env`.
 
 Huvudsaklig skillnad mellan versioner:
-- **R4**: Använder `MedicationStatement`
-- **R5**: Använder `MedicationUsage` (resursen bytte namn i R5) med uppdaterade fältnamn (`medication.concept`, `reason` som CodeableReference)
+- **R4**: `MedicationStatement` med `medicationCodeableConcept` och `reasonReference`
+- **R5**: `MedicationStatement` med uppdaterade fältnamn (`medication.concept`, `reason` som CodeableReference) och nya statuskoder
 - **R6**: Samma struktur som R5 (R6 är fortfarande i draft)
 
 ```
@@ -66,7 +66,7 @@ data/
     00-shared.json          # Organisation, Läkare, Befattning
     01-arne-arnesson.json
     ...
-  r5/                       # MedicationStatement → MedicationUsage
+  r5/                       # Uppdaterade fältnamn och statuskoder (R5-spec)
     ...
   r6/                       # Samma som r5
     ...
