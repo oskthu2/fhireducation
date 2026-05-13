@@ -61,6 +61,14 @@ docker compose --env-file .\.env.fhir run --volume "${PWD}\test-ig:/usr/src/ig" 
 
 > `--rm` är borttaget så containern ligger kvar efter körningen.
 
+---
+
+> **Grattis!** 🎉  
+> Nu har du en fungerande SUSHI + IG Publisher på din dator och är redo för utbildningen.  
+> Nedan följer tips på hur du kan bekanta dig vidare med miljön och använda den för lokala byggen av egna IG:ar.
+
+---
+
 ## Håll containern igång för CLI-kommandon
 
 För att köra flera kommandon i samma container (utan att starta om varje gång):
@@ -96,10 +104,13 @@ mkdir min-nya-ig
 Kör sedan `sushi --init` inne i containern (svarar interaktivt på några frågor om namn, id och FHIR-version):
 
 ```powershell
-.\scripts\run-ig-cli.ps1 -Mode shell -IgFolder min-nya-ig
-# Inne i containern:
-sushi --init /usr/src/ig
-exit
+docker exec -it ig-publisher-cli sushi --init /usr/src/ig
+```
+
+Stoppa containern när ni är klara:
+
+```powershell
+.\scripts\run-ig-cli.ps1 -Mode stop
 ```
 
 Alternativt manuellt via Docker:
