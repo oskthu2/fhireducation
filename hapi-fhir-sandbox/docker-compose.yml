@@ -17,7 +17,7 @@ services:
     image: curlimages/curl:latest
     container_name: fhir-loader
     entrypoint: /bin/sh
-    command: /loader/load-data.sh
+    command: ["-c", "tr -d '\\r' < /loader/load-data.sh | sed '1s/^\\xef\\xbb\\xbf//' | sh"]
     depends_on:
       - hapi-fhir
     volumes:
