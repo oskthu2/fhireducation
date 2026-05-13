@@ -1,99 +1,54 @@
-# HAPI FHIR Sandbox
+# HAPI FHIR Sandbox – Inera Core testdata
 
-A local FHIR R4 development environment with:
+En lokal FHIR R4-sandlåda med fem syntetiska testpatienter som följer [Inera Core Implementation Guide](https://inera.se/fhir/core) (se.inera.core v0.2.0).
 
-- **HAPI FHIR** — fully featured FHIR R4 server, in-memory only (data is lost on restart)
-- **FHIR Client** — lightweight browser UI for searching, reading, creating, updating and deleting resources
-- **Data Loader** — automatically loads any FHIR JSON files from `data/` at startup
-- **COS Extractor** — one-shot script to pull real data from Cambio Open Services into `data/`
-
-## Quick Start
+## Kom igång
 
 ```bash
 bash start.sh
 ```
 
-Then open **http://localhost:3000** in your browser.
+| Tjänst | URL |
+|--------|-----|
+| HAPI FHIR API | http://localhost:8080/fhir |
+| Webb-klient | http://localhost:3000 |
 
-> HAPI FHIR takes ~30 seconds to start on the first run while it pulls the image and initialises.
+För att starta om med tom databas: `docker compose down && docker compose up -d`
 
-## Ports
+## Testpatienter
 
-| Service | URL |
-|---------|-----|
-| FHIR Client | http://localhost:3000 |
-| FHIR API | http://localhost:8080/fhir |
-| HAPI Web UI | http://localhost:8080 |
+| # | Namn | PNR | Diagnoser |
+|---|------|-----|-----------|
+| 1 | Arne Arnesson | 19420810-6593 | KOL (J44.1), Hjärtsvikt (I50.0), Diabetes T2 (E11.9), Hypertoni (I10), Förmaksflimmer (I48.0) |
+| 2 | Britta Björk | 19550322-2340 | Reumatoid artrit (M05.8), Diabetes T2 (E11.9), Osteoporos (M81.0), Hypotyreos (E03.9) |
+| 3 | Clas Carlsson | 19751115-1347 | Diabetes T1 (E10.9), Astma (J45.20), Celiaki (K90.0), Hypertoni (I10) |
+| 4 | Diana Dahl | 19890603-2464 | Epilepsi (G40.3), GAD (F41.1), Migrän m aura (G43.1) |
+| 5 | Erik Eriksson | 20050825-1238 | Astma (J45.20), Allergisk rinit (J30.1), Jordnötsallergi |
 
-## Loading Data
+## Datakällor och profiler
 
-Place FHIR JSON files in the `data/` directory before starting. The loader supports:
+- **Diagnoser**: ICD-10 (`http://hl7.org/fhir/sid/icd-10`)
+- **Läkemedel**: ATC (`http://www.whocc.no/atc`)
+- **Lab**: NPU (`urn:oid:1.2.752.108.1`) + LOINC
+- **Vitalparametrar**: LOINC + UCUM
+- **Patientidentifierare**: `http://terminology.hl7.se/sid/se-personnummer`
+- **HSA-id**: `http://terminology.hl7.se/sid/se-hsaid-organization`
 
-- **Transaction / Batch Bundles** — `POST`ed to the base URL
-- **Individual resources** — `POST`ed to `/{ResourceType}`
+Alla resurser deklarerar relevanta Inera Core-profiler i `meta.profile`.
 
-Filenames must end in `.json`. The loader runs once on startup and logs progress:
+## Datafiler
 
+```
+data/
+  00-shared.json          # Organisation, Läkare, Befattning
+  01-arne-arnesson.json   # Patient + Conditions + Meds + Obs + CarePlan
+  02-britta-bjork.json
+  03-clas-carlsson.json
+  04-diana-dahl.json
+  05-erik-eriksson.json   # + AllergyIntolerance + Immunization
+```
+
+För att ladda om data manuellt:
 ```bash
-docker compose logs -f fhir-loader
+docker compose run --rm fhir-loader
 ```
-
-To reload data after making changes:
-
-```bash
-docker compose restart fhir-loader
-```
-
-## Extracting Real Data from COS
-
-The `extractor/` directory contains a TypeScript script that authenticates with
-Cambio Open Services and writes FHIR transaction bundles directly into `data/`.
-It runs as a one-shot Docker container — no local Node.js installation needed.
-
-```bash
-cp extractor/.env.example extractor/.env   # fill in COS credentials
-docker compose run --rm cos-extractor      # fetches resources, writes data/*.json
-bash start.sh                              # starts HAPI + loads the extracted data
-```
-
-Configure what to extract via `extractor/.env`:
-
-| Variable | Default | Description |
-|---|---|---|
-| `EXTRACT_PATIENT_IDENTIFIERS` | — | Comma-separated personnummer to look up |
-| `EXTRACT_PATIENT_IDS` | — | Comma-separated FHIR Patient IDs (skip lookup) |
-| `EXTRACT_RESOURCE_TYPES` | Patient, MedicationRequest, ... | Resource types to fetch (must be supported by COS) |
-| `EXTRACT_COUNT_PER_TYPE` | `50` | Max resources per type |
-
-See `extractor/.env.example` for the full list.
-
-## Stopping
-
-```bash
-docker compose down
-```
-
-All data is in-memory only — stopping the stack clears everything.
-
-## Structure
-
-```
-hapi-fhir-sandbox/
-├── start.sh            # Run this to start everything
-├── docker-compose.yml
-├── data/               # Put your FHIR JSON files here
-├── extractor/          # COS → data/ extraction script (Docker)
-│   ├── Dockerfile
-│   ├── .env.example
-│   ├── extract.ts
-│   └── package.json
-├── loader/
-│   └── load-data.sh    # Startup data loading script
-└── client/
-    ├── index.html      # Web client
-    └── nginx.conf
-```
-
-## Requirements
-
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Mac / Windows) or Docker + Docker Compose (Linux)
