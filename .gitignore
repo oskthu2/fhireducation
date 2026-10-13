@@ -5,5 +5,4 @@ input-cache/
 node_modules/
 fsh-generated/
 target/
-mina-filer/
 __pycache__/
