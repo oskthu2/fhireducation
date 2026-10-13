@@ -1,0 +1,28 @@
+# Presentation
+
+`FHIR-utbildning.pptx` är kursens presentation med 72 bilder för 6 moduler à 50 minuter. Varje bild har
+talarmanus i anteckningsfältet.
+
+| Bilder | Innehåll |
+|--------|----------|
+| 1–6 | Inledning: upplägg, mål, röd tråd och utbildningsmiljön i GitHub |
+| 7–18 | Modul 1 – Läsa en FHIR-resurs |
+| 19–31 | Modul 2 – Profiler och Implementation Guides |
+| 32–42 | Modul 3 – FHIR Shorthand (FSH) |
+| 43–50 | Modul 4 – FHIRPath och invarianter |
+| 51–61 | Modul 5 – Utveckling med HAPI FHIR, API-säkerhet, SMART on FHIR och IHE |
+| 62–72 | Modul 6 – Följsamhet, CapabilityStatement och validering, avslutning |
+
+## Ändra presentationen
+
+Presentationen genereras från `bygg_presentation.py`. Det gör den lätt att hålla i takt med övningarna
+och kodexemplen. Du kan också redigera `.pptx`-filen direkt i PowerPoint, men då skrivs ändringarna över
+nästa gång skriptet körs.
+
+```bash
+pip install python-pptx
+python presentation/bygg_presentation.py
+```
+
+- `bygg_presentation.py` – innehållet: bilder, tabeller, kodexempel och talarmanus
+- `pptx_helpers.py` – layout, färger och hjälpfunktioner (punktlistor, kodrutor, tabeller, övningsbilder)
