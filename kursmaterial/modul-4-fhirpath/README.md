@@ -39,6 +39,12 @@ Se fliken *Constraints* på <https://hl7.org/fhir/R4/patient.html>:
 | `ext-1` | `extension.exists() != value.exists()` | En extension har antingen ett värde eller nästlade extensions, aldrig båda |
 | `dom-6` | `text.\`div\`.exists()` | Resursen bör ha en narrativ (best practice, varning) |
 
+## Övning 4.0 – Läs invarianterna i facit-IG:n (3 min)
+
+Öppna `https://<ditt-konto>.github.io/<repo>/facit/StructureDefinition-EducationPatient.html` och hitta
+invarianterna `edu-pat-1` och `edu-pat-2` (längst ned i Differential Table eller i avsnittet *Constraints*).
+Vad kontrollerar de? Vilken nivå (error/warning) har de? Jämför med `pat-1` i specifikationen.
+
 ## Övning 4.1 – Testa FHIRPath (10 min)
 
 Öppna <https://fhirpath-lab.com/FhirPath> och klistra in

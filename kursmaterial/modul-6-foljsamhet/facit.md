@@ -1,6 +1,6 @@
 # Facit – Modul 6
 
-## Övning 6.1
+## Demo 6.1
 
 1. Fasaden: `kind = instance` (en driftsatt server). Den publika HAPI-servern: `instance`. Båda R4 (`4.0.1`).
 2. `read` och `search-type`. Nej, `create` finns inte. Det syns i CapabilityStatement eftersom fasaden saknar en `@Create`-metod.
@@ -46,3 +46,15 @@ Description: "Patienten ska ha personnummer eller samordningsnummer."
 Expression: "identifier.where(system = 'http://electronichealth.se/identifier/personnummer' or system = 'http://electronichealth.se/identifier/samordningsnummer').exists()"
 Severity: #error
 ```
+
+## Övning 6.4 – Exempel på bra krav
+
+| Krav | Nivå | Verifiering |
+|------|------|-------------|
+| Tjänsten SKA hämta vårdkontakter via FHIR R4 från servrar som uppfyller `EducationServerCapabilities` (`fhir.education.kursig#0.1.0`) | SKA | Kontroll av `instantiates` i varje servers `/metadata` |
+| Alla Encounter-resurser som tjänsten skickar eller visar SKA validera utan fel mot `EducationEncounter` | SKA | FHIR Validator på testdata i CI och vid acceptanstest |
+| Tjänsten SKA visa `period`, `type` och `serviceProvider` (Must Support) och BÖR visa `reasonCode` | SKA/BÖR | Testfall med och utan värden |
+
+Vanliga otydligheter att diskutera: "stödja FHIR" (vilken version, vilka resurser, vilken IG?),
+"hantera Must Support" (betyder det visa, lagra eller bara inte krascha?) och "följa HL7 Sverige"
+(vilken version av basprofilerna?).

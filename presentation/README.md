@@ -1,17 +1,18 @@
 # Presentation
 
-`FHIR-utbildning.pptx` är kursens presentation med 72 bilder för 6 moduler à 50 minuter. Varje bild har
+`FHIR-utbildning.pptx` är kursens presentation med 78 bilder för inledning, 6 moduler à 50 minuter och avslutning. Varje bild har
 talarmanus i anteckningsfältet.
 
 | Bilder | Innehåll |
 |--------|----------|
-| 1–6 | Inledning: upplägg, mål, röd tråd och utbildningsmiljön i GitHub |
+| 1–6 | Inledning (15 min): upplägg, mål, röd tråd och utbildningsmiljön i GitHub |
 | 7–18 | Modul 1 – Läsa en FHIR-resurs |
-| 19–31 | Modul 2 – Profiler och Implementation Guides |
-| 32–42 | Modul 3 – FHIR Shorthand (FSH) |
-| 43–50 | Modul 4 – FHIRPath och invarianter |
-| 51–61 | Modul 5 – Utveckling med HAPI FHIR, API-säkerhet, SMART on FHIR och IHE |
-| 62–72 | Modul 6 – Följsamhet, CapabilityStatement och validering, avslutning |
+| 19–32 | Modul 2 – Profiler och Implementation Guides (inkl. terminologi i praktiken) |
+| 33–44 | Modul 3 – FHIR Shorthand (FSH) (inkl. HL7 Sveriges basprofiler) |
+| 45–52 | Modul 4 – FHIRPath och invarianter |
+| 53–63 | Modul 5 – Utveckling med HAPI FHIR, API-säkerhet, SMART on FHIR och IHE |
+| 64–73 | Modul 6 – Följsamhet, kravställning, CapabilityStatement och validering |
+| 74–78 | Avslutning (15 min): ta hem miljön, resurser |
 
 ## Ändra presentationen
 

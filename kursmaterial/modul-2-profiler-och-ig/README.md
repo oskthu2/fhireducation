@@ -47,6 +47,26 @@ av **diskriminatorn**, här `value` på `system`. Det får konsekvenser:
 - Mottagaren kan inte förlita sig på ordningen (om inte `ordered = true`).
 - Slicing är ett sätt att **beskriva** data. Det skapar ingen ny struktur.
 
+## Terminologibindning i praktiken
+
+En bindning i en profil är bara början. När data valideras används en **terminologiserver** (t.ex. tx.fhir.org,
+eller en nationell/regional server) för att avgöra om en kod är giltig:
+
+| Begrepp | Kort förklaring |
+|---------|-----------------|
+| `$expand` | Räknar fram alla koder i ett ValueSet (som kan vara definierat med regler, t.ex. *alla undertyper till X i SNOMED CT*) |
+| `$validate-code` | Svarar på om en kod finns i ett kodsystem eller ValueSet, och om display-texten stämmer |
+| `required` vid validering | Kod utanför ValueSet:et ger **fel** |
+| `extensible` vid validering | Kod utanför ValueSet:et ger **varning** (validatorn kan inte avgöra om en passande kod fanns). En kod som påstår sig komma från kodsystemet men inte finns där ger **fel** |
+| Versioner | Kodsystem och ValueSets har versioner. SNOMED CT har både version och *edition* (t.ex. svensk edition). Ange version när det spelar roll |
+| Display | Fel display-text för en kod kan ge fel i valideringen (vi såg det själva med ICD-10) |
+
+**Svenska kodverk** du stöter på: SNOMED CT (svensk edition), ICD-10-SE, ATC, NPU, KVÅ samt nationella kodverk
+från Socialstyrelsen och Inera. HL7 Sveriges basprofiler binder t.ex. civilstånd till ett svenskt ValueSet.
+
+Vid kravställning: ange **vilket ValueSet** (canonical URL och version), **vilken styrka**, och **vilken
+terminologiserver** som gäller för validering.
+
 ## Verktyg
 
 | Verktyg | Används till |
@@ -60,16 +80,26 @@ av **diskriminatorn**, här `value` på `system`. Det får konsekvenser:
 
 ## Övning 2.1 – Läs en profil (10 min)
 
-Öppna [`exempel/StructureDefinition-EducationPatient.json`](exempel/StructureDefinition-EducationPatient.json).
-Den innehåller bara **differential**, alltså det profilen ändrar. Det är profilen som vi bygger i modul 3 och 4.
+Öppna profilen **EducationPatient** i **facit-IG:n** på din GitHub Pages-sida:
 
-1. Vilken är profilens canonical URL? Vilken basresurs bygger den på (`baseDefinition`)?
-2. Vilka element har fått en ändrad **kardinalitet**? Från vad till vad (jämför med <https://hl7.org/fhir/R4/patient.html>)?
-3. Vilka element är markerade **Must Support**?
+`https://<ditt-konto>.github.io/<repo>/facit/StructureDefinition-EducationPatient.html`
+
+(Facit-IG:n är lösningen efter modul 6, alltså den profil vi själva bygger i modul 3 och 4. Den publiceras
+automatiskt av arbetsflödet *Bygg IG*. Saknas den: *Actions → Bygg IG → Run workflow*.)
+
+Använd flikarna **Differential Table**, **Snapshot Table** och **Key Elements Table** och jämför med
+basresursen på <https://hl7.org/fhir/R4/patient.html>.
+
+1. Vilken är profilens canonical URL? Vilken basresurs bygger den på?
+2. Vilka element har fått en ändrad **kardinalitet**? Från vad till vad?
+3. Vilka element är markerade **Must Support**? I vilken flik ser du det tydligast?
 4. Vilken **terminologibindning** har ändrats, och till vilken styrka? Är ändringen tillåten?
 5. Vilka **extensions** används? Vilken är egendefinierad och vilken kommer från FHIR-standarden?
 6. Hur är `identifier` **slicad**? Vilken diskriminator används, och är slicingen öppen eller stängd?
-7. Vilka **invarianter** (`constraint`) finns? Vad kontrollerar de?
+
+*För den tekniskt intresserade:* samma profil (bara differential) finns som JSON i
+[`exempel/StructureDefinition-EducationPatient.json`](exempel/StructureDefinition-EducationPatient.json).
+Jämför JSON med Differential Table – vad lägger IG Publisher till för att göra den läsbar?
 
 ## Övning 2.2 – Vilken slice? (5 min)
 

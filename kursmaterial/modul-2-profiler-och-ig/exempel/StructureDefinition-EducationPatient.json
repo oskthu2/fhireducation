@@ -15,26 +15,6 @@
   "differential": {
     "element": [
       {
-        "id": "Patient",
-        "path": "Patient",
-        "constraint": [
-          {
-            "key": "edu-pat-1",
-            "severity": "error",
-            "human": "Ett personnummer ska bestå av exakt 12 siffror (ÅÅÅÅMMDDNNNN).",
-            "expression": "identifier.where(system = 'http://electronichealth.se/identifier/personnummer').all(value.matches('^[0-9]{12}$'))",
-            "source": "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"
-          },
-          {
-            "key": "edu-pat-2",
-            "severity": "error",
-            "human": "Födelsedatum får inte ligga i framtiden.",
-            "expression": "birthDate.empty() or birthDate <= today()",
-            "source": "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"
-          }
-        ]
-      },
-      {
         "id": "Patient.extension",
         "path": "Patient.extension",
         "slicing": {
