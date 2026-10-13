@@ -13,9 +13,11 @@ on:
         required: true
         type: choice
         options:
+          - '3.2'
           - '3'
           - '4'
           - '6'
+          - extra-hl7se
           - start
 
 permissions:
@@ -33,11 +35,11 @@ jobs:
         env:
           MODUL: ${{ inputs.modul }}
         run: |
-          if [ "$MODUL" = "start" ]; then
-            SRC="kursmaterial/losningar/start/fsh"
-          else
-            SRC="kursmaterial/losningar/modul-${MODUL}/fsh"
-          fi
+          case "$MODUL" in
+            start|extra-*) DIR="kursmaterial/losningar/${MODUL}" ;;
+            *)             DIR="kursmaterial/losningar/modul-${MODUL}" ;;
+          esac
+          SRC="$DIR/fsh"
           [ -d "$SRC" ] || { echo "Hittar inte $SRC"; exit 1; }
 
           BACKUP="mina-filer/$(date +%Y%m%d-%H%M%S)"
@@ -47,9 +49,14 @@ jobs:
           rm -rf test-ig/input/fsh
           cp -r "$SRC" test-ig/input/fsh
 
+          # Vissa lösningar kräver beroenden till andra IG:er (t.ex. HL7 Sveriges basprofiler)
+          if [ -f "$DIR/dependencies.yaml" ] && ! grep -q '^dependencies:' test-ig/sushi-config.yaml; then
+            cat "$DIR/dependencies.yaml" >> test-ig/sushi-config.yaml
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -A test-ig/input/fsh "$BACKUP"
+          git add -A test-ig/input/fsh test-ig/sushi-config.yaml "$BACKUP"
           if git diff --cached --quiet; then
             echo "Inga ändringar – du är redan ikapp."
           else

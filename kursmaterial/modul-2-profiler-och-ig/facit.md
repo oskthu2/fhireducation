@@ -2,6 +2,8 @@
 
 ## Övning 2.1 – Läs en profil
 
+(Facit-IG:n innehåller också invarianterna från modul 4. Dem tittar vi på i modul 4.)
+
 1. `url` = `http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient`.
    `baseDefinition` = `http://hl7.org/fhir/StructureDefinition/Patient`, alltså basresursen Patient.
 2. - `identifier` 0..\* → **1..\***
@@ -9,7 +11,9 @@
    - `name` 0..\* → **1..\***, `name.family` 0..1 → **1..1**
    - `birthDate` 0..1 → **1..1**
    - Slices och extensions får egna kardinaliteter (0..1).
+   - Snapshot Table visar hela strukturen, och Key Elements Table visar de obligatoriska och Must Support-markerade elementen.
 3. `identifier` (och båda slices), `name`, `name.family`, `name.given`, `gender`, `birthDate` och båda extensions.
+   Tydligast i Key Elements Table eller Differential Table (flaggan **S**).
 4. `maritalStatus` binds till `http://hl7.org/fhir/ValueSet/marital-status` med styrkan `required`. I basen är den
    `extensible`. Det är tillåtet att **skärpa** en bindning, men inte att lätta på den.
 5. `http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired` kommer från FHIR-standarden.
@@ -17,7 +21,6 @@
    Där är diskriminatorn alltid `value` på `url`.
 6. Diskriminator `value` på `system`, och slicingen är `open`. Slices: `personnummer` (system =
    `http://electronichealth.se/identifier/personnummer`) och `samordningsnummer`.
-7. `edu-pat-1`: personnummer ska vara 12 siffror. `edu-pat-2`: födelsedatum får inte ligga i framtiden.
 
 ## Övning 2.2 – Vilken slice?
 

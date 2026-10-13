@@ -1,5 +1,12 @@
 # Facit – Modul 4
 
+## Övning 4.0
+
+- `edu-pat-1` (error): ett personnummer ska bestå av exakt 12 siffror.
+- `edu-pat-2` (error): födelsedatum får inte ligga i framtiden.
+- Liksom `pat-1` består de av nyckel, nivå, beskrivning och ett FHIRPath-uttryck. `pat-1` gäller elementet
+  `Patient.contact`, medan våra gäller hela resursen.
+
 ## Övning 4.1
 
 | # | Uttryck | Resultat |

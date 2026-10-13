@@ -9,8 +9,8 @@ GitHub Pages. Den som vill kan också bygga lokalt med Docker.
 
 | Innehåll | |
 |----------|---|
-| [`presentation/`](presentation/README.md) | Presentationen (PowerPoint, 72 bilder med talarmanus) |
-| [`kursmaterial/`](kursmaterial/README.md) | Övningar, facit och lösningar för de sex modulerna |
+| [`presentation/`](presentation/README.md) | Presentationen (PowerPoint, 78 bilder med talarmanus) |
+| [`kursmaterial/`](kursmaterial/README.md) | Övningar, facit och lösningar för de sex modulerna, schema och avslutning |
 | [`test-ig/`](test-ig/) | Kursens IG: startprofilen `EducationPatient` som byggs ut under dagen |
 | [`validering/`](validering/) | JSON-instanser som valideras automatiskt mot dina profiler (modul 6) |
 | [`hapi-fasad/`](hapi-fasad/README.md) | FHIR-fasad med HAPI FHIR ovanpå ett simulerat journalsystem (modul 5) |
@@ -27,7 +27,8 @@ GitHub Pages. Den som vill kan också bygga lokalt med Docker.
 | 3 | FHIR Shorthand (FSH) | Profil, terminologibindning, extension och slicing i `test-ig` |
 | 4 | FHIRPath | Egna invarianter i profilerna |
 | 5 | Utveckling med HAPI FHIR | FHIR-API ovanpå befintligt system, API-säkerhet, SMART on FHIR, IHE |
-| 6 | Följsamhet och validering | CapabilityStatement, capability discovery, validering mot profil |
+| 6 | Följsamhet, krav och validering | Kravställning mot IG, CapabilityStatement, capability discovery, validering mot profil |
+| – | Avslutning (15 min) | Ta hem miljön: lokal installation och egen IG |
 
 ---
 
@@ -56,7 +57,9 @@ Bygget publicerar IG:n till grenen `gh-pages`. Den måste kopplas till GitHub Pa
 1. **Settings → Pages**
 2. *Source*: **Deploy from a branch**
 3. *Branch*: **gh-pages** och mappen **/ (root)**, klicka **Save**
-4. Efter någon minut finns din IG på `https://<ditt-konto>.github.io/<repo>/`
+4. Efter någon minut finns din IG på `https://<ditt-konto>.github.io/<repo>/` och facit-IG:n (lösningen efter
+   modul 6, används i övning 2.1) på `https://<ditt-konto>.github.io/<repo>/facit/`.
+   Saknas något: *Actions → Bygg IG → Run workflow*.
 
 > **Grattis!** 🎉 Nu har du en fungerande byggkedja med SUSHI + IG Publisher och är redo för utbildningen.
 
@@ -74,7 +77,7 @@ Testa direkt: ändra `title` i `test-ig/sushi-config.yaml`, checka in, och se de
 
 | Arbetsflöde | Startar när … | Gör |
 |-------------|---------------|-----|
-| **Bygg IG** | något ändras i `test-ig/` (eller manuellt) | Kör SUSHI och IG Publisher, publicerar på GitHub Pages och sparar IG:n som artefakt |
+| **Bygg IG** | något ändras i `test-ig/` (eller manuellt) | Kör SUSHI och IG Publisher, publicerar på GitHub Pages och sparar IG:n som artefakt. Bygger även facit-IG:n under `/facit/` när den saknas |
 | **Validera instanser** | något ändras i `validering/` eller i FSH-filerna | Validerar JSON-filerna i `validering/` mot dina profiler med HL7 FHIR Validator |
 | **HAPI-fasad** | något ändras i `hapi-fasad/` | Bygger och testar FHIR-fasaden, startar den och visar svar på några anrop |
 | **Kom ikapp** | du startar det manuellt | Ersätter dina FSH-filer med lösningen efter vald modul och startar bygget |
@@ -85,8 +88,9 @@ Bara huvudgrenen (`main`) publiceras på GitHub Pages. Byggen på andra grenar k
 
 ### Kom ikapp
 
-Har du hamnat efter? **Actions → Kom ikapp → Run workflow**, välj modul (`3`, `4`, `6` eller `start`) och klicka
-**Run workflow**. Dina egna filer sparas i mappen `mina-filer/`.
+Har du hamnat efter? **Actions → Kom ikapp → Run workflow**, välj läge (`3.2`, `3`, `4`, `6`, `extra-hl7se` eller
+`start`) och klicka **Run workflow**. Dina egna filer sparas i mappen `mina-filer/`. Läget `extra-hl7se` lägger
+även till beroendet till HL7 Sveriges basprofiler i `sushi-config.yaml`.
 
 ### Felsökning
 
@@ -339,4 +343,6 @@ FHIR-versionen styrs av `FHIR_VERSION` i `.env.fhir` (`v4` = 4.0.1) och används
   *Use this template*.
 - Kör **Actions → Kontrollera lösningar** några dagar före kursen, för att se att alla lösningar fortfarande bygger
   med senaste IG Publisher.
+- Kör **Actions → Bygg IG → Run workflow** på `main` så att facit-IG:n finns under `/facit/`.
 - Schema, checklista och hur IG:n byggs upp under dagen: [kursmaterial/README.md](kursmaterial/README.md).
+- Material för avslutningen (lokal installation, egen IG): [kursmaterial/avslutning/README.md](kursmaterial/avslutning/README.md).

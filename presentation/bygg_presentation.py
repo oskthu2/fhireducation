@@ -65,21 +65,24 @@ Kontrollera att alla har skapat sitt repo från mallen och har en grön bock und
 )
 
 s = d.content_slide("Dagens upplägg", notes="""
-Sex moduler à 50 minuter med 10 minuters paus mellan varje. Tiderna är ett förslag, anpassa efter lokal och lunch.
+Sex moduler à 50 minuter med 10 minuters paus mellan varje, plus en kort inledning och en avslutning.
+Tiderna är ett förslag, anpassa efter lokal och lunch.
 
 Varje modul har samma rytm: genomgång, övning och en kort summering. Övningarna bygger på varandra.
 Den som hamnar efter kan när som helst köra arbetsflödet "Kom ikapp" och få lösningen till sitt repo.
 """)
 d.table(s, [
     ["Tid", "Modul", "Innehåll"],
-    ["09.00 – 09.50", "1  Läsa en FHIR-resurs", "Datatyper, terminologibindning, extensions, meta"],
-    ["10.00 – 10.50", "2  Profiler och IG:er", "StructureDefinition, extensions, slicing, verktyg"],
-    ["11.00 – 11.50", "3  FHIR Shorthand (FSH)", "Profil, terminologi, extension och slicing i FSH"],
-    ["11.50 – 12.50", "Lunch", ""],
-    ["12.50 – 13.40", "4  FHIRPath", "Uttryck, invarianter och constraints"],
-    ["13.50 – 14.40", "5  Utveckling med HAPI FHIR", "FHIR-fasad, REST, API-säkerhet, SMART on FHIR, IHE"],
-    ["14.50 – 15.40", "6  Följsamhet och validering", "CapabilityStatement, capability discovery, validering"],
-], MARGIN, CONTENT_TOP + I(0.1), CONTENT_W, col_widths=[2.2, 4.2, 6.6], size=16, row_height=I(0.55))
+    ["09.00 – 09.15", "Inledning", "Upplägg, röd tråd, kontroll av allas repon"],
+    ["09.15 – 10.05", "1  Läsa en FHIR-resurs", "Datatyper, terminologibindning, extensions, meta"],
+    ["10.15 – 11.05", "2  Profiler och IG:er", "StructureDefinition, terminologi i praktiken, slicing, verktyg"],
+    ["11.15 – 12.05", "3  FHIR Shorthand (FSH)", "Profil, terminologi, extension och slicing i FSH"],
+    ["12.05 – 13.00", "Lunch", ""],
+    ["13.00 – 13.50", "4  FHIRPath", "Uttryck, invarianter och constraints"],
+    ["14.00 – 14.50", "5  Utveckling med HAPI FHIR", "FHIR-fasad, REST, API-säkerhet, SMART on FHIR, IHE"],
+    ["15.00 – 15.50", "6  Följsamhet, krav och validering", "Kravställning, CapabilityStatement, discovery, validering"],
+    ["15.50 – 16.05", "Avslutning", "Ta hem miljön: lokal installation och egen IG"],
+], MARGIN, CONTENT_TOP + I(0.05), CONTENT_W, col_widths=[2.2, 4.2, 6.6], size=15, row_height=I(0.5))
 
 s = d.content_slide("Mål med dagen", notes="""
 Målet är praktisk tillämpning: efter dagen ska deltagarna kunna läsa och kravställa profiler, förstå vad en IG
@@ -326,7 +329,7 @@ d.code(s, """"subject": {
 }""", MARGIN, CONTENT_TOP + I(0.1), I(5.8), I(1.6), lang="json", size=14, title="Bokstavlig (literal) referens")
 d.code(s, """"serviceProvider": {
   "identifier": {
-    "system": "http://electronichealth.se/identifier/hsaid",
+    "system": "urn:oid:1.2.752.29.4.19",
     "value": "SE2321000016-KURS"
   },
   "display": "Vårdcentralen Kursköping"
@@ -598,6 +601,36 @@ d.table(s, [
     ["0..0", "", "Får inte skickas"],
 ], I(8.5), CONTENT_TOP + I(0.2), I(4.2), col_widths=[1.4, 0.8, 2.6], size=15, row_height=I(0.55))
 
+s = d.content_slide("Terminologibindning i praktiken", notes="""
+En bindning i profilen är bara halva jobbet. Vid validering används en terminologiserver för att räkna fram
+värdemängder ($expand) och kontrollera koder ($validate-code). IG Publisher och FHIR Validator använder
+tx.fhir.org som standard. Nationellt kan andra servrar gälla.
+
+Viktigt för kravställare:
+- required: kod utanför värdemängden ger fel.
+- extensible: kod utanför ger bara varning, eftersom validatorn inte kan avgöra om en passande kod fanns.
+  Det ser vi i övning 6.3.
+- Versioner: SNOMED CT har editioner (svensk edition) och versioner. Ange version när det spelar roll.
+- Display-texter kontrolleras. Vi råkade själva få fel när ICD-10-displayen var på svenska.
+
+Svenska kodverk: SNOMED CT svensk edition, ICD-10-SE, ATC, NPU, KVÅ och nationella kodverk från Socialstyrelsen
+och Inera. HL7 Sveriges basprofiler binder t.ex. civilstånd till ett svenskt ValueSet.
+""")
+d.box(s, "**Profil**\n`type from KontakttypVS`\n`(extensible)`", MARGIN, CONTENT_TOP + I(0.1), I(3.0), I(1.3), size=15)
+d.box(s, "**Validator / IG Publisher**\nKontrollerar instansen", I(4.3), CONTENT_TOP + I(0.1), I(3.6), I(1.3), size=15, fill=NAVY, color=WHITE)
+d.box(s, "**Terminologiserver**\n`$expand`  ·  `$validate-code`\ntx.fhir.org eller nationell", I(9.0), CONTENT_TOP + I(0.1), I(3.7), I(1.3), size=15, fill=ORANGE_LIGHT)
+d.arrow(s, I(3.65), CONTENT_TOP + I(0.75), I(4.25), CONTENT_TOP + I(0.75))
+d.arrow(s, I(7.95), CONTENT_TOP + I(0.75), I(8.95), CONTENT_TOP + I(0.75))
+d.table(s, [
+    ["Situation", "Resultat vid validering"],
+    ["Kod utanför värdemängd, bindning **required**", "❌ Fel"],
+    ["Kod utanför värdemängd, bindning **extensible**", "⚠️ Varning (validatorn vet inte om en passande kod fanns)"],
+    ["Koden finns inte i kodsystemet den anger", "❌ Fel"],
+    ["Fel display-text för koden", "❌ Fel eller ⚠️ varning"],
+], MARGIN, CONTENT_TOP + I(1.7), I(7.6), col_widths=[4.0, 3.6], size=14, row_height=I(0.5))
+d.callout(s, "**Svenska kodverk**\nSNOMED CT (svensk edition), ICD-10-SE, ATC, NPU, KVÅ, nationella kodverk (Socialstyrelsen, Inera)\n\n**Vid kravställning:** ange ValueSet (canonical + version), styrka och terminologiserver.",
+          I(8.5), CONTENT_TOP + I(1.7), I(4.2), I(3.0), kind="info", size=14)
+
 s = d.content_slide("Extensions i en profil", notes="""
 Två steg: 1) extensionen definieras som en egen StructureDefinition med url, context (var den får användas) och
 value[x]. 2) Profilen säger att extensionen får eller ska förekomma, genom att lägga till en slice på extension.
@@ -748,8 +781,8 @@ d.table(s, [
 ], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.6, 7.4, 2.0], size=15, row_height=I(0.52))
 
 d.exercise_slide("2.1 Läs en profil  ·  2.2 Vilken slice?", [
-    "**2.1** Öppna `StructureDefinition-EducationPatient.json` (bara differential)",
-    (1, "Vilken är profilens canonical URL och basresurs?"),
+    "**2.1** Öppna profilen i **facit-IG:n**: `https://<konto>.github.io/<repo>/facit/` → Artifacts → EducationPatient",
+    (1, "Använd flikarna Differential, Snapshot och Key Elements. Vilken canonical URL och basresurs?"),
     (1, "Vilka element har ändrad kardinalitet? Vilka är Must Support?"),
     (1, "Vilken bindning har ändrats, och är ändringen tillåten?"),
     (1, "Vilka extensions används? Hur är identifier slicad?"),
@@ -759,6 +792,11 @@ d.exercise_slide("2.1 Läs en profil  ·  2.2 Vilken slice?", [
     "**2.3** (extra) Bläddra i en publicerad IG och hitta slicing och extensions",
 ], where="kursmaterial/modul-2-profiler-och-ig/  (frågor i README.md, facit i facit.md)", minutes=15, notes="""
 Profilen i övningen är den som deltagarna själva bygger i modul 3 och 4, så de får en förhandstitt.
+Den publiceras automatiskt som facit-IG under /facit/ på deltagarnas GitHub Pages. Saknas den: Actions → Bygg IG →
+Run workflow. Läs profilen i IG Publishers vyer, så som kravställare möter profiler i verkligheten.
+Den som vill kan jämföra med JSON-filen i kursmaterialet.
+
+Facit-IG:n innehåller också invarianter. Spara dem till modul 4 (övning 4.0).
 
 Poängen med 2.2 är den fjärde identifieraren, med felstavat system. Den hamnar utanför alla slices,
 och eftersom slicingen är öppen blir instansen ändå giltig. Det leder vidare till diskussionen om
@@ -784,8 +822,9 @@ d.module_slide(3, "FHIR Shorthand (FSH)", [
     "skapa en profil och se den i den byggda IG:n",
     "binda terminologi med include och med referens",
     "lägga till extensions och slicing",
-], [(15, "Genomgång"), (30, "Övningar 3.1–3.5"), (5, "Summering")], notes="""
-Det här är den mest praktiska modulen. Håll genomgången kort och låt deltagarna bygga.
+], [(15, "Genomgång"), (30, "Övningar 3.1–3.3 (3.4–3.5 om tid finns)"), (5, "Summering")], notes="""
+Det här är den mest praktiska modulen. Räkna med att de flesta hinner 3.1–3.3. Övning 3.4–3.5 är valfria,
+och Kom ikapp → modul 3 ger alla samma läge inför modul 4. Håll genomgången kort och låt deltagarna bygga.
 Ha lösningen redo att visa, och påminn om "Kom ikapp".
 """)
 
@@ -939,6 +978,8 @@ s = d.content_slide("Ny profil: EducationEncounter", notes="""
 - subject only Reference(EducationPatient) begränsar målet för referensen till vår profil.
 - serviceProvider med logisk referens (HSA-id).
 - Exemplet refererar till patient-tolvan med Reference(patient-tolvan). SUSHI löser upp det till Patient/patient-tolvan.
+- Exemplet måste innehålla alla element som profilen kräver (1..1), annars fel i qa.html.
+- type anges som fritext (type.text) tills kodsystemet Kontakttyp finns. I övning 3.3 byts den mot en kod.
 """)
 d.code(s, """Profile: EducationEncounter
 Parent: Encounter
@@ -961,7 +1002,7 @@ InstanceOf: EducationEncounter
 Usage: #example
 * status = #finished
 * class = $v3-ActCode#AMB "ambulatory"
-* type = KontakttypCS#besok "Besök"
+* type.text = "Besök"   // kod i övning 3.3
 * subject = Reference(patient-tolvan)
 * period.start = "2026-10-01T09:00:00+02:00"
 * period.end = "2026-10-01T09:30:00+02:00"
@@ -1003,6 +1044,7 @@ d.code(s, """// Bindningar i profilerna
 * class from EducationEncounterClassVS (required)
 * type from KontakttypVS (extensible)
 * maritalStatus from http://hl7.org/fhir/ValueSet/marital-status (required)  // b)
+// ... och i exemplet: * type = KontakttypCS#besok "Besök"
 
 // Fler varianter i ett ValueSet
 * include codes from valueset http://...
@@ -1015,6 +1057,10 @@ för identifier måste ange diskriminatorn med ^slicing.
 
 I exemplet: identifier[personnummer].value = "...". Systemet fylls i automatiskt från profilens mönster.
 Titta sedan i JSON-fliken: slice-namnet syns inte.
+
+Diskussionsfråga om SkyddadIdentitet: HL7 Sveriges SEBasePatient uttrycker sekretessmarkering och skyddad
+folkbokföring med meta.security (kodsystemet http://hl7.se/fhir/ig/base/CodeSystem/SecurityLabel), inte med en
+extension. Vår extension är en övning i att skapa extensions, men i verkligheten återanvänder man den nationella lösningen.
 """)
 d.code(s, """Extension: SkyddadIdentitet
 Id: SkyddadIdentitet
@@ -1043,17 +1089,55 @@ d.code(s, """* identifier ^slicing.discriminator.type = #value
 // I exemplet:
 * identifier[personnummer].value = "191212121212\"""", I(6.9), CONTENT_TOP + I(0.05), I(5.8), I(5.2), size=13, title="Slicing (övning 3.5)")
 
+s = d.content_slide("I verkligheten: bygg på HL7 Sveriges basprofiler", notes="""
+Övning 3.6 (extra). I verkligheten profilerar man sällan direkt på basresursen. HL7 Sveriges SEBasePatient har
+redan slicing för personnummer, samordningsnummer och nationellt reservnummer, med samma diskriminator som vi
+byggde själva. Den har svenska namnregler (högst ett namn, mellannamn) och säkerhetsmärkning via meta.security.
+
+Beroendet anges i sushi-config.yaml med paket-id och version. Det är samma princip som vid kravställning:
+peka ut exakt vilken version man bygger på.
+
+Diskutera: vad ärver man "på köpet"? Varför kan EducationSEPatient inte ha name 1..* (basprofilen säger 0..1)?
+""")
+d.code(s, """# test-ig/sushi-config.yaml
+dependencies:
+  hl7se.fhir.base: 1.1.0""", MARGIN, CONTENT_TOP + I(0.05), I(5.4), I(1.45), lang="text", size=15, title="1. Beroende till HL7 Sveriges paket")
+d.code(s, """Alias: $SecLabel = http://hl7.se/fhir/ig/base/CodeSystem/SecurityLabel
+
+Profile: EducationSEPatient
+Parent: SEBasePatient            // från hl7se.fhir.base
+Id: EducationSEPatient
+* identifier 1..* MS
+* identifier[personnummer] MS    // slicen ärvs!
+* name 1..1 MS                   // basprofilen: 0..1
+* birthDate 1..1 MS
+
+Instance: patient-tolvan-se
+InstanceOf: EducationSEPatient
+* meta.security = $SecLabel#sekretessmarkering
+* identifier[personnummer].value = "191212121212"
+...""", I(6.2), CONTENT_TOP + I(0.05), I(6.5), I(5.2), size=14, title="2. Profil och exempel på SEBasePatient")
+d.bullets(s, [
+    "**Slicing** för personnummer, samordningsnummer och reservnummer finns redan",
+    "**Svenska namnregler** och adresstyper",
+    "**Skyddad identitet** via `meta.security`, inte en egen extension",
+    "Peka ut **exakt version** av beroendet, som vid kravställning",
+], MARGIN, CONTENT_TOP + I(1.85), I(5.4), I(3.2), size=16)
+
 d.exercise_slide("FSH: bygg ut kursens IG", [
     "**3.1** Titta på startprofilen och jämför Differential och Snapshot i din IG  (5 min)",
     "**3.2** Skapa `profiles/EducationEncounter.fsh` + exemplet `encounter-tolvan-1`  (10 min)",
     "**3.3** Terminologi: `Kontakttyp.fsh` (CodeSystem + ValueSet med include), class-ValueSet, och bind `maritalStatus` via referens  (10 min)",
-    "**3.4** Extensions: `patient-interpreterRequired` och egen `SkyddadIdentitet`  (5–10 min)",
-    "**3.5** Slicing av `identifier`: personnummer och samordningsnummer  (5–10 min)",
-    "Efter varje steg: **Commit** → följ **Bygg IG** under Actions → titta i din IG",
-    "Hamnat efter? **Actions → Kom ikapp → modul 3**",
+    "**3.4** (om tid finns) Extensions: `patient-interpreterRequired` och egen `SkyddadIdentitet`",
+    "**3.5** (om tid finns) Slicing av `identifier`: personnummer och samordningsnummer",
+    "**3.6** (extra) Bygg på HL7 Sveriges `SEBasePatient`, med beroende till `hl7se.fhir.base`",
+    "Efter varje steg: **Commit** → steget **Kör SUSHI** är klart efter ~30 s → titta sedan i din IG",
+    "Hamnat efter? **Actions → Kom ikapp** → `3.2` eller `3`",
 ], where="test-ig/input/fsh/  ·  instruktioner: kursmaterial/modul-3-fsh/README.md  ·  lösning: kursmaterial/losningar/modul-3/", minutes=30, notes="""
-Bygget tar 2–4 minuter. Uppmuntra deltagarna att göra flera ändringar per incheckning för att slippa vänta,
-eller använda github.dev (tryck .) för att ändra flera filer samtidigt.
+Hela bygget tar cirka 2 minuter, men SUSHI-steget är klart efter ungefär 30 sekunder. Lär deltagarna att titta
+där först. Uppmuntra flera ändringar per incheckning, eller github.dev (tryck .) för att ändra flera filer samtidigt.
+
+3.4–3.5 är valfria under kurstiden. 3.6 är en extrauppgift (eller hemuppgift) för den som är klar.
 
 Vanliga fel:
 - Indrag och citattecken i FSH
@@ -1202,7 +1286,8 @@ d.table(s, [
 ], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.3, 5.4, 4.3], size=15, row_height=I(0.65))
 
 d.exercise_slide("FHIRPath och invarianter", [
-    "**4.1** Öppna **fhirpath-lab.com**, klistra in `Patient-tolvan.json` (modul 1) och testa uttrycken i README  (10 min)",
+    "**4.0** Läs invarianterna `edu-pat-1` och `edu-pat-2` i **facit-IG:n** (EducationPatient). Vad kontrollerar de?  (3 min)",
+    "**4.1** Öppna **fhirpath-lab.com**, klistra in `Patient-tolvan.json` (modul 1) och testa uttrycken i README  (7 min)",
     (1, "Skriv ett eget uttryck som är sant om patienten har ett personnummer med exakt 12 siffror"),
     "**4.2** Skapa `test-ig/input/fsh/invariants.fsh` med `edu-pat-1` och `edu-enc-1`, och koppla dem med `obeys`  (10 min)",
     (1, "Bygg, och kontrollera fliken Constraints på profilsidan"),
@@ -1470,12 +1555,13 @@ Sista modulen knyter ihop dagen: hur vet vi att ett system och dess data följer
 # =====================================================================================
 # MODUL 6
 # =====================================================================================
-d.module_slide(6, "Följsamhet och validering", [
+d.module_slide(6, "Följsamhet, krav och validering", [
     "förklara vad följsamhet mot en IG innebär",
     "läsa och skriva ett CapabilityStatement",
     "använda capability discovery",
     "validera instanser och tolka resultatet",
-], [(20, "Genomgång"), (25, "Övningar 6.1–6.3"), (5, "Avslutning")], notes="""
+    "kravställa mot en IG med krav som går att verifiera",
+], [(20, "Genomgång och demo"), (25, "Övningar 6.2–6.4"), (5, "Summering")], notes="""
 Den här modulen är extra viktig för kravställare och testare: hur ställer man krav som går att verifiera?
 """)
 
@@ -1497,6 +1583,27 @@ d.bullets(s, [
     "**Must Support** måste definieras för både avsändare och mottagare",
     "**CapabilityStatement** beskriver vad en server ska kunna (krav) och vad den faktiskt kan",
 ], MARGIN, CONTENT_TOP + I(3.0), CONTENT_W, I(2.2), size=18)
+
+s = d.content_slide("Kravställa mot en IG", notes="""
+En IG blir ett krav först när kravställningen pekar ut den entydigt och säger hur följsamheten verifieras.
+Gå igenom tabellen och betona kolumnen "verifieras med": ett krav som inte går att verifiera blir en diskussion
+med leverantören i stället för en kontroll.
+
+Vanliga otydligheter: "stödja FHIR" (vilken version, resurser, IG?), "hantera Must Support" (visa, lagra eller
+bara inte krascha?), "följa HL7 Sverige" (vilken version av basprofilerna?).
+""")
+d.table(s, [
+    ["Kravområde", "Exempel på verifierbart krav", "Verifieras med"],
+    ["IG och version", "Lösningen SKA följa `fhir.education.kursig#0.1.0`", "Granskning"],
+    ["Beroenden", "Profilerna SKA bygga på `hl7se.fhir.base#1.1.0`", "Granskning av paket"],
+    ["Data", "Alla Encounter SKA validera utan fel mot EducationEncounter", "FHIR Validator i test och CI"],
+    ["Must Support", "Avsändaren SKA skicka MS-element när informationen finns", "Testfall med ofullständiga data"],
+    ["API", "Servern SKA ange `EducationServerCapabilities` i `instantiates`", "`GET /metadata`, Inferno/Touchstone"],
+    ["Säkerhet", "Åtkomst SKA kräva SMART Backend Services, scope `system/Encounter.rs`", "Säkerhetstest"],
+    ["Terminologi", "`Encounter.type` SKA kodas från `kontakttyp-vs` (version X)", "Validering mot terminologiserver"],
+], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.0, 6.4, 3.6], size=14, row_height=I(0.55))
+d.callout(s, "Peka ut IG:n med **paket-id och version**  ·  skriv **SKA / BÖR / KAN**  ·  ange **hur** varje krav verifieras  ·  lägg API-krav i ett **CapabilityStatement**",
+          MARGIN, I(6.05), CONTENT_W, I(0.7), kind="info", size=15)
 
 s = d.content_slide("CapabilityStatement", notes="""
 CapabilityStatement finns i tre varianter (kind):
@@ -1635,14 +1742,14 @@ d.table(s, [
     ["**Inferno / Touchstone**", "Testa API-beteende mot en IG (sökning, säkerhet, CapabilityStatement)"],
 ], MARGIN, CONTENT_TOP + I(1.9), CONTENT_W, col_widths=[4.2, 7.8], size=15, row_height=I(0.55))
 
-d.exercise_slide("CapabilityStatement och validering", [
-    "**6.1** Jämför CapabilityStatement för fasaden (sammanfattningen i **HAPI-fasad**) och hapi.fhir.org/baseR4/metadata  (10 min)",
-    (1, "Vilken kind? Vilka interaktioner och sökparametrar? Vad pekar instantiates på?"),
+d.exercise_slide("Krav, CapabilityStatement och validering", [
+    "**6.1** (demo) Kursledaren visar CapabilityStatement för fasaden och hapi.fhir.org/baseR4/metadata",
     "**6.2** Skriv kraven som ett CapabilityStatement (`kind = #requirements`) i `test-ig/input/fsh/capabilities/`  (10 min)",
-    "**6.3** Validera instanser mot din profil  (15 min)",
+    "**6.3** Validera instanser mot din profil  (10 min)",
     (1, "Kopiera filerna i `kursmaterial/modul-6-foljsamhet/exempel/` till mappen `validering/` och checka in"),
     (1, "Läs resultatet i **Validera instanser**. Vilka fel hittas? Varför är `patient-felstavat-system.json` giltig?"),
     (1, "Rätta `patient-fel.json` tills den blir grön"),
+    "**6.4** I par: formulera **tre verifierbara krav** för en tjänst som visar vårdkontakter  (5 min)",
     "Förutsätter profilerna från modul 3–4: **Actions → Kom ikapp → modul 4** vid behov",
 ], where="kursmaterial/modul-6-foljsamhet/README.md  ·  facit: facit.md  ·  lösning: kursmaterial/losningar/modul-6/", minutes=25, notes="""
 6.3 är dagens "aha"-övning: validatorn hittar det mesta, men inte stavfelet i identifierarens system.
@@ -1650,6 +1757,9 @@ Med öppen slicing och en invariant som filtrerar på rätt system blir instanse
 
 Diskutera: vilka fel kan en mottagare leva med? Vem ansvarar för valideringen? Hur skulle profilen kunna skärpas?
 (Se förslaget edu-pat-3 i facit.)
+
+6.4 knyter ihop dagen: kraven ska peka på IG, profil, CapabilityStatement och verifieringsmetod. Låt två par läsa
+upp ett krav var och låt gruppen hitta tolkningsutrymmet.
 """)
 
 s = d.content_slide("Sammanfattning av dagen", notes="""
@@ -1677,6 +1787,51 @@ d.bullets(s, [
     "Bygg och validera **automatiskt** vid varje ändring, lokalt med Docker eller i GitHub Actions",
     "**Återanvänd** befintliga profiler, extensions och kodverk innan du skapar nya",
 ], MARGIN, CONTENT_TOP + I(2.9), CONTENT_W, I(2.3), size=19)
+
+d.section = "Avslutning"
+s = d._slide(notes="""
+Avslutningen (15 min): visa hur samma kedja körs utanför kursmiljön. Målet är att deltagarna ska kunna komma igång
+med eget arbete, med eller utan installationsrättigheter. Materialet finns i kursmaterial/avslutning/README.md.
+""", background=NAVY)
+d.text(s, "Ta hem miljön", I(0.9), I(2.2), I(11.5), I(1.2), size=44, bold=True, color=WHITE)
+d.text(s, "Samma kedja på din egen dator, och en egen IG att bygga vidare på", I(0.9), I(3.4), I(11.5), I(0.8), size=22, color=TEAL_LIGHT)
+d.text(s, "15 minuter  ·  kursmaterial/avslutning/README.md", I(0.9), I(4.3), I(11.5), I(0.6), size=16, color=ORANGE)
+
+s = d.content_slide("Installera verktygen lokalt", notes="""
+Tre vägar beroende på vad man får installera:
+1. Allt lokalt: Node + SUSHI, Java, Ruby + Jekyll. Skripten hämtar IG Publisher och Validator automatiskt.
+2. Bara Docker: Docker-spåret i README (PowerShell-skript), som var det ursprungliga upplägget.
+3. Ingenting: GitHub Codespaces ger samma miljö i webbläsaren.
+
+VS Code med FSH-tillägget ger syntaxfärgning och felmarkering. Det fungerar inte fullt ut i github.dev.
+""")
+d.table(s, [
+    ["Verktyg", "Installation", "Kontroll"],
+    ["VS Code + FSH-tillägg", "code.visualstudio.com, tillägget FHIR Shorthand", ""],
+    ["Git", "git-scm.com", "`git --version`"],
+    ["Node.js + SUSHI", "nodejs.org, sedan `npm install -g fsh-sushi`", "`sushi --version`"],
+    ["Java 17+", "adoptium.net (Temurin)", "`java -version`"],
+    ["Ruby + Jekyll", "rubyinstaller.org, sedan `gem install jekyll`", "`jekyll --version`"],
+    ["IG Publisher, Validator", "Hämtas automatiskt av skripten", ""],
+], MARGIN, CONTENT_TOP, I(8.3), col_widths=[2.4, 4.0, 1.9], size=14, row_height=I(0.52))
+d.callout(s, "**Får du inte installera?**\n\n• Bara Docker: Docker-spåret i README\n• Ingenting: GitHub Codespaces\n\nSamma skript i alla miljöer.",
+          I(9.2), CONTENT_TOP + I(0.1), I(3.5), I(3.0), kind="info", size=15)
+d.code(s, """./scripts/build-ig.sh --sushi-only   # snabb kontroll av FSH
+./scripts/build-ig.sh                # hela IG:n -> test-ig/output/index.html
+./scripts/validate.sh                # validera filerna i validering/""", MARGIN, CONTENT_TOP + I(3.95), CONTENT_W, I(1.3), lang="text", size=15)
+
+s = d.content_slide("Starta en egen IG", notes="""
+Ditt kursrepo är en färdig startpunkt. För en IG som ska förvaltas på riktigt: utgå från Ineras mall-repo, som har
+versionshantering, releaser och publicering på samma sätt som kursens arbetsflöden.
+""")
+d.bullets(s, [
+    "**1.** Kopiera `test-ig` till en ny mapp, t.ex. `min-ig`",
+    "**2.** Ändra `id`, `canonical`, `name` och `title` i `sushi-config.yaml`, och sökvägen i `ig.ini`",
+    "**3.** Lägg till beroenden, t.ex. `hl7se.fhir.base`, och profilera på dem",
+    "**4.** Bygg: `./scripts/build-ig.sh min-ig`, eller ändra `IG_FOLDER` i arbetsflödet för GitHub",
+    "**5.** Ska IG:n förvaltas på riktigt: utgå från **Ineras mall-repo** (versioner, releaser, publicering)",
+    "**6.** Validera exempel och testdata i CI vid varje ändring, som i kursen",
+], MARGIN, CONTENT_TOP, I(12), I(5.2), size=19)
 
 s = d.content_slide("Vidare läsning och resurser", notes="""
 Dela gärna länkarna i chatten. Uppmuntra deltagarna att gå med i chat.fhir.org (Zulip). Där svarar

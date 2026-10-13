@@ -57,14 +57,33 @@ Description: "Beskrivning ..."
 Skapa filen `test-ig/input/fsh/profiles/EducationEncounter.fsh` med en profil på `Encounter` som
 
 - har `Parent: Encounter`, `Id: EducationEncounter` och en titel och beskrivning
-- kräver exakt en `type`, en `subject`, en `period` med `period.start` och en `serviceProvider` (alla MS)
+- kräver exakt en `type`, en `subject`, en `period` med `period.start` och en `serviceProvider` med
+  `serviceProvider.identifier` (alla MS)
 - begränsar `subject` till `Reference(EducationPatient)`
-- markerar `status`, `class` och `reasonCode` som Must Support
+- fixerar `serviceProvider.identifier.system` till HSA-id: `* serviceProvider.identifier.system = $hsaid`
+- markerar `status`, `class`, `period.end` och `reasonCode` som Must Support
 
-Lägg också till ett exempel i `examples/encounter-tolvan-1.fsh` (`InstanceOf: EducationEncounter`) som refererar till
-`patient-tolvan` med `* subject = Reference(patient-tolvan)`.
+Lägg sedan till ett exempel i `test-ig/input/fsh/examples/encounter-tolvan-1.fsh`. Exemplet måste innehålla
+**alla element som profilen kräver** (1..1), annars får du fel i qa.html:
 
-<details><summary>Tips</summary>
+```fsh
+Instance: encounter-tolvan-1
+InstanceOf: EducationEncounter
+Title: "Besök på vårdcentral"
+Usage: #example
+* status = #finished
+* class = $v3-ActCode#AMB "ambulatory"
+* type.text = "Besök"                    // fritext tills vidare – byts mot en kod i övning 3.3
+* subject = Reference(patient-tolvan)
+* period.start = "2026-10-01T09:00:00+02:00"
+* period.end = "2026-10-01T09:30:00+02:00"
+* reasonCode = $ICD10#J45.9 "Asthma, unspecified"
+* serviceProvider.identifier.system = $hsaid
+* serviceProvider.identifier.value = "SE2321000016-KURS"
+* serviceProvider.display = "Vårdcentralen Kursköping"
+```
+
+<details><summary>Tips för profilen</summary>
 
 ```fsh
 * subject 1..1 MS
@@ -72,6 +91,8 @@ Lägg också till ett exempel i `examples/encounter-tolvan-1.fsh` (`InstanceOf: 
 * period.start 1..1 MS
 ```
 </details>
+
+Lösning: [`../losningar/modul-3.2/fsh/`](../losningar/modul-3.2/fsh/). Kom ikapp: välj `3.2`.
 
 ## Övning 3.3 – Terminologibindning (10 min)
 
@@ -91,6 +112,12 @@ Bind sedan i EducationEncounter:
 * class from EducationEncounterClassVS (required)
 ```
 
+Byt till sist fritexten i exemplet mot en kod ur det nya kodsystemet:
+
+```fsh
+* type = KontakttypCS#besok "Besök"
+```
+
 **b) Bindning genom referens till ett befintligt ValueSet**
 
 I EducationPatient: skärp bindningen av civilstånd genom att referera till FHIR:s eget ValueSet:
@@ -102,7 +129,9 @@ I EducationPatient: skärp bindningen av civilstånd genom att referera till FHI
 Diskutera: Vad är skillnaden mellan att definiera ett eget ValueSet och att referera till ett befintligt?
 Vem äger och förvaltar ValueSet:et? Vad händer när det uppdateras?
 
-## Övning 3.4 – Extensions (5–10 min)
+## Övning 3.4 – Extensions (om tid finns, 5–10 min)
+
+> Övning 3.4 och 3.5 är valfria under kurstiden. *Kom ikapp → modul 3* ger dig dem inför modul 4.
 
 1. Använd en **befintlig** extension från FHIR-standarden för tolkbehov:
    ```fsh
@@ -123,7 +152,13 @@ Vem äger och förvaltar ValueSet:et? Vad händer när det uppdateras?
 
 Diskutera: Borde skyddad identitet uttryckas med `meta.security` i stället? Vad är för- och nackdelarna?
 
-## Övning 3.5 – Slicing (5–10 min)
+*Svar från verkligheten:* HL7 Sveriges basprofil `SEBasePatient` använder **`meta.security`** med koderna
+`sekretessmarkering` och `skyddadFolkbokforing` ur kodsystemet `http://hl7.se/fhir/ig/base/CodeSystem/SecurityLabel`.
+Säkerhetsmärkning kan då tolkas av generella behörighetslösningar, vilket en egen extension inte kan.
+Vår extension är alltså en bra övning i att *skapa* en extension, men i verkligheten ska man återanvända
+den nationella lösningen (se övning 3.6).
+
+## Övning 3.5 – Slicing (om tid finns, 5–10 min)
 
 Dela upp `identifier` i EducationPatient i två slices, personnummer och samordningsnummer:
 
@@ -141,6 +176,51 @@ Dela upp `identifier` i EducationPatient i två slices, personnummer och samordn
 Ändra exemplet så att det använder slicen: `* identifier[personnummer].value = "191212121212"`.
 
 Titta på resultatet: syns ordet `personnummer` någonstans i exemplets JSON (fliken *JSON* på exempelsidan)?
+
+## Övning 3.6 (extra) – Bygg på HL7 Sveriges basprofil
+
+I verkligheten profilerar man sällan direkt på basresursen. I Sverige bygger man på **HL7 Sveriges basprofiler**
+(`hl7se.fhir.base`), som redan har slicing för personnummer, samordningsnummer och nationellt reservnummer,
+svenska namnregler och säkerhetsmärkning.
+
+1. Lägg till beroendet i `test-ig/sushi-config.yaml` (sist i filen):
+   ```yaml
+   dependencies:
+     hl7se.fhir.base: 1.1.0
+   ```
+2. Skapa `test-ig/input/fsh/profiles/EducationSEPatient.fsh`:
+   ```fsh
+   Profile: EducationSEPatient
+   Parent: http://hl7.se/fhir/ig/base/StructureDefinition/SEBasePatient
+   Id: EducationSEPatient
+   Title: "Education SE Patient"
+   Description: "Patientprofil som bygger på HL7 Sveriges basprofil SEBasePatient."
+   * ^status = #draft
+   * identifier 1..* MS
+   * identifier[personnummer] MS
+   * name 1..1 MS
+   * name.family 1..1 MS
+   * gender MS
+   * birthDate 1..1 MS
+   ```
+3. Skapa ett exempel som använder slicen `personnummer` från basprofilen och säkerhetsmärkningen:
+   ```fsh
+   Instance: patient-tolvan-se
+   InstanceOf: EducationSEPatient
+   Usage: #example
+   * meta.security = http://hl7.se/fhir/ig/base/CodeSystem/SecurityLabel#sekretessmarkering "Sekretessmarkering"
+   * identifier[personnummer].value = "191212121212"
+   * name.use = #official
+   * name.family = "Tolvansson"
+   * name.given = "Tolvan"
+   * gender = #male
+   * birthDate = "1912-12-12"
+   ```
+4. Bygg och jämför profilsidorna för `EducationPatient` och `EducationSEPatient`. Vad ärver du "på köpet"?
+   Varför är `name` `1..1` här men `1..*` i EducationPatient? (Tips: titta på basprofilen.)
+
+Lösning: [`../losningar/extra-hl7se/`](../losningar/extra-hl7se/). Kom ikapp: välj `extra-hl7se`
+(lägger även till beroendet i `sushi-config.yaml`).
 
 ## Lösning
 

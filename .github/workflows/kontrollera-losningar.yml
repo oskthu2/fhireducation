@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        steg: [start, modul-3, modul-4, modul-6]
+        steg: [start, modul-3.2, modul-3, modul-4, modul-6, extra-hl7se]
     steps:
       - uses: actions/checkout@v4
 
@@ -67,8 +67,12 @@ jobs:
 
       - name: Kopiera lösningen till test-ig
         run: |
+          DIR="kursmaterial/losningar/${{ matrix.steg }}"
           rm -rf test-ig/input/fsh
-          cp -r "kursmaterial/losningar/${{ matrix.steg }}/fsh" test-ig/input/fsh
+          cp -r "$DIR/fsh" test-ig/input/fsh
+          if [ -f "$DIR/dependencies.yaml" ]; then
+            cat "$DIR/dependencies.yaml" >> test-ig/sushi-config.yaml
+          fi
 
       - name: Bygg
         run: ./scripts/build-ig.sh "$IG_FOLDER"
