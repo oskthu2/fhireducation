@@ -111,6 +111,8 @@ jobs:
           IS_DEFAULT_BRANCH: ${{ github.ref_name == github.event.repository.default_branch }}
         run: |
           QA="$IG_FOLDER/output/qa.json"
+          # Skriv även alla fel och varningar till loggen
+          [ -f "$IG_FOLDER/output/qa.txt" ] && cat "$IG_FOLDER/output/qa.txt"
           {
             echo "## Bygge av IG"
             echo ""
@@ -129,6 +131,15 @@ jobs:
                 echo "- ℹ️ Grenen **${GITHUB_REF_NAME}** publiceras inte på GitHub Pages – bara huvudgrenen gör det."
               fi
               echo "- 📦 Hela webbplatsen finns också som artefakten **ig-output** längst ned på den här sidan."
+              if [ -f "$IG_FOLDER/output/qa.txt" ] && [ "$ERRS" != "0" ]; then
+                echo ""
+                echo "<details><summary>Fel från IG Publisher</summary>"
+                echo ""
+                echo '```'
+                grep -iE '(error|fatal)' "$IG_FOLDER/output/qa.txt" | head -50
+                echo '```'
+                echo "</details>"
+              fi
             elif [ -d "$IG_FOLDER/fsh-generated" ]; then
               echo "❌ SUSHI lyckades men IG Publisher misslyckades. Öppna steget **Kör IG Publisher** ovan och läs loggen."
             else

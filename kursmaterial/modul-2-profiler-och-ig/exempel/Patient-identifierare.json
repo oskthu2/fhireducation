@@ -1,0 +1,34 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-slicing",
+  "meta": {
+    "profile": [
+      "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"
+    ]
+  },
+  "identifier": [
+    {
+      "system": "urn:oid:1.2.752.123.456.1",
+      "value": "PAT-000777"
+    },
+    {
+      "system": "http://electronichealth.se/identifier/samordningsnummer",
+      "value": "199001721234"
+    },
+    {
+      "system": "http://electronichealth.se/identifier/personnummer",
+      "value": "199001012384"
+    },
+    {
+      "system": "http://electronichealth.se/identifier/personummer",
+      "value": "19900101-2384"
+    }
+  ],
+  "name": [
+    {
+      "family": "Testsson",
+      "given": ["Testa"]
+    }
+  ],
+  "birthDate": "1990-01-01"
+}

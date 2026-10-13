@@ -1,0 +1,145 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-tolvan",
+  "meta": {
+    "versionId": "3",
+    "lastUpdated": "2026-10-01T08:15:00+02:00",
+    "source": "#journalsystem-a",
+    "profile": [
+      "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"
+    ],
+    "security": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-Confidentiality",
+        "code": "N",
+        "display": "normal"
+      }
+    ],
+    "tag": [
+      {
+        "system": "http://example.org/fhir/education/CodeSystem/tagg",
+        "code": "testdata",
+        "display": "Testdata"
+      }
+    ]
+  },
+  "text": {
+    "status": "generated",
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p>Tolvan Tolvansson, man, född 1912-12-12. Personnummer 19121212-1212.</p></div>"
+  },
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired",
+      "valueBoolean": true
+    },
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/patient-nationality",
+      "extension": [
+        {
+          "url": "code",
+          "valueCodeableConcept": {
+            "coding": [
+              {
+                "system": "urn:iso:std:iso:3166",
+                "code": "SE",
+                "display": "Sweden"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "identifier": [
+    {
+      "use": "official",
+      "system": "http://electronichealth.se/identifier/personnummer",
+      "value": "191212121212"
+    },
+    {
+      "use": "secondary",
+      "system": "urn:oid:1.2.752.123.456.1",
+      "value": "PAT-000123"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "use": "official",
+      "family": "Tolvansson",
+      "given": ["Tolvan", "Bertil"]
+    },
+    {
+      "use": "nickname",
+      "given": ["Tolle"]
+    }
+  ],
+  "telecom": [
+    {
+      "system": "phone",
+      "value": "070-123 45 67",
+      "use": "mobile"
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1912-12-12",
+  "_birthDate": {
+    "extension": [
+      {
+        "url": "http://hl7.org/fhir/StructureDefinition/patient-birthTime",
+        "valueDateTime": "1912-12-12T04:30:00+01:00"
+      }
+    ]
+  },
+  "deceasedBoolean": false,
+  "address": [
+    {
+      "use": "home",
+      "type": "physical",
+      "line": ["Testgatan 12"],
+      "postalCode": "11122",
+      "city": "Stockholm",
+      "country": "SE",
+      "period": {
+        "start": "2001-05-01"
+      }
+    }
+  ],
+  "maritalStatus": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+        "code": "W",
+        "display": "Widowed"
+      }
+    ],
+    "text": "Änkling"
+  },
+  "communication": [
+    {
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "fi",
+            "display": "Finnish"
+          }
+        ]
+      },
+      "preferred": true
+    }
+  ],
+  "generalPractitioner": [
+    {
+      "reference": "Organization/vardcentralen-kurskoping",
+      "display": "Vårdcentralen Kursköping"
+    }
+  ],
+  "managingOrganization": {
+    "identifier": {
+      "system": "http://electronichealth.se/identifier/hsaid",
+      "value": "SE2321000016-KURS"
+    },
+    "display": "Region Kursköping"
+  }
+}

@@ -1,0 +1,122 @@
+# För kursledaren: kontrollerar att alla lösningar i kursmaterial/losningar bygger utan fel
+# och att valideringsövningen i modul 6 ger de fel som facit beskriver.
+#
+# Körs när lösningarna ändras, eller manuellt (Actions -> Kontrollera lösningar -> Run workflow).
+# Bra att köra några dagar före kurstillfället, eftersom IG Publisher och paketen uppdateras ofta.
+name: Kontrollera lösningar
+
+on:
+  push:
+    paths:
+      - 'kursmaterial/losningar/**'
+      - 'kursmaterial/modul-6-foljsamhet/exempel/**'
+      - '.github/workflows/kontrollera-losningar.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  IG_FOLDER: test-ig
+  SUSHI_VERSION: 3.20.1
+
+jobs:
+  ig:
+    name: Bygg ${{ matrix.steg }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        steg: [start, modul-3, modul-4, modul-6]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vecka (för cache)
+        id: meta
+        run: echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Installera Jekyll och SUSHI
+        run: |
+          gem install jekyll --no-document
+          npm install -g fsh-sushi@${SUSHI_VERSION}
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ hashFiles('test-ig/sushi-config.yaml') }}-${{ steps.meta.outputs.week }}
+          restore-keys: fhir-packages-
+
+      - uses: actions/cache@v4
+        with:
+          path: input-cache/publisher.jar
+          key: ig-publisher-${{ steps.meta.outputs.week }}
+
+      - name: Kopiera lösningen till test-ig
+        run: |
+          rm -rf test-ig/input/fsh
+          cp -r "kursmaterial/losningar/${{ matrix.steg }}/fsh" test-ig/input/fsh
+
+      - name: Bygg
+        run: ./scripts/build-ig.sh "$IG_FOLDER"
+
+      - name: Kontrollera kvalitetsrapporten
+        run: |
+          QA="$IG_FOLDER/output/qa.json"
+          ERRS=$(jq -r '.errs' "$QA")
+          WARNS=$(jq -r '.warnings' "$QA")
+          [ -f "$IG_FOLDER/output/qa.txt" ] && cat "$IG_FOLDER/output/qa.txt"
+          {
+            echo "### ${{ matrix.steg }}: ${ERRS} fel, ${WARNS} varningar"
+            if [ -f "$IG_FOLDER/output/qa.txt" ]; then
+              echo '```'
+              grep -iE '(error|fatal|warning)' "$IG_FOLDER/output/qa.txt" | head -50
+              echo '```'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ "$ERRS" != "0" ]; then
+            echo "::error::IG Publisher rapporterade ${ERRS} fel för ${{ matrix.steg }}"
+            exit 1
+          fi
+
+  validering:
+    name: Valideringsövning (modul 6)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installera SUSHI
+        run: npm install -g fsh-sushi@${SUSHI_VERSION}
+
+      - name: Kopiera lösningen efter modul 6 till test-ig
+        run: |
+          rm -rf test-ig/input/fsh
+          cp -r kursmaterial/losningar/modul-6/fsh test-ig/input/fsh
+
+      - name: Validera exempelinstanserna
+        run: |
+          # Instanserna innehåller avsiktliga fel, så valideringen förväntas misslyckas.
+          ./scripts/validate.sh validering/*.json kursmaterial/modul-6-foljsamhet/exempel/*.json || true
