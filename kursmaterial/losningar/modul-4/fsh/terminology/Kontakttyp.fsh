@@ -5,6 +5,7 @@ Id: kontakttyp
 Title: "Kontakttyp"
 Description: "Typ av vårdkontakt (fiktivt kodsystem för utbildningen)."
 * ^caseSensitive = true
+* ^experimental = true
 * #besok "Besök" "Fysiskt besök på en vårdenhet."
 * #hembesok "Hembesök" "Besök i patientens hem."
 * #video "Videokontakt" "Distanskontakt via video."
@@ -14,4 +15,5 @@ ValueSet: KontakttypVS
 Id: kontakttyp-vs
 Title: "Kontakttyp – ValueSet"
 Description: "Alla koder i kodsystemet Kontakttyp."
+* ^experimental = true
 * include codes from system KontakttypCS

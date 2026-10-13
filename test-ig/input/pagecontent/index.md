@@ -1,5 +1,3 @@
-# Välkommen till kursens IG
-
 Det här är den Implementation Guide (IG) som vi bygger upp under FHIR-utbildningen.
 
 Den byggs automatiskt med **SUSHI** och **IG Publisher** av GitHub Actions varje gång du checkar in en ändring

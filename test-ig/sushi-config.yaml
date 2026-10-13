@@ -21,6 +21,8 @@ jurisdiction: urn:iso:std:iso:3166#SE "Sweden"
 parameters:
   show-inherited-invariants: false
   usage-stats-opt-out: true
+  # Lås referenser till extensions som finns i flera paketversioner (t.ex. R4-kärnan och extensions-paketet)
+  pin-canonicals: pin-multiples
 
 pages:
   index.md:
