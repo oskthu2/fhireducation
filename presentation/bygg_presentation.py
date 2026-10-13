@@ -326,7 +326,7 @@ d.code(s, """"subject": {
 }""", MARGIN, CONTENT_TOP + I(0.1), I(5.8), I(1.6), lang="json", size=14, title="Bokstavlig (literal) referens")
 d.code(s, """"serviceProvider": {
   "identifier": {
-    "system": "http://electronichealth.se/identifier/hsaid",
+    "system": "urn:oid:1.2.752.29.4.19",
     "value": "SE2321000016-KURS"
   },
   "display": "Vårdcentralen Kursköping"

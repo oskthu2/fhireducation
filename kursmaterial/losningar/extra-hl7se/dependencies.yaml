@@ -1,0 +1,4 @@
+
+# Övning 3.6: HL7 Sveriges basprofiler
+dependencies:
+  hl7se.fhir.base: 1.1.0

@@ -26,4 +26,4 @@
 3. **Felet:** `status` = `"avslutad"`. `Encounter.status` har bindningen `required` till EncounterStatus. Tillåtna värden är `planned | arrived | triaged | in-progress | onleave | finished | cancelled | entered-in-error | unknown`. Rätt värde är `finished`.
 4. Ja. `Reference` kan innehålla `reference`, `identifier` och/eller `display`. Här är det en **logisk referens** via HSA-id.
 5. - Internationella: SNOMED CT (`http://snomed.info/sct`), HL7 v3 ActCode, ActPriority och ParticipationType (`terminology.hl7.org`), ICD-10 (`http://hl7.org/fhir/sid/icd-10`)
-   - Nationella: HSA-id (`http://electronichealth.se/identifier/hsaid`). I Sverige används ofta ICD-10-SE i stället för WHO:s ICD-10.
+   - Nationella: HSA-id (`urn:oid:1.2.752.29.4.19`, OID för HSA-katalogen, samma som i HL7 Sveriges basprofiler). I Sverige används ofta ICD-10-SE i stället för WHO:s ICD-10.

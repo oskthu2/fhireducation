@@ -10,7 +10,7 @@ Alias: $v3-MaritalStatus = http://terminology.hl7.org/CodeSystem/v3-MaritalStatu
 // Svenska identifierare
 Alias: $personnummer = http://electronichealth.se/identifier/personnummer
 Alias: $samordningsnummer = http://electronichealth.se/identifier/samordningsnummer
-Alias: $hsaid = http://electronichealth.se/identifier/hsaid
+Alias: $hsaid = urn:oid:1.2.752.29.4.19
 
 // Extensions från FHIR-standarden (R4)
 Alias: $patient-interpreterRequired = http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired

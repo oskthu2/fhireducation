@@ -137,7 +137,7 @@
   ],
   "managingOrganization": {
     "identifier": {
-      "system": "http://electronichealth.se/identifier/hsaid",
+      "system": "urn:oid:1.2.752.29.4.19",
       "value": "SE2321000016-KURS"
     },
     "display": "Region Kursköping"

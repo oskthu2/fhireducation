@@ -5,7 +5,11 @@
 #
 # Publicering (samma upplägg som Ineras IG-mall, via grenen gh-pages):
 #   huvudgrenen (main) -> https://<konto>.github.io/<repo>/
+#   facit-IG:n         -> https://<konto>.github.io/<repo>/facit/  (lösningen efter modul 6)
 #   övriga grenar      -> publiceras inte, men den byggda IG:n kan laddas ner som artefakt.
+#
+# Facit-IG:n byggs bara när den saknas på GitHub Pages, när lösningen har ändrats eller vid manuell körning,
+# så att vanliga byggen inte blir långsammare.
 name: Bygg IG
 
 on:
@@ -14,6 +18,7 @@ on:
       - 'test-ig/**'
       - '.env.fhir'
       - 'scripts/build-ig.sh'
+      - 'kursmaterial/losningar/modul-6/**'
       - '.github/workflows/build-ig.yml'
   workflow_dispatch:
 
@@ -95,14 +100,6 @@ jobs:
           path: ${{ env.IG_FOLDER }}/output/
           retention-days: 7
 
-      - name: Publicera till GitHub Pages (gh-pages-grenen)
-        if: github.ref_name == github.event.repository.default_branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ${{ env.IG_FOLDER }}/output
-          commit_message: "deploy: ${{ github.sha }}"
-
       - name: Sammanfattning
         if: always()
         env:
@@ -127,6 +124,7 @@ jobs:
               if [ "$IS_DEFAULT_BRANCH" = "true" ]; then
                 echo "- 🌐 Publicerad IG: ${PAGES_URL} (det kan ta en minut innan sidan uppdateras)"
                 echo "- 🔎 Kvalitetsrapport (alla fel och varningar): ${PAGES_URL}qa.html"
+                echo "- ✅ Facit-IG (lösningen efter modul 6): ${PAGES_URL}facit/"
               else
                 echo "- ℹ️ Grenen **${GITHUB_REF_NAME}** publiceras inte på GitHub Pages – bara huvudgrenen gör det."
               fi
@@ -151,3 +149,117 @@ jobs:
               echo "> *Deploy from a branch*, grenen **gh-pages** och mappen **/ (root)**. Spara och vänta en minut."
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+
+  facit:
+    name: Facit-IG (vid behov)
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      built: ${{ steps.need.outputs.need }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Behöver facit-IG:n byggas?
+        id: need
+        env:
+          EVENT: ${{ github.event_name }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          NEED=false
+          REASON=""
+          if [ "$EVENT" = "workflow_dispatch" ]; then NEED=true; REASON="manuell körning"; fi
+          if ! git cat-file -e origin/gh-pages:facit/index.html 2>/dev/null; then NEED=true; REASON="facit saknas på GitHub Pages"; fi
+          if [ -n "$BEFORE" ] && git cat-file -e "${BEFORE}^{commit}" 2>/dev/null \
+             && git diff --name-only "$BEFORE" "$GITHUB_SHA" | grep -q '^kursmaterial/losningar/modul-6/'; then
+            NEED=true; REASON="lösningen har ändrats"
+          fi
+          echo "need=${NEED}" >> "$GITHUB_OUTPUT"
+          echo "Bygg facit-IG: ${NEED} ${REASON}"
+
+      - name: Vecka (för cache)
+        if: steps.need.outputs.need == 'true'
+        id: meta
+        run: echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v4
+        if: steps.need.outputs.need == 'true'
+        with:
+          node-version: '20'
+
+      - uses: actions/setup-java@v4
+        if: steps.need.outputs.need == 'true'
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: ruby/setup-ruby@v1
+        if: steps.need.outputs.need == 'true'
+        with:
+          ruby-version: '3.3'
+
+      - name: Installera Jekyll och SUSHI
+        if: steps.need.outputs.need == 'true'
+        run: |
+          gem install jekyll --no-document
+          npm install -g fsh-sushi@${SUSHI_VERSION}
+
+      - uses: actions/cache@v4
+        if: steps.need.outputs.need == 'true'
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ hashFiles('test-ig/sushi-config.yaml') }}-${{ steps.meta.outputs.week }}
+          restore-keys: fhir-packages-
+
+      - uses: actions/cache@v4
+        if: steps.need.outputs.need == 'true'
+        with:
+          path: input-cache/publisher.jar
+          key: ig-publisher-${{ steps.meta.outputs.week }}
+
+      - name: Bygg facit-IG
+        if: steps.need.outputs.need == 'true'
+        run: |
+          cp -r "$IG_FOLDER" facit-ig
+          rm -rf facit-ig/input/fsh facit-ig/fsh-generated facit-ig/output
+          cp -r kursmaterial/losningar/modul-6/fsh facit-ig/input/fsh
+          sed -i 's/^title: .*/title: FHIR-utbildning – Kurs-IG (facit)/' facit-ig/sushi-config.yaml
+          ./scripts/build-ig.sh facit-ig
+
+      - name: Ladda upp facit-IG som artefakt
+        if: steps.need.outputs.need == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: facit-output
+          path: facit-ig/output/
+          retention-days: 7
+
+  deploy:
+    name: Publicera på GitHub Pages
+    needs: [build, facit]
+    if: always() && needs.build.result == 'success' && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hämta byggd IG
+        uses: actions/download-artifact@v4
+        with:
+          name: ig-output
+          path: site
+
+      - name: Hämta facit-IG
+        if: needs.facit.result == 'success' && needs.facit.outputs.built == 'true'
+        uses: actions/download-artifact@v4
+        with:
+          name: facit-output
+          path: site/facit
+
+      # keep_files: true gör att facit/ ligger kvar när bara kursens IG byggs om.
+      - name: Publicera till GitHub Pages (gh-pages-grenen)
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: site
+          keep_files: true
+          commit_message: "deploy: ${{ github.sha }}"

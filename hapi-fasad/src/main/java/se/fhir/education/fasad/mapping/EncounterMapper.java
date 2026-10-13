@@ -19,7 +19,7 @@ public final class EncounterMapper {
   public static final String KONTAKTTYP = "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp";
   public static final String ACT_CODE = "http://terminology.hl7.org/CodeSystem/v3-ActCode";
   public static final String ICD10 = "http://hl7.org/fhir/sid/icd-10";
-  public static final String HSAID = "http://electronichealth.se/identifier/hsaid";
+  public static final String HSAID = "urn:oid:1.2.752.29.4.19";
 
   private EncounterMapper() {
   }
