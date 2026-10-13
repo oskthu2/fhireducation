@@ -1,0 +1,20 @@
+FhirEducationKursIG
+=========================================
+
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</a>" expecting "</img>" at line 34 column 177 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 79 column 10 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 80 column 9 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 109 column 8 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 111 column 12 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 112 column 20 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 113 column 16 (STRUCTURE)
+Generic: line 0, col 0, Warning - The html source is not well formed: Found "</div>" expecting "</body>" at line 115 column 12 (STRUCTURE)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig.json: line 1, col 1078, Info - There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language (INVALID)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig.json: line 0, col 0, Info - The resource ImplementationGuide/fhir.education.kursig could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html) (BUSINESSRULE)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan.json: line 11, col 69, Warning - Ingen definition kunde hittas för URL-värdet 'http://electronichealth.se/identifier/personnummer' (INVALID)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient.json: line 1, col 24829, Info - There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language (INVALID)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient.json: line 1, col 33211, Info - extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|5.3.0 är föråldrad med noteringen: 'Use additionalBinding extension or element instead' (BUSINESSRULE)
+/home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient.json: line 0, col 0, Info - The resource StructureDefinition/EducationPatient could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html) (BUSINESSRULE)
+
+err = 0, warn = 9, info = 5, broken links = 0
+IG Publisher Version: 3.0.0

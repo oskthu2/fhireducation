@@ -1,0 +1,14 @@
+[{
+  "id" : "fhir.education.kursig",
+  "type" : "ImplementationGuide",
+  "url" : "http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig",
+  "version" : "0.1.0",
+  "name" : "FhirEducationKursIG"
+},
+{
+  "id" : "EducationPatient",
+  "type" : "StructureDefinition",
+  "url" : "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient",
+  "version" : "0.1.0",
+  "name" : "EducationPatient"
+}]

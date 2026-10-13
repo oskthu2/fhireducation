@@ -1,0 +1,29 @@
+FhirEducationKursIG : Validation Results
+=========================================
+
+err = 0, warn = 9, info = 5, broken links = 0
+IG Publisher Version: 3.0.0
+Generated Tue Oct 13 14:35:31 UTC 2026. FHIR version 4.0.1 for fhir.education.kursig#0.1.0 (canonical = http://example.org/fhir/education/kursig)
+ Build Errors : 0 / 8 / 0
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig : 0 / 0 / 3
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan : 0 / 1 / 1
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 0 / 0 / 4
+</table>
+== n/a ==
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</a>" expecting "</img>" at line 34 column 177
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 79 column 10
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 80 column 9
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 109 column 8
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 111 column 12
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 112 column 20
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 113 column 16
+WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 115 column 12
+== fsh-generated/resources/ImplementationGuide-fhir.education.kursig.json ==
+INFORMATION: ImplementationGuide/fhir.education.kursig: ImplementationGuide.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: Resource: The resource ImplementationGuide/fhir.education.kursig could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/Patient-patient-tolvan.json ==
+WARNING: Patient/patient-tolvan: Patient.identifier[0].system: Ingen definition kunde hittas för URL-värdet 'http://electronichealth.se/identifier/personnummer'
+== fsh-generated/resources/StructureDefinition-EducationPatient.json ==
+INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.snapshot.element[4].binding.extension[0]: extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|5.3.0 är föråldrad med noteringen: 'Use additionalBinding extension or element instead'
+INFORMATION: Resource: The resource StructureDefinition/EducationPatient could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)

@@ -1,0 +1,20 @@
+# fhir.education.kursig#0.1.0: FHIR-utbildning – Kurs-IG
+
+## Pages
+
+* [Hem](index.md)
+* [Artifacts Summary](artifacts.md)
+
+## Resources
+
+### Resource Profiles
+
+* [Education Patient](StructureDefinition-EducationPatient.md)
+
+### ImplementationGuides
+
+* [FHIR-utbildning – Kurs-IG](index.md)
+
+### Examples
+
+* [patient-tolvan (Patient)](Patient-patient-tolvan.md)
