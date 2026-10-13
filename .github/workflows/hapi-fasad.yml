@@ -1,0 +1,76 @@
+# Bygger och testar HAPI FHIR-fasaden (modul 5) och provkör den.
+#
+# Körs när du checkar in en ändring under hapi-fasad/. Svaren från några anrop mot den
+# startade servern visas i jobbets sammanfattning (fliken Actions -> körningen).
+name: HAPI-fasad
+
+on:
+  push:
+    paths:
+      - 'hapi-fasad/**'
+      - '.github/workflows/hapi-fasad.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: hapi-fasad-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Bygg, testa och provkör
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: hapi-fasad
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installera Java och Maven-cache
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Bygg och kör tester
+        run: mvn -B verify
+
+      - name: Starta fasaden
+        run: |
+          nohup java -jar target/hapi-fasad-0.1.0.jar > fasad.log 2>&1 &
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8080/fhir/metadata > /dev/null && exit 0
+            sleep 1
+          done
+          cat fasad.log
+          exit 1
+
+      - name: Provkör API:t
+        run: |
+          BASE=http://localhost:8080/fhir
+          call() {
+            echo "### \`GET $1\`"
+            echo ""
+            echo '```json'
+            curl -s "$BASE/$1"
+            echo ""
+            echo '```'
+            echo ""
+          }
+          {
+            echo "## Provkörning av FHIR-fasaden"
+            echo ""
+            echo "### CapabilityStatement i korthet (\`GET metadata\`)"
+            echo ""
+            echo "| Resurs | Interaktioner | Sökparametrar | Profil |"
+            echo "|---|---|---|---|"
+            curl -s "$BASE/metadata" | jq -r '.rest[0].resource[] | "| \(.type) | \([.interaction[]?.code] | join(", ")) | \([.searchParam[]?.name] | join(", ")) | \(.supportedProfile // [] | join(", ")) |"'
+            echo ""
+            call "Patient/191212121212"
+            call "Patient?identifier=http://electronichealth.se/identifier/personnummer|194208106593"
+            call "Encounter?patient=191212121212"
+          } >> "$GITHUB_STEP_SUMMARY"

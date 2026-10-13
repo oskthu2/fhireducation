@@ -1,0 +1,142 @@
+# Bygger kursens IG med SUSHI + IG Publisher och publicerar resultatet på GitHub Pages.
+#
+# Körs automatiskt när du checkar in en ändring under test-ig/ (t.ex. en .fsh-fil),
+# och kan också startas manuellt under fliken Actions ("Run workflow").
+#
+# Publicering (samma upplägg som Ineras IG-mall, via grenen gh-pages):
+#   huvudgrenen (main) -> https://<konto>.github.io/<repo>/
+#   övriga grenar      -> publiceras inte, men den byggda IG:n kan laddas ner som artefakt.
+name: Bygg IG
+
+on:
+  push:
+    paths:
+      - 'test-ig/**'
+      - '.env.fhir'
+      - 'scripts/build-ig.sh'
+      - '.github/workflows/build-ig.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: build-ig-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  pages: read
+
+env:
+  IG_FOLDER: test-ig
+  SUSHI_VERSION: 3.20.1
+
+jobs:
+  build:
+    name: SUSHI + IG Publisher
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Bestäm publiceringsadress
+        id: meta
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          OWNER_LC=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
+          echo "pages_url=https://${OWNER_LC}.github.io/${REPO}/" >> "$GITHUB_OUTPUT"
+          echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Installera Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installera Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installera Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+
+      - name: Installera Jekyll och SUSHI
+        run: |
+          gem install jekyll --no-document
+          npm install -g fsh-sushi@${SUSHI_VERSION}
+
+      - name: Återställ cache för FHIR-paket
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-${{ hashFiles('test-ig/sushi-config.yaml') }}-${{ steps.meta.outputs.week }}
+          restore-keys: fhir-packages-
+
+      - name: Återställ cache för IG Publisher
+        uses: actions/cache@v4
+        with:
+          path: input-cache/publisher.jar
+          # Ny vecka = ny nedladdning av senaste IG Publisher.
+          key: ig-publisher-${{ steps.meta.outputs.week }}
+
+      - name: Kör SUSHI (FSH -> FHIR)
+        run: ./scripts/build-ig.sh "$IG_FOLDER" --sushi-only
+
+      - name: Kör IG Publisher (FHIR -> webbplats)
+        run: ./scripts/build-ig.sh "$IG_FOLDER" --publisher-only
+
+      - name: Ladda upp byggd IG som artefakt
+        uses: actions/upload-artifact@v4
+        with:
+          name: ig-output
+          path: ${{ env.IG_FOLDER }}/output/
+          retention-days: 7
+
+      - name: Publicera till GitHub Pages (gh-pages-grenen)
+        if: github.ref_name == github.event.repository.default_branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ${{ env.IG_FOLDER }}/output
+          commit_message: "deploy: ${{ github.sha }}"
+
+      - name: Sammanfattning
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PAGES_URL: ${{ steps.meta.outputs.pages_url }}
+          IS_DEFAULT_BRANCH: ${{ github.ref_name == github.event.repository.default_branch }}
+        run: |
+          QA="$IG_FOLDER/output/qa.json"
+          {
+            echo "## Bygge av IG"
+            echo ""
+            if [ -f "$QA" ]; then
+              ERRS=$(jq -r '.errs // "?"' "$QA")
+              WARNS=$(jq -r '.warnings // "?"' "$QA")
+              HINTS=$(jq -r '.hints // "?"' "$QA")
+              echo "| Fel | Varningar | Tips |"
+              echo "|-----|-----------|------|"
+              echo "| ${ERRS} | ${WARNS} | ${HINTS} |"
+              echo ""
+              if [ "$IS_DEFAULT_BRANCH" = "true" ]; then
+                echo "- 🌐 Publicerad IG: ${PAGES_URL} (det kan ta en minut innan sidan uppdateras)"
+                echo "- 🔎 Kvalitetsrapport (alla fel och varningar): ${PAGES_URL}qa.html"
+              else
+                echo "- ℹ️ Grenen **${GITHUB_REF_NAME}** publiceras inte på GitHub Pages – bara huvudgrenen gör det."
+              fi
+              echo "- 📦 Hela webbplatsen finns också som artefakten **ig-output** längst ned på den här sidan."
+            elif [ -d "$IG_FOLDER/fsh-generated" ]; then
+              echo "❌ SUSHI lyckades men IG Publisher misslyckades. Öppna steget **Kör IG Publisher** ovan och läs loggen."
+            else
+              echo "❌ SUSHI misslyckades. Öppna steget **Kör SUSHI** ovan – felen står med rad och fil i loggen."
+            fi
+            echo ""
+            if [ "$IS_DEFAULT_BRANCH" = "true" ] && ! gh api "repos/${GITHUB_REPOSITORY}/pages" >/dev/null 2>&1; then
+              echo "> ⚠️ **GitHub Pages är inte aktiverat ännu.** Gå till *Settings → Pages*, välj"
+              echo "> *Deploy from a branch*, grenen **gh-pages** och mappen **/ (root)**. Spara och vänta en minut."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

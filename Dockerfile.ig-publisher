@@ -9,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends curl git ruby-full build-essential zlib1g-dev nodejs npm ca-certificates && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
-    npm install -g fsh-sushi@3.16.5 && \
+    npm install -g fsh-sushi@3.20.1 && \
     gem install jekyll && \
     adduser --disabled-password --gecos "" "$APPLICATION_USER" && \
     mkdir -p /home/$APPLICATION_USER/.fhir && \

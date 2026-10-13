@@ -3,3 +3,6 @@ temp/
 template/
 input-cache/
 node_modules/
+fsh-generated/
+target/
+mina-filer/

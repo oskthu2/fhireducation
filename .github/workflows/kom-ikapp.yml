@@ -1,0 +1,73 @@
+# "Kom ikapp" – ersätter FSH-filerna i test-ig/input/fsh med lösningen efter en viss modul.
+#
+# Använd den om du hamnat efter: Actions -> Kom ikapp -> Run workflow -> välj modul.
+# Arbetsflödet checkar in lösningen på den gren du väljer och startar sedan bygget.
+# Dina tidigare filer finns kvar i git-historiken (och sparas i mappen mina-filer/).
+name: Kom ikapp
+
+on:
+  workflow_dispatch:
+    inputs:
+      modul:
+        description: 'Kom ikapp till läget efter modul'
+        required: true
+        type: choice
+        options:
+          - '3'
+          - '4'
+          - '6'
+          - start
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  catch-up:
+    name: Kopiera lösning
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ersätt FSH-filer
+        env:
+          MODUL: ${{ inputs.modul }}
+        run: |
+          if [ "$MODUL" = "start" ]; then
+            SRC="kursmaterial/losningar/start/fsh"
+          else
+            SRC="kursmaterial/losningar/modul-${MODUL}/fsh"
+          fi
+          [ -d "$SRC" ] || { echo "Hittar inte $SRC"; exit 1; }
+
+          BACKUP="mina-filer/$(date +%Y%m%d-%H%M%S)"
+          mkdir -p "$BACKUP"
+          cp -r test-ig/input/fsh "$BACKUP/"
+
+          rm -rf test-ig/input/fsh
+          cp -r "$SRC" test-ig/input/fsh
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A test-ig/input/fsh "$BACKUP"
+          if git diff --cached --quiet; then
+            echo "Inga ändringar – du är redan ikapp."
+          else
+            git commit -m "Kom ikapp: lösning efter modul ${MODUL}"
+            git push
+          fi
+
+      # Incheckningar som görs av GITHUB_TOKEN startar inte andra arbetsflöden automatiskt,
+      # så vi startar bygge och validering uttryckligen.
+      - name: Starta bygge och validering
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh workflow run build-ig.yml --ref "${GITHUB_REF_NAME}"
+          gh workflow run validera.yml --ref "${GITHUB_REF_NAME}"
+          {
+            echo "## Kom ikapp"
+            echo ""
+            echo "Lösningen efter modul **${{ inputs.modul }}** finns nu i \`test-ig/input/fsh\`."
+            echo "Bygget och valideringen har startats – se fliken Actions."
+          } >> "$GITHUB_STEP_SUMMARY"
