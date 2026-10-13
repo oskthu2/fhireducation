@@ -1,0 +1,4 @@
+== Suppressed Messages ==
+
+# Display-namn för Sverige finns inte på sv-SE på terminologiservern – acceptabelt
+There are no valid display names found for the code urn:iso:std:iso:3166#SE

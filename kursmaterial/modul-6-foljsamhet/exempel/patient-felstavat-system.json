@@ -1,0 +1,22 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-felstavat",
+  "meta": {
+    "profile": ["http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"]
+  },
+  "identifier": [
+    {
+      "system": "http://electronichealth.se/identifier/personumer",
+      "value": "1912121212"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "family": "Tolvansson",
+      "given": ["Tolvan"]
+    }
+  ],
+  "gender": "male",
+  "birthDate": "1912-12-12"
+}

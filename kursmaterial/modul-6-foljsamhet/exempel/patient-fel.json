@@ -1,0 +1,21 @@
+{
+  "resourceType": "Patient",
+  "id": "patient-tolvina",
+  "meta": {
+    "profile": ["http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"]
+  },
+  "identifier": [
+    {
+      "system": "http://electronichealth.se/identifier/personnummer",
+      "value": "19121212-1212"
+    }
+  ],
+  "name": [
+    {
+      "use": "official",
+      "given": ["Tolvina"]
+    }
+  ],
+  "gender": "kvinna",
+  "birthDate": "2099-12-12"
+}

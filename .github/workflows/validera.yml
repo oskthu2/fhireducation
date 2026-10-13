@@ -1,0 +1,70 @@
+# Validerar FHIR-instanser (JSON) i mappen validering/ mot kursens profiler med HL7 FHIR Validator.
+#
+# Körs när du checkar in en fil i validering/ eller ändrar FSH-filerna i test-ig/.
+# Resultatet visas som en tabell i jobbets sammanfattning (fliken Actions -> körningen).
+# Grön bock = alla instanser är giltiga. Rött kryss = minst en instans har fel.
+name: Validera instanser
+
+on:
+  push:
+    paths:
+      - 'validering/**'
+      - 'test-ig/input/fsh/**'
+      - 'test-ig/sushi-config.yaml'
+      - 'scripts/validate.sh'
+      - 'scripts/summarize-validation.py'
+      - '.github/workflows/validera.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: validera-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  IG_FOLDER: test-ig
+  SUSHI_VERSION: 3.20.1
+
+jobs:
+  validate:
+    name: FHIR Validator
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vecka (för cache)
+        id: meta
+        run: echo "week=$(date +%G-%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Installera Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installera Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Installera SUSHI
+        run: npm install -g fsh-sushi@${SUSHI_VERSION}
+
+      - name: Återställ cache för FHIR-paket
+        uses: actions/cache@v4
+        with:
+          path: ~/.fhir/packages
+          key: fhir-packages-validator-${{ steps.meta.outputs.week }}
+          restore-keys: fhir-packages-
+
+      - name: Återställ cache för FHIR Validator
+        uses: actions/cache@v4
+        with:
+          path: input-cache/validator_cli.jar
+          key: fhir-validator-${{ steps.meta.outputs.week }}
+
+      - name: Validera
+        run: ./scripts/validate.sh

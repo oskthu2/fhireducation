@@ -1,0 +1,26 @@
+{
+  // Valfri utvecklingsmiljö i webbläsaren via GitHub Codespaces (Code -> Codespaces -> Create codespace).
+  // Innehåller Java 17 + Maven, Node.js (SUSHI), Ruby/Jekyll (IG Publisher) och Docker (HAPI-sandlådan).
+  "name": "FHIR-utbildning",
+  "image": "mcr.microsoft.com/devcontainers/base:bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installMaven": "true"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends ruby-full build-essential zlib1g-dev && sudo gem install jekyll --no-document && npm install -g fsh-sushi@3.20.1",
+  "forwardPorts": [8080, 3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "MITRE-Health.vscode-language-fsh",
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  }
+}

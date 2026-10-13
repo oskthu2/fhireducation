@@ -1,13 +1,33 @@
-id: se.inera.education.testig
-canonical: http://example.org/fhir/se/inera/education/testig
-name: IneraEducationTestIG
-title: Inera Education Test Implementation Guide
-description: En minimal IG för FHIR-utbildning.
+# Konfiguration för SUSHI och IG Publisher.
+# fhirVersion skrivs över av byggskripten utifrån FHIR_VERSION i .env.fhir (v4 = 4.0.1).
+# Kursens övningar är skrivna för FHIR R4.
+id: fhir.education.kursig
+canonical: http://example.org/fhir/education/kursig
+name: FhirEducationKursIG
+title: FHIR-utbildning – Kurs-IG
+description: En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen.
 status: draft
 version: 0.1.0
 fhirVersion: 4.0.1
 copyrightYear: 2026+
 releaseLabel: ci-build
+license: CC0-1.0
+
+publisher:
+  name: FHIR-utbildning
+
+jurisdiction: urn:iso:std:iso:3166#SE "Sweden"
+
+parameters:
+  show-inherited-invariants: false
+  usage-stats-opt-out: true
+  # Lås referenser till extensions som finns i flera paketversioner (t.ex. R4-kärnan och extensions-paketet)
+  pin-canonicals: pin-multiples
+
+pages:
+  index.md:
+    title: Hem
 
 menu:
-  Home: index.html
+  Hem: index.html
+  Artefakter: artifacts.html
