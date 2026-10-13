@@ -1,0 +1,62 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/Patient/patient-tolvan> a fhir:Patient ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:Resource.id [ fhir:value "patient-tolvan"] ;
+  fhir:Resource.meta [
+     fhir:Meta.profile [
+       fhir:value "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient" ;
+       fhir:index 0 ;
+       fhir:link <http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient>
+     ]
+  ] ;
+  fhir:DomainResource.text [
+     fhir:Narrative.status [ fhir:value "generated" ] ;
+     fhir:Narrative.div "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: Patient patient-tolvan</b></p><a name=\"patient-tolvan\"> </a><a name=\"hcpatient-tolvan\"> </a><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\"/><p style=\"margin-bottom: 0px\">Profil: <a href=\"StructureDefinition-EducationPatient.html\">Education Patient</a></p></div><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\">Tolvan Tolvansson (official) Male, Födelsedatum: 1912-12-12 ( http://electronichealth.se/identifier/personnummer#191212121212)</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Känt civilstånd för patienten\">Civilstånd:</td><td colspan=\"3\"><span title=\"Koder:{http://terminology.hl7.org/CodeSystem/v3-MaritalStatus M}\">Married</span></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Indicates whether an interpreter is required to facilitate communication in a healthcare setting. While this extension is named patient-interpreterRequired for backwards compatibility, it may also be used on RelatedPerson, Practitioner, Encounter, Appointment and ServiceRequest.\"><a href=\"http://hl7.org/fhir/extensions/5.3.0/StructureDefinition-patient-interpreterRequired.html\">Interpreter Required</a></td><td colspan=\"3\">false</td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Anger om patienten har skyddade personuppgifter (t.ex. sekretessmarkering eller skyddad folkbokföring).\"><a href=\"StructureDefinition-SkyddadIdentitet.html\">Skyddad identitet</a></td><td colspan=\"3\">false</td></tr></table></div>"
+  ] ;
+  fhir:DomainResource.extension [
+     fhir:index 0 ;
+     fhir:Extension.url [ fhir:value "http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired" ] ;
+     fhir:Extension.valueBoolean [ fhir:value "false"^^xsd:boolean ]
+  ], [
+     fhir:index 1 ;
+     fhir:Extension.url [ fhir:value "http://example.org/fhir/education/kursig/StructureDefinition/SkyddadIdentitet" ] ;
+     fhir:Extension.valueBoolean [ fhir:value "false"^^xsd:boolean ]
+  ] ;
+  fhir:Patient.identifier [
+     fhir:index 0 ;
+     fhir:Identifier.system [ fhir:value "http://electronichealth.se/identifier/personnummer" ] ;
+     fhir:Identifier.value [ fhir:value "191212121212" ]
+  ] ;
+  fhir:Patient.name [
+     fhir:index 0 ;
+     fhir:HumanName.use [ fhir:value "official" ] ;
+     fhir:HumanName.family [ fhir:value "Tolvansson" ] ;
+     fhir:HumanName.given [
+       fhir:value "Tolvan" ;
+       fhir:index 0
+     ]
+  ] ;
+  fhir:Patient.gender [ fhir:value "male"] ;
+  fhir:Patient.birthDate [ fhir:value "1912-12-12"^^xsd:date] ;
+  fhir:Patient.maritalStatus [
+     fhir:CodeableConcept.coding [
+       fhir:index 0 ;
+       fhir:Coding.system [ fhir:value "http://terminology.hl7.org/CodeSystem/v3-MaritalStatus" ] ;
+       fhir:Coding.code [ fhir:value "M" ] ;
+       fhir:Coding.display [ fhir:value "Married" ]
+     ]
+  ] .
+
+# - ontology header ------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/Patient/patient-tolvan.ttl> a owl:Ontology ;
+  owl:imports fhir:fhir.ttl .
+
+# -------------------------------------------------------------------------------------
+

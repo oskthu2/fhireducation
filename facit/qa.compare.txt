@@ -1,0 +1,71 @@
+FhirEducationKursIG : Validation Results
+=========================================
+
+err = 0, warn = 17, info = 25, broken links = 0
+$--
+Generated $--. FHIR version $-- for fhir.education.kursig#$-- (canonical = http://example.org/fhir/education/kursig)
+ Build Errors : 0 / 8 / 0
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/CapabilityStatement-EducationServerCapabilities : 0 / 0 / 3
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/CodeSystem-kontakttyp : 0 / 1 / 2
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/Encounter-encounter-tolvan-1 : 0 / 1 / 4
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig : 0 / 0 / 3
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/Patient-patient-tolvan : 0 / 1 / 2
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/StructureDefinition-EducationEncounter : 0 / 4 / 4
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 0 / 0 / 5
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/StructureDefinition-SkyddadIdentitet : 0 / 0 / 3
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/ValueSet-education-encounter-class : 0 / 1 / 7
+ /home/runner/work/fhireducation/fhireducation/facit-ig/fsh-generated/resources/ValueSet-kontakttyp-vs : 0 / 1 / 2
+</table>
+== n/a ==
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</a>" expecting "</img>" at line 34 column 177
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 79 column 10
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 80 column 9
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 109 column 8
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 111 column 12
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 112 column 20
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 113 column 16
+WARNING: /home/runner/work/fhireducation/fhireducation/facit-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 115 column 12
+== fsh-generated/resources/CapabilityStatement-EducationServerCapabilities.json ==
+INFORMATION: CapabilityStatement/EducationServerCapabilities: CapabilityStatement.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: Resource: The resource CapabilityStatement/EducationServerCapabilities could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/CodeSystem-kontakttyp.json ==
+INFORMATION: CodeSystem/kontakttyp: CodeSystem.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+WARNING: Resource: The resource CodeSystem/kontakttyp should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/Encounter-encounter-tolvan-1.json ==
+INFORMATION: Encounter/encounter-tolvan-1: Encounter.class.display: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#AMB för språk 'sv-SE'. Visningen är 'ambulatory' vilket är standardspråksvisningen
+INFORMATION: Encounter/encounter-tolvan-1: Encounter.class: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#AMB för språk 'sv-SE'. Visningen är 'ambulatory' vilket är standardspråksvisningen
+INFORMATION: Encounter/encounter-tolvan-1: Encounter.reasonCode[0]: Ingen av de angivna codings finns i värdemängden 'Encounter Reason Codes' (http://hl7.org/fhir/ValueSet/encounter-reason|4.0.1), och en coding rekommenderas komma från denna värdemängd (koder = http://hl7.org/fhir/sid/icd-10#J45.9)
+WARNING: Encounter/encounter-tolvan-1: Encounter.serviceProvider.identifier.system: Ingen definition kunde hittas för URL-värdet 'urn:oid:1.2.752.29.4.19'
+== fsh-generated/resources/ImplementationGuide-fhir.education.kursig.json ==
+INFORMATION: ImplementationGuide/fhir.education.kursig: ImplementationGuide.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: Resource: The resource ImplementationGuide/fhir.education.kursig could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/Patient-patient-tolvan.json ==
+WARNING: Patient/patient-tolvan: Patient.identifier[0].system: Ingen definition kunde hittas för URL-värdet 'http://electronichealth.se/identifier/personnummer'
+INFORMATION: Patient/patient-tolvan: Patient.maritalStatus.coding[0].display: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-MaritalStatus#M för språk 'sv-SE'. Visningen är 'Married' vilket är standardspråksvisningen
+== fsh-generated/resources/StructureDefinition-EducationEncounter.json ==
+INFORMATION: StructureDefinition/EducationEncounter: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: StructureDefinition/EducationEncounter: StructureDefinition.snapshot.element[4].binding.extension[0]: extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|5.3.0 är föråldrad med noteringen: 'Use additionalBinding extension or element instead'
+WARNING: StructureDefinition/EducationEncounter: StructureDefinition.differential.element[2].binding: Definitionen för elementet 'Encounter.class' binder till värdemängden 'http://example.org/fhir/education/kursig/ValueSet/education-encounter-class' som är experimentell, men denna struktur är inte märkt som experimentell
+WARNING: StructureDefinition/EducationEncounter: StructureDefinition.differential.element[3].binding: Definitionen för elementet 'Encounter.type' binder till värdemängden 'http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs' som är experimentell, men denna struktur är inte märkt som experimentell
+WARNING: StructureDefinition/EducationEncounter: StructureDefinition.snapshot.element[17].binding: Definitionen för elementet 'Encounter.class' binder till värdemängden 'http://example.org/fhir/education/kursig/ValueSet/education-encounter-class' som är experimentell, men denna struktur är inte märkt som experimentell
+WARNING: StructureDefinition/EducationEncounter: StructureDefinition.snapshot.element[24].binding: Definitionen för elementet 'Encounter.type' binder till värdemängden 'http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs' som är experimentell, men denna struktur är inte märkt som experimentell
+INFORMATION: Resource: The resource StructureDefinition/EducationEncounter could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/StructureDefinition-EducationPatient.json ==
+INFORMATION: StructureDefinition.snapshot.element[8].type[0].profile[0]: Pinned the version of http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired to 5.3.0 from choices of 4.0.1 (hl7.fhir.r4.core#4.0.1), 5.3.0 (hl7.fhir.uv.extensions.r4#5.3.0)
+INFORMATION: StructureDefinition.differential.element[2].type[0].profile[0]: Pinned the version of http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired to 5.3.0 from choices of 4.0.1 (hl7.fhir.r4.core#4.0.1), 5.3.0 (hl7.fhir.uv.extensions.r4#5.3.0)
+INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: Resource: The resource StructureDefinition/EducationPatient could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/StructureDefinition-SkyddadIdentitet.json ==
+INFORMATION: StructureDefinition/SkyddadIdentitet: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: Resource: The resource StructureDefinition/SkyddadIdentitet could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/ValueSet-education-encounter-class.json ==
+INFORMATION: ValueSet/education-encounter-class: ValueSet.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: ValueSet/education-encounter-class: ValueSet.compose.include[0].concept[0]: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#AMB för språk 'sv-SE'. Visningen är 'ambulatory' vilket är standardspråksvisningen. Observera att visningen i ValueSet inte behöver matcha; denna kontroll finns för att hjälpa till att kontrollera att det inte av misstag är fel kod
+INFORMATION: ValueSet/education-encounter-class: ValueSet.compose.include[0].concept[1]: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#IMP för språk 'sv-SE'. Visningen är 'inpatient encounter' vilket är standardspråksvisningen. Observera att visningen i ValueSet inte behöver matcha; denna kontroll finns för att hjälpa till att kontrollera att det inte av misstag är fel kod
+INFORMATION: ValueSet/education-encounter-class: ValueSet.compose.include[0].concept[2]: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#EMER för språk 'sv-SE'. Visningen är 'emergency' vilket är standardspråksvisningen. Observera att visningen i ValueSet inte behöver matcha; denna kontroll finns för att hjälpa till att kontrollera att det inte av misstag är fel kod
+INFORMATION: ValueSet/education-encounter-class: ValueSet.compose.include[0].concept[3]: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#HH för språk 'sv-SE'. Visningen är 'home health' vilket är standardspråksvisningen. Observera att visningen i ValueSet inte behöver matcha; denna kontroll finns för att hjälpa till att kontrollera att det inte av misstag är fel kod
+INFORMATION: ValueSet/education-encounter-class: ValueSet.compose.include[0].concept[4]: Inga giltiga visningsnamn hittades för koden http://terminology.hl7.org/CodeSystem/v3-ActCode#VR för språk 'sv-SE'. Visningen är 'virtual' vilket är standardspråksvisningen. Observera att visningen i ValueSet inte behöver matcha; denna kontroll finns för att hjälpa till att kontrollera att det inte av misstag är fel kod
+WARNING: Resource: The resource ValueSet/education-encounter-class should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+== fsh-generated/resources/ValueSet-kontakttyp-vs.json ==
+INFORMATION: ValueSet/kontakttyp-vs: ValueSet.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+WARNING: Resource: The resource ValueSet/kontakttyp-vs should have an OID assigned to cater for possible use with OID based terminology systems e.g. CDA usage (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)

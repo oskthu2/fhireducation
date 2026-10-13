@@ -1,0 +1,378 @@
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <title>Krav på FHIR-server för Kurs-IG - JSON Representation - FHIR-utbildning – Kurs-IG (facit) v0.1.0</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="http://hl7.org/fhir"/>
+
+    <link href="fhir.css" rel="stylesheet"/>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap-fhir.css" rel="stylesheet"/>
+
+    <!-- Project extras -->
+    <link href="assets/css/project.css" rel="stylesheet"/>
+    <link href="assets/css/pygments-manni.css" rel="stylesheet"/>
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+  	<link href="assets/css/prism.css" rel="stylesheet" />
+  	<link href="assets/css/cqf.css" rel="stylesheet" />
+    <!-- Placeholder for child template CSS declarations -->
+
+    <script type="text/javascript" src="fhir-table-scripts.js"> </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/icon-fhir-144.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/icon-fhir-114.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/icon-fhir-72.png"/>
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/icon-fhir-57.png"/>
+    <link rel="shortcut icon" href="assets/ico/favicon.png"/>
+  </head>
+  <body onload="document.body.style.opacity='1'">
+
+	  <script src="assets/js/prism.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid-init.js"></script>
+    <style type="text/css">h2{--heading-prefix:"2.1"}
+    h3,h4,h5,h6{--heading-prefix:"2.1"}</style>
+    <div id="segment-header" class="segment">  <!-- segment-header -->
+      <div class="container">  <!-- container -->
+
+        <!-- Placeholder for child template header declarations -->
+
+
+        <div id="ig-status">
+          <p><span style="font-size:12pt;font-weight:bold">FHIR-utbildning – Kurs-IG (facit)</span>
+            <br/>
+            <span style="display:inline-block;">0.1.0 - ci-build
+
+
+
+  <img alt="Sweden flag" src="assets/images/swe.svg" height="16" title="Sweden"/>
+
+
+            </span>
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>  <!-- /segment-header -->
+
+    <div id="segment-navbar" class="segment">  <!-- segment-navbar -->
+      <div id="stripe"> </div>
+      <div class="container">  <!-- container -->
+        <!-- HEADER CONTENT -->
+
+        <nav class="navbar navbar-inverse">
+          <!--status-bar-->
+          <div class="container">
+            <button data-target=".navbar-inverse-collapse" class="navbar-toggle" data-toggle="collapse" type="button">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+            </button>
+            <a class="navbar-brand hidden" href="http://hl7.org/fhir/R4/index.html">FHIR</a>
+            <div class="nav-collapse collapse navbar-inverse-collapse">
+              <!-- menu.xml  -->
+
+<ul xmlns="http://www.w3.org/1999/xhtml" class="nav navbar-nav">
+  <li>
+    <a href="index.html">Hem</a>
+  </li>
+  <li>
+    <a href="artifacts.html">Artefakter</a>
+  </li>
+</ul>
+            </div>  <!-- /.nav-collapse -->
+          </div>  <!-- /.container -->
+        </nav>  <!-- /.navbar -->
+      <!-- /HEADER CONTENT -->
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-navbar -->
+    <!--status-bar-->
+
+    <div id="segment-breadcrumb" class="segment">  <!-- segment-breadcrumb -->
+      <div class="container">  <!-- container -->
+        <ul class="breadcrumb">
+          <li><a href='toc.html'><b>Table of Contents</b></a></li><li><a href='artifacts.html'><b>Artifacts Summary</b></a></li><li><b>Krav på FHIR-server för Kurs-IG</b></li>
+
+        </ul>
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-breadcrumb -->
+
+    <a name="top"> </a>
+    <div id="segment-content" class="segment">  <!-- segment-content -->
+      <div class="container">  <!-- container -->
+        <div class="row">
+          <div class="inner-wrapper">
+
+<div style="counter-reset: section 8" class="col-12">
+<!--ReleaseHeader--><p id="publish-box">FHIR-utbildning – Kurs-IG (facit) - Lokal utvecklingsbygge (v0.1.0) byggt av FHIR (HL7® FHIR® Standard) Build Tools. Se <a href='http://example.org/fhir/education/kursig/history.html'>katalogen över publicerade versioner</a></p><!--EndReleaseHeader-->
+
+
+
+
+
+
+
+
+
+<ul class="nav nav-tabs">
+
+  <li>
+    <a href="CapabilityStatement-EducationServerCapabilities.html">Narrative Content</a>
+  </li>
+
+
+
+  
+    <li>
+      <a href="CapabilityStatement-EducationServerCapabilities.xml.html">XML</a>
+    </li>
+  
+
+
+  
+    <li class="active">
+      <a href="#">JSON</a>
+    </li>
+  
+
+
+  
+    <li>
+      <a href="CapabilityStatement-EducationServerCapabilities.ttl.html">TTL</a>
+    </li>
+  
+
+
+
+</ul>
+
+
+<a name="root"> </a>
+
+
+<h2 id="root">: Krav på FHIR-server för Kurs-IG - JSON Representation</h2>
+
+  <table class="colsd">
+    <tr>
+
+      <td colspan="2">
+        
+          Draft
+          
+            as of 2026-10-13
+          
+        
+      </td>
+
+    </tr>
+  </table>
+
+
+<p><a href="CapabilityStatement-EducationServerCapabilities.json" no-download="true">Raw json</a> | <a href="CapabilityStatement-EducationServerCapabilities.json" download>Download</a></p>
+
+  <!-- insert intro if present -->
+  
+
+
+
+  <pre class="json" data-fhir="generated" style="white-space: pre; text-wrap: nowrap; width: auto;"><code class="language-json" style="white-space: pre; text-wrap: nowrap;">{
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement">resourceType</a>" : "CapabilityStatement",
+  "<a href="http://hl7.org/fhir/R4/resource.html#CapabilityStatement.id">id</a>" : "EducationServerCapabilities",
+  "<a href="http://hl7.org/fhir/R4/domainresource.html#CapabilityStatement.text">text</a>" : {
+    "<a href="http://hl7.org/fhir/R4/datatypes.html#Narrative#Narrative.status">status</a>" : "extensions",
+    "<a href="http://hl7.org/fhir/R4/datatypes.html#Narrative#Narrative.div">div</a>" : "&lt;div xmlns=\&quot;http://www.w3.org/1999/xhtml\&quot;&gt;&lt;p class=\&quot;res-header-id\&quot;&gt;&lt;b&gt;Genererad berättande text: CapabilityStatement EducationServerCapabilities&lt;/b&gt;&lt;/p&gt;&lt;a name=\&quot;EducationServerCapabilities\&quot;&gt; &lt;/a&gt;&lt;a name=\&quot;hcEducationServerCapabilities\&quot;&gt; &lt;/a&gt;&lt;h2 id=\&quot;title\&quot;&gt;Krav på FHIR-server för Kurs-IG&lt;/h2&gt;&lt;ul&gt;&lt;li&gt;Implementationsguidens version: 0.1.0 &lt;/li&gt;&lt;li&gt;FHIR-version: 4.0.1 &lt;/li&gt;&lt;li&gt;Format som stöds: &lt;code&gt;json&lt;/code&gt;&lt;/li&gt;&lt;li&gt;Publicerad: 2026-10-13 &lt;/li&gt;&lt;li&gt;Publicerad av: FHIR-utbildning &lt;/li&gt;&lt;/ul&gt;&lt;blockquote class=\&quot;impl-note\&quot;&gt;&lt;p&gt;&lt;strong&gt;Notera till implementörer: FHIR-förmågor&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;Vilken FHIR-förmåga som helst kan vara 'tillåten' av systemet om den inte uttryckligen är markerad som 'SHALL NOT'. Några objekt är markerade som MAY i implementationsguiden för att belysa deras potentiella relevans för användningsfallet.&lt;/p&gt;&lt;/blockquote&gt;&lt;h3 id=\&quot;shallIGs\&quot;&gt;SKA stödja följande implementationsguider&lt;/h3&gt;&lt;ul&gt;&lt;li&gt;&lt;a href=\&quot;index.html\&quot;&gt;http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;h2 id=\&quot;rest\&quot;&gt;FHIR RESTful-förmågor&lt;/h2&gt;&lt;div class=\&quot;panel panel-default\&quot;&gt;&lt;div class=\&quot;panel-heading\&quot;&gt;&lt;h3 id=\&quot;mode1\&quot; class=\&quot;panel-title\&quot;&gt;Mode: &lt;code&gt;server&lt;/code&gt;&lt;/h3&gt;&lt;/div&gt;&lt;div class=\&quot;panel-body\&quot;&gt;&lt;div&gt;&lt;p&gt;Servern ska stödja läsning och sökning av patienter och vårdkontakter.&lt;/p&gt;\n&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;h3 id=\&quot;resourcesCap1\&quot;&gt;Förmågor per resurs/profil&lt;/h3&gt;&lt;h4 id=\&quot;resourcesSummary1\&quot;&gt;Sammanfattning&lt;/h4&gt;&lt;p&gt;Sammanfattningstabellen listar resurserna som ingår i denna konfiguration, och för varje resurs listar den:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;De relevanta profilerna (om några)&lt;/li&gt;&lt;li&gt;Interaktionerna som stöds av varje resurs (&lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;R&lt;/span&gt;&lt;/b&gt;ead, &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;S&lt;/span&gt;&lt;/b&gt;earch, &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;U&lt;/span&gt;&lt;/b&gt;pdate, and &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;C&lt;/span&gt;&lt;/b&gt;reate, are always shown, while &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;VR&lt;/span&gt;&lt;/b&gt;ead, &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;P&lt;/span&gt;&lt;/b&gt;atch, &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;D&lt;/span&gt;&lt;/b&gt;elete, &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;H&lt;/span&gt;&lt;/b&gt;istory on &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;I&lt;/span&gt;&lt;/b&gt;nstance, or &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;H&lt;/span&gt;&lt;/b&gt;istory on &lt;b&gt;&lt;span class=\&quot;bg-info\&quot;&gt;T&lt;/span&gt;&lt;/b&gt;yp är endast närvarande om minst en av resurserna har stöd för dem.&lt;/li&gt;&lt;li&gt;&lt;span&gt;De obligatoriska, rekommenderade och vissa valfria sökparametrarna (om några). &lt;/span&gt;&lt;/li&gt;&lt;li&gt;De länkade resurserna aktiverade för &lt;code&gt;_include&lt;/code&gt;&lt;/li&gt;&lt;li&gt;De övriga resurserna aktiverade för &lt;code&gt;_revinclude&lt;/code&gt;&lt;/li&gt;&lt;li&gt;Operationerna på resursen (om några)&lt;/li&gt;&lt;/ul&gt;&lt;div class=\&quot;table-responsive\&quot;&gt;&lt;table class=\&quot;table table-condensed table-hover\&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;b&gt;Resurstyp&lt;/b&gt;&lt;/th&gt;&lt;th&gt;&lt;b&gt;Profil&lt;/b&gt;&lt;/th&gt;&lt;th class=\&quot;text-center\&quot;&gt;&lt;b title=\&quot;GET en resurs (läs-interaktion)\&quot;&gt;R&lt;/b&gt;&lt;/th&gt;&lt;th class=\&quot;text-center\&quot;&gt;&lt;b title=\&quot;GET alla resurser av typen (sök-interaktion)\&quot;&gt;S&lt;/b&gt;&lt;/th&gt;&lt;th class=\&quot;text-center\&quot;&gt;&lt;b title=\&quot;PUT en ny resursversion (uppdatera-interaktion)\&quot;&gt;U&lt;/b&gt;&lt;/th&gt;&lt;th class=\&quot;text-center\&quot;&gt;&lt;b title=\&quot;POST en ny resurs (skapa-interaktion)\&quot;&gt;C&lt;/b&gt;&lt;/th&gt;&lt;th&gt;&lt;b title=\&quot;Obligatoriska och rekommenderade sökparametrar\&quot;&gt;Sökningar&lt;/b&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;&lt;b&gt;_include&lt;/b&gt;&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;code&gt;&lt;b&gt;_revinclude&lt;/b&gt;&lt;/code&gt;&lt;/th&gt;&lt;th&gt;&lt;b&gt;Operationer&lt;/b&gt;&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;a href=\&quot;#Patient1-1\&quot;&gt;Patient&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Profiler som stöds&lt;br/&gt;\u00a0\u00a0&lt;a href=\&quot;StructureDefinition-EducationPatient.html\&quot;&gt;Education Patient&lt;/a&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;&gt;&lt;span title=\&quot;SHALL\&quot;&gt;&lt;b&gt;Y&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;&gt;&lt;span title=\&quot;SHALL\&quot;&gt;&lt;b&gt;Y&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;/&gt;&lt;td class=\&quot;text-center\&quot;/&gt;&lt;td&gt;identifier&lt;/td&gt;&lt;td/&gt;&lt;td/&gt;&lt;td/&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;a href=\&quot;#Encounter1-2\&quot;&gt;Encounter&lt;/a&gt;&lt;/td&gt;&lt;td&gt;Profiler som stöds&lt;br/&gt;\u00a0\u00a0&lt;a href=\&quot;StructureDefinition-EducationEncounter.html\&quot;&gt;Education Encounter&lt;/a&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;&gt;&lt;span title=\&quot;SHALL\&quot;&gt;&lt;b&gt;Y&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;&gt;&lt;span title=\&quot;SHALL\&quot;&gt;&lt;b&gt;Y&lt;/b&gt;&lt;/span&gt;&lt;/td&gt;&lt;td class=\&quot;text-center\&quot;/&gt;&lt;td class=\&quot;text-center\&quot;/&gt;&lt;td&gt;patient, date&lt;/td&gt;&lt;td/&gt;&lt;td/&gt;&lt;td/&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;hr/&gt;&lt;div class=\&quot;panel panel-default\&quot;&gt;&lt;div class=\&quot;panel-heading\&quot;&gt;&lt;h4 id=\&quot;Patient1-1\&quot; class=\&quot;panel-title\&quot;&gt;&lt;span style=\&quot;float: right;\&quot;&gt;Resurskonformans: unspecified &lt;/span&gt;Patient&lt;/h4&gt;&lt;/div&gt;&lt;div class=\&quot;panel-body\&quot;&gt;&lt;div class=\&quot;container\&quot;&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;FHIR-kärnresurs&lt;/span&gt;&lt;br/&gt;&lt;a href=\&quot;http://hl7.org/fhir/R4/patient.html\&quot;&gt;Patient&lt;/a&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Referenspolicy&lt;/span&gt;&lt;br/&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Interaktionssammanfattning&lt;/span&gt;&lt;br/&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;SHALL&lt;/strong&gt; stöd &lt;code&gt;read&lt;/code&gt;, &lt;code&gt;search-type&lt;/code&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;p/&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-6\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Profiler som stöds&lt;/span&gt;&lt;p&gt;&lt;a href=\&quot;StructureDefinition-EducationPatient.html\&quot;&gt;Education Patient&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;p/&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-lg-7\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Sökparametrar&lt;/span&gt;&lt;table class=\&quot;table table-condensed table-hover\&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Konformans&lt;/th&gt;&lt;th&gt;Parameter&lt;/th&gt;&lt;th&gt;Typ&lt;/th&gt;&lt;th&gt;Dokumentation&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;SHALL&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;a href=\&quot;http://hl7.org/fhir/R4/patient.html#search\&quot;&gt;identifier&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;token&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;div/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-5\&quot;&gt;\u00a0&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=\&quot;panel panel-default\&quot;&gt;&lt;div class=\&quot;panel-heading\&quot;&gt;&lt;h4 id=\&quot;Encounter1-2\&quot; class=\&quot;panel-title\&quot;&gt;&lt;span style=\&quot;float: right;\&quot;&gt;Resurskonformans: unspecified &lt;/span&gt;Encounter&lt;/h4&gt;&lt;/div&gt;&lt;div class=\&quot;panel-body\&quot;&gt;&lt;div class=\&quot;container\&quot;&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;FHIR-kärnresurs&lt;/span&gt;&lt;br/&gt;&lt;a href=\&quot;http://hl7.org/fhir/R4/encounter.html\&quot;&gt;Encounter&lt;/a&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Referenspolicy&lt;/span&gt;&lt;br/&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-4\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Interaktionssammanfattning&lt;/span&gt;&lt;br/&gt;&lt;ul&gt;&lt;li&gt;&lt;strong&gt;SHALL&lt;/strong&gt; stöd &lt;code&gt;read&lt;/code&gt;, &lt;code&gt;search-type&lt;/code&gt;.&lt;/li&gt;&lt;/ul&gt;&lt;/div&gt;&lt;/div&gt;&lt;p/&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-6\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Profiler som stöds&lt;/span&gt;&lt;p&gt;&lt;a href=\&quot;StructureDefinition-EducationEncounter.html\&quot;&gt;Education Encounter&lt;/a&gt;&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;p/&gt;&lt;div class=\&quot;row\&quot;&gt;&lt;div class=\&quot;col-lg-7\&quot;&gt;&lt;span class=\&quot;lead\&quot;&gt;Sökparametrar&lt;/span&gt;&lt;table class=\&quot;table table-condensed table-hover\&quot;&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;Konformans&lt;/th&gt;&lt;th&gt;Parameter&lt;/th&gt;&lt;th&gt;Typ&lt;/th&gt;&lt;th&gt;Dokumentation&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;SHALL&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;a href=\&quot;http://hl7.org/fhir/R4/encounter.html#search\&quot;&gt;patient&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;reference&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;div/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;&lt;b&gt;SHOULD&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;a href=\&quot;http://hl7.org/fhir/R4/encounter.html#search\&quot;&gt;date&lt;/a&gt;&lt;/td&gt;&lt;td&gt;&lt;code&gt;date&lt;/code&gt;&lt;/td&gt;&lt;td&gt;&lt;div/&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;&lt;div class=\&quot;col-lg-5\&quot;&gt;\u00a0&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;"
+  },
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.url">url</a>" : "http://example.org/fhir/education/kursig/CapabilityStatement/EducationServerCapabilities",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.version">version</a>" : "0.1.0",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.name">name</a>" : "EducationServerCapabilities",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.title">title</a>" : "Krav på FHIR-server för Kurs-IG",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.status">status</a>" : "draft",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.experimental">experimental</a>" : true,
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.date">date</a>" : "2026-10-13",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.publisher">publisher</a>" : "FHIR-utbildning",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.description">description</a>" : "Krav på en FHIR-server som tillhandahåller patienter och vårdkontakter enligt kursens profiler.",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.jurisdiction">jurisdiction</a>" : [
+    {
+      "<a href="http://hl7.org/fhir/R4/datatypes.html#CodeableConcept#CodeableConcept.coding">coding</a>" : [
+        {
+          "<a href="http://hl7.org/fhir/R4/datatypes.html#Coding#Coding.system">system</a>" : "urn:iso:std:iso:3166",
+          "<a href="http://hl7.org/fhir/R4/datatypes.html#Coding#Coding.code">code</a>" : "SE",
+          "<a href="http://hl7.org/fhir/R4/datatypes.html#Coding#Coding.display">display</a>" : "Sweden"
+        }
+      ]
+    }
+  ],
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.kind">kind</a>" : "requirements",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.fhirVersion">fhirVersion</a>" : "4.0.1",
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.format">format</a>" : [
+    "json"
+  ],
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.implementationGuide">implementationGuide</a>" : [
+    <a href="index.html" style="color: Maroon">&#x1F517;</a> "http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig"
+  ],
+  "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest">rest</a>" : [
+    {
+      "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.mode">mode</a>" : "server",
+      "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.documentation">documentation</a>" : "Servern ska stödja läsning och sökning av patienter och vårdkontakter.",
+      "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource">resource</a>" : [
+        {
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.type">type</a>" : "Patient",
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.supportedProfile">supportedProfile</a>" : [
+            <a href="StructureDefinition-EducationPatient.html" style="color: Maroon">&#x1F517;</a> "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"
+          ],
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction">interaction</a>" : [
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.interaction.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction.code">code</a>" : "read"
+            },
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.interaction.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction.code">code</a>" : "search-type"
+            }
+          ],
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam">searchParam</a>" : [
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.searchParam.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.name">name</a>" : "identifier",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.definition">definition</a>" : "http://hl7.org/fhir/SearchParameter/Patient-identifier",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.type">type</a>" : "token"
+            }
+          ]
+        },
+        {
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.type">type</a>" : "Encounter",
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.supportedProfile">supportedProfile</a>" : [
+            <a href="StructureDefinition-EducationEncounter.html" style="color: Maroon">&#x1F517;</a> "http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter"
+          ],
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction">interaction</a>" : [
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.interaction.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction.code">code</a>" : "read"
+            },
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.interaction.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.interaction.code">code</a>" : "search-type"
+            }
+          ],
+          "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam">searchParam</a>" : [
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.searchParam.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHALL"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.name">name</a>" : "patient",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.definition">definition</a>" : "http://hl7.org/fhir/SearchParameter/clinical-patient",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.type">type</a>" : "reference"
+            },
+            {
+              "<a href="http://hl7.org/fhir/R4/datatypes.html#Element#CapabilityStatement.rest.resource.searchParam.extension">extension</a>" : [
+                {
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.url">url</a>" : "http://hl7.org/fhir/StructureDefinition/capabilitystatement-expectation",
+                  "<a href="http://hl7.org/fhir/R4/extensibility.html#Extension#Extension.value_x_">valueCode</a>" : "SHOULD"
+                }
+              ],
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.name">name</a>" : "date",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.definition">definition</a>" : "http://hl7.org/fhir/SearchParameter/clinical-date",
+              "<a href="http://hl7.org/fhir/R4/capabilitystatement.html#CapabilityStatement.rest.resource.searchParam.type">type</a>" : "date"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}</code></pre>
+
+
+  <!-- insert notes if present -->
+  
+
+
+
+</div>
+        </div>  <!-- /inner-wrapper -->
+      </div>  <!-- /row -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-content -->
+
+  <script type="text/javascript" src="assets/js/jquery.js"> </script>     <!-- note keep space here, otherwise it will be transformed to empty tag -> fails -->
+  <script type="text/javascript" src="assets/js/jquery-ui.min.js"> </script>
+
+  <script type="text/javascript" src="assets/js/window-hash.js"> </script>
+  <a name="bottom"> </a>
+  <div id="segment-footer" igtool="footer" class="segment">  <!-- segment-footer -->
+    <div class="container">  <!-- container -->
+
+      <div class="inner-wrapper">
+        <p>
+          IG &#169; 2026+ <a style="color:var(--footer-hyperlink-text-color)" href="">FHIR-utbildning</a>.  Package fhir.education.kursig#0.1.0 based on <a style="color: var(--footer-hyperlink-text-color)" href="http://hl7.org/fhir/R4/">FHIR 4.0.1</a>. Generated <span title="Tue, Oct 13, 2026 17:29+0000">2026-10-13</span>
+          <br/>
+          <span style="color: var(--footer-highlight-text-color)">
+                      Links: <a style="color: var(--footer-hyperlink-text-color)" href="toc.html">Table of Contents</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="qa.html">QA Report</a>
+                 
+                
+          </span>
+        </p>
+      </div>  <!-- /inner-wrapper -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-footer -->
+  
+  <div id="segment-post-footer" class="segment hidden">  <!-- segment-post-footer -->
+    <div class="container">  <!-- container -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-post-footer -->
+
+  <!-- JS and analytics only. -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"> </script>
+  <script type="text/javascript" src="assets/js/respond.min.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard-btn.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor-hover.js"> </script>
+  <!-- Analytics Below
+  ================================================== -->
+  </body>
+</html>
+

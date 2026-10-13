@@ -1,0 +1,56 @@
+[{
+  "id" : "EducationServerCapabilities",
+  "type" : "CapabilityStatement",
+  "url" : "http://example.org/fhir/education/kursig/CapabilityStatement/EducationServerCapabilities",
+  "version" : "0.1.0",
+  "name" : "EducationServerCapabilities"
+},
+{
+  "id" : "kontakttyp",
+  "type" : "CodeSystem",
+  "url" : "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp",
+  "version" : "0.1.0",
+  "name" : "KontakttypCS"
+},
+{
+  "id" : "fhir.education.kursig",
+  "type" : "ImplementationGuide",
+  "url" : "http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig",
+  "version" : "0.1.0",
+  "name" : "FhirEducationKursIG"
+},
+{
+  "id" : "EducationEncounter",
+  "type" : "StructureDefinition",
+  "url" : "http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter",
+  "version" : "0.1.0",
+  "name" : "EducationEncounter"
+},
+{
+  "id" : "EducationPatient",
+  "type" : "StructureDefinition",
+  "url" : "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient",
+  "version" : "0.1.0",
+  "name" : "EducationPatient"
+},
+{
+  "id" : "SkyddadIdentitet",
+  "type" : "StructureDefinition",
+  "url" : "http://example.org/fhir/education/kursig/StructureDefinition/SkyddadIdentitet",
+  "version" : "0.1.0",
+  "name" : "SkyddadIdentitet"
+},
+{
+  "id" : "education-encounter-class",
+  "type" : "ValueSet",
+  "url" : "http://example.org/fhir/education/kursig/ValueSet/education-encounter-class",
+  "version" : "0.1.0",
+  "name" : "EducationEncounterClassVS"
+},
+{
+  "id" : "kontakttyp-vs",
+  "type" : "ValueSet",
+  "url" : "http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs",
+  "version" : "0.1.0",
+  "name" : "KontakttypVS"
+}]

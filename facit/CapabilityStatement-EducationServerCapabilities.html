@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE HTML>
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <title>Krav på FHIR-server för Kurs-IG - FHIR-utbildning – Kurs-IG (facit) v0.1.0</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="author" content="http://hl7.org/fhir"/>
+
+    <link href="fhir.css" rel="stylesheet"/>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap-fhir.css" rel="stylesheet"/>
+
+    <!-- Project extras -->
+    <link href="assets/css/project.css" rel="stylesheet"/>
+    <link href="assets/css/pygments-manni.css" rel="stylesheet"/>
+    <link href="assets/css/jquery-ui.css" rel="stylesheet"/>
+  	<link href="assets/css/prism.css" rel="stylesheet" />
+  	<link href="assets/css/cqf.css" rel="stylesheet" />
+    <!-- Placeholder for child template CSS declarations -->
+
+    <script type="text/javascript" src="fhir-table-scripts.js"> </script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="assets/js/html5shiv.js"></script>
+    <script src="assets/js/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="assets/ico/icon-fhir-144.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="assets/ico/icon-fhir-114.png"/>
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="assets/ico/icon-fhir-72.png"/>
+    <link rel="apple-touch-icon-precomposed" href="assets/ico/icon-fhir-57.png"/>
+    <link rel="shortcut icon" href="assets/ico/favicon.png"/>
+  </head>
+  <body onload="document.body.style.opacity='1'">
+
+	  <script src="assets/js/prism.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid.js"></script>
+    <script type="text/javascript" src="assets/js/mermaid-init.js"></script>
+    <style type="text/css">h2{--heading-prefix:"2.1"}
+    h3,h4,h5,h6{--heading-prefix:"2.1"}</style>
+    <div id="segment-header" class="segment">  <!-- segment-header -->
+      <div class="container">  <!-- container -->
+
+        <!-- Placeholder for child template header declarations -->
+
+
+        <div id="ig-status">
+          <p><span style="font-size:12pt;font-weight:bold">FHIR-utbildning – Kurs-IG (facit)</span>
+            <br/>
+            <span style="display:inline-block;">0.1.0 - ci-build
+
+
+
+  <img alt="Sweden flag" src="assets/images/swe.svg" height="16" title="Sweden"/>
+
+
+            </span>
+          </p>
+        </div>
+      </div> <!-- /container -->
+    </div>  <!-- /segment-header -->
+
+    <div id="segment-navbar" class="segment">  <!-- segment-navbar -->
+      <div id="stripe"> </div>
+      <div class="container">  <!-- container -->
+        <!-- HEADER CONTENT -->
+
+        <nav class="navbar navbar-inverse">
+          <!--status-bar-->
+          <div class="container">
+            <button data-target=".navbar-inverse-collapse" class="navbar-toggle" data-toggle="collapse" type="button">
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+              <span class="icon-bar"> </span>
+            </button>
+            <a class="navbar-brand hidden" href="http://hl7.org/fhir/R4/index.html">FHIR</a>
+            <div class="nav-collapse collapse navbar-inverse-collapse">
+              <!-- menu.xml  -->
+
+<ul xmlns="http://www.w3.org/1999/xhtml" class="nav navbar-nav">
+  <li>
+    <a href="index.html">Hem</a>
+  </li>
+  <li>
+    <a href="artifacts.html">Artefakter</a>
+  </li>
+</ul>
+            </div>  <!-- /.nav-collapse -->
+          </div>  <!-- /.container -->
+        </nav>  <!-- /.navbar -->
+      <!-- /HEADER CONTENT -->
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-navbar -->
+    <!--status-bar-->
+
+    <div id="segment-breadcrumb" class="segment">  <!-- segment-breadcrumb -->
+      <div class="container">  <!-- container -->
+        <ul class="breadcrumb">
+          <li><a href='toc.html'><b>Table of Contents</b></a></li><li><a href='artifacts.html'><b>Artifacts Summary</b></a></li><li><b>Krav på FHIR-server för Kurs-IG</b></li>
+
+        </ul>
+      </div>  <!-- /container -->
+    </div>  <!-- /segment-breadcrumb -->
+
+    <a name="top"> </a>
+    <div id="segment-content" class="segment">  <!-- segment-content -->
+      <div class="container">  <!-- container -->
+        <div class="row">
+          <div class="inner-wrapper">
+
+<div class="col-12">
+  <!--ReleaseHeader--><p id="publish-box">FHIR-utbildning – Kurs-IG (facit) - Lokal utvecklingsbygge (v0.1.0) byggt av FHIR (HL7® FHIR® Standard) Build Tools. Se <a href='http://example.org/fhir/education/kursig/history.html'>katalogen över publicerade versioner</a></p><!--EndReleaseHeader-->
+  
+
+
+
+
+
+
+
+
+<ul class="nav nav-tabs">
+
+  <li class="active">
+    <a href="#">Narrative Content</a>
+  </li>
+
+
+
+  
+    <li>
+      <a href="CapabilityStatement-EducationServerCapabilities.xml.html">XML</a>
+    </li>
+  
+
+
+  
+    <li>
+      <a href="CapabilityStatement-EducationServerCapabilities.json.html">JSON</a>
+    </li>
+  
+
+
+  
+    <li>
+      <a href="CapabilityStatement-EducationServerCapabilities.ttl.html">TTL</a>
+    </li>
+  
+
+
+
+</ul>
+
+  <a name="root"> </a>
+
+  <h2 id="root">CapabilityStatement: Krav på FHIR-server för Kurs-IG
+(Experimental)
+  </h2>
+
+  <table class="colsd">
+
+    <tr>
+      <td colspan="4"><i>Official URL</i>: <span class="copy-text">http://example.org/fhir/education/kursig/CapabilityStatement/EducationServerCapabilities<button title="Click to copy URL" class="btn-copy" data-clipboard-text="http://example.org/fhir/education/kursig/CapabilityStatement/EducationServerCapabilities"/></span>
+      </td>
+      <td><i>Version</i>:
+      <span class="copy-text">0.1.0<button title="Click to copy versioned URL" class="btn-copy" data-clipboard-text="http://example.org/fhir/education/kursig/CapabilityStatement/EducationServerCapabilities|0.1.0"/></span>
+      </td>
+    </tr>
+
+    <tr>
+
+
+
+
+
+
+
+      <td colspan="4">
+        
+          Draft
+          
+            as of 2026-10-13
+          
+        
+      </td>
+
+
+
+      <td><i>Computable Name</i>: <span style="font-family: monospace;">EducationServerCapabilities</span></td>
+    </tr>
+
+
+
+
+  </table>
+
+
+<p>
+<p>Krav på en FHIR-server som tillhandahåller patienter och vårdkontakter enligt kursens profiler.</p>
+
+</p>
+
+
+  <!-- insert intro if present -->
+  
+
+
+
+<!--  <p>
+  Formats: <a href="CapabilityStatement-EducationServerCapabilities.xml.html">XML</a>, <a href="CapabilityStatement-EducationServerCapabilities.json.html">JSON</a>, <a href="CapabilityStatement-EducationServerCapabilities.ttl.html">Turtle</a>
+  </p>-->
+
+  
+  <p>
+      <a href="EducationServerCapabilities.openapi.json" no-download="true">Raw OpenAPI-Swagger Definition file</a> | <a href="EducationServerCapabilities.openapi.json" download>Download</a>
+  </p>
+  
+
+
+  <div data-fhir="generated"><p class="res-header-id"/><a name="EducationServerCapabilities"> </a><a name="hcEducationServerCapabilities"> </a><h3 id="title">Krav på FHIR-server för Kurs-IG</h3><ul><li>Implementationsguidens version: 0.1.0 </li><li>FHIR-version: 4.0.1 </li><li>Format som stöds: <code>json</code></li><li>Publicerad: 2026-10-13 </li><li>Publicerad av: FHIR-utbildning </li></ul><blockquote class="impl-note"><p><strong>Notera till implementörer: FHIR-förmågor</strong></p><p>Vilken FHIR-förmåga som helst kan vara 'tillåten' av systemet om den inte uttryckligen är markerad som 'SHALL NOT'. Några objekt är markerade som MAY i implementationsguiden för att belysa deras potentiella relevans för användningsfallet.</p></blockquote><h4 id="shallIGs">SKA stödja följande implementationsguider</h4><ul><li><a href="index.html">http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig</a></li></ul><h3 id="rest">FHIR RESTful-förmågor</h3><div class="panel panel-default"><div class="panel-heading"><h4 id="mode1" class="panel-title">Mode: <code>server</code></h4></div><div class="panel-body"><div><p>Servern ska stödja läsning och sökning av patienter och vårdkontakter.</p>
+</div></div></div><h4 id="resourcesCap1">Förmågor per resurs/profil</h4><h5 id="resourcesSummary1">Sammanfattning</h5><p>Sammanfattningstabellen listar resurserna som ingår i denna konfiguration, och för varje resurs listar den:</p><ul><li>De relevanta profilerna (om några)</li><li>Interaktionerna som stöds av varje resurs (<b><span class="bg-info">R</span></b>ead, <b><span class="bg-info">S</span></b>earch, <b><span class="bg-info">U</span></b>pdate, and <b><span class="bg-info">C</span></b>reate, are always shown, while <b><span class="bg-info">VR</span></b>ead, <b><span class="bg-info">P</span></b>atch, <b><span class="bg-info">D</span></b>elete, <b><span class="bg-info">H</span></b>istory on <b><span class="bg-info">I</span></b>nstance, or <b><span class="bg-info">H</span></b>istory on <b><span class="bg-info">T</span></b>yp är endast närvarande om minst en av resurserna har stöd för dem.</li><li><span>De obligatoriska, rekommenderade och vissa valfria sökparametrarna (om några). </span></li><li>De länkade resurserna aktiverade för <code>_include</code></li><li>De övriga resurserna aktiverade för <code>_revinclude</code></li><li>Operationerna på resursen (om några)</li></ul><div class="table-responsive"><table class="table table-condensed table-hover"><thead><tr><th><b>Resurstyp</b></th><th><b>Profil</b></th><th class="text-center"><b title="GET en resurs (läs-interaktion)">R</b></th><th class="text-center"><b title="GET alla resurser av typen (sök-interaktion)">S</b></th><th class="text-center"><b title="PUT en ny resursversion (uppdatera-interaktion)">U</b></th><th class="text-center"><b title="POST en ny resurs (skapa-interaktion)">C</b></th><th><b title="Obligatoriska och rekommenderade sökparametrar">Sökningar</b></th><th><code><b>_include</b></code></th><th><code><b>_revinclude</b></code></th><th><b>Operationer</b></th></tr></thead><tbody><tr><td><a href="#Patient1-1">Patient</a></td><td>Profiler som stöds<br/>  <a href="StructureDefinition-EducationPatient.html">Education Patient</a></td><td class="text-center"><span title="SHALL"><b>Y</b></span></td><td class="text-center"><span title="SHALL"><b>Y</b></span></td><td class="text-center"/><td class="text-center"/><td>identifier</td><td/><td/><td/></tr><tr><td><a href="#Encounter1-2">Encounter</a></td><td>Profiler som stöds<br/>  <a href="StructureDefinition-EducationEncounter.html">Education Encounter</a></td><td class="text-center"><span title="SHALL"><b>Y</b></span></td><td class="text-center"><span title="SHALL"><b>Y</b></span></td><td class="text-center"/><td class="text-center"/><td>patient, date</td><td/><td/><td/></tr></tbody></table></div><hr/><div class="panel panel-default"><div id="heading1-1" class="panel-heading"><h5 id="Patient1-1" class="panel-title"><a data-toggle="collapse" role="button" aria-controls="collapse1-1" aria-expanded="true" href="#collapse1-1"><span style="float: right;">Resource Conformance: unspecified</span>Patient</a></h5></div><div role="region" aria-labelledby="heading1-1" id="collapse1-1" class="panel-collapse in"><div class="panel-body"><div class="container"><div class="row"><div class="col-lg-4"><span class="lead">FHIR-kärnresurs</span><br/><a href="http://hl7.org/fhir/R4/patient.html">Patient</a></div><div class="col-lg-4"><span class="lead">Referenspolicy</span><br/></div><div class="col-lg-4"><span class="lead">Interaktionssammanfattning</span><br/><ul><li><strong>SHALL</strong> stöd <code>read</code>, <code>search-type</code>.</li></ul></div></div><p/><div class="row"><div class="col-6"><span class="lead">Profiler som stöds</span><p><a href="StructureDefinition-EducationPatient.html">Education Patient</a></p></div></div><p/><div class="row"><div class="col-lg-7"><span class="lead">Sökparametrar</span><table class="table table-condensed table-hover"><thead><tr><th>Konformans</th><th>Parameter</th><th>Typ</th><th>Dokumentation</th></tr></thead><tbody><tr><td><b>SHALL</b></td><td><a href="http://hl7.org/fhir/R4/patient.html#search">identifier</a></td><td><code>token</code></td><td><div/></td></tr></tbody></table></div><div class="col-lg-5"> </div></div></div></div></div></div><div class="panel panel-default"><div id="heading1-2" class="panel-heading"><h5 id="Encounter1-2" class="panel-title"><a data-toggle="collapse" role="button" aria-controls="collapse1-2" aria-expanded="true" href="#collapse1-2"><span style="float: right;">Resource Conformance: unspecified</span>Encounter</a></h5></div><div role="region" aria-labelledby="heading1-2" id="collapse1-2" class="panel-collapse in"><div class="panel-body"><div class="container"><div class="row"><div class="col-lg-4"><span class="lead">FHIR-kärnresurs</span><br/><a href="http://hl7.org/fhir/R4/encounter.html">Encounter</a></div><div class="col-lg-4"><span class="lead">Referenspolicy</span><br/></div><div class="col-lg-4"><span class="lead">Interaktionssammanfattning</span><br/><ul><li><strong>SHALL</strong> stöd <code>read</code>, <code>search-type</code>.</li></ul></div></div><p/><div class="row"><div class="col-6"><span class="lead">Profiler som stöds</span><p><a href="StructureDefinition-EducationEncounter.html">Education Encounter</a></p></div></div><p/><div class="row"><div class="col-lg-7"><span class="lead">Sökparametrar</span><table class="table table-condensed table-hover"><thead><tr><th>Konformans</th><th>Parameter</th><th>Typ</th><th>Dokumentation</th></tr></thead><tbody><tr><td><b>SHALL</b></td><td><a href="http://hl7.org/fhir/R4/encounter.html#search">patient</a></td><td><code>reference</code></td><td><div/></td></tr><tr><td><b>SHOULD</b></td><td><a href="http://hl7.org/fhir/R4/encounter.html#search">date</a></td><td><code>date</code></td><td><div/></td></tr></tbody></table></div><div class="col-lg-5"> </div></div></div></div></div></div></div>
+
+  <!-- insert notes if present -->
+  
+
+
+
+  
+
+</div>
+        </div>  <!-- /inner-wrapper -->
+      </div>  <!-- /row -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-content -->
+
+  <script type="text/javascript" src="assets/js/jquery.js"> </script>     <!-- note keep space here, otherwise it will be transformed to empty tag -> fails -->
+  <script type="text/javascript" src="assets/js/jquery-ui.min.js"> </script>
+
+  <script type="text/javascript" src="assets/js/window-hash.js"> </script>
+  <a name="bottom"> </a>
+  <div id="segment-footer" igtool="footer" class="segment">  <!-- segment-footer -->
+    <div class="container">  <!-- container -->
+
+      <div class="inner-wrapper">
+        <p>
+          IG &#169; 2026+ <a style="color:var(--footer-hyperlink-text-color)" href="">FHIR-utbildning</a>.  Package fhir.education.kursig#0.1.0 based on <a style="color: var(--footer-hyperlink-text-color)" href="http://hl7.org/fhir/R4/">FHIR 4.0.1</a>. Generated <span title="Tue, Oct 13, 2026 17:29+0000">2026-10-13</span>
+          <br/>
+          <span style="color: var(--footer-highlight-text-color)">
+                      Links: <a style="color: var(--footer-hyperlink-text-color)" href="toc.html">Table of Contents</a> |
+                 <a style="color: var(--footer-hyperlink-text-color)" href="qa.html">QA Report</a>
+                 
+                
+          </span>
+        </p>
+      </div>  <!-- /inner-wrapper -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-footer -->
+  
+  <div id="segment-post-footer" class="segment hidden">  <!-- segment-post-footer -->
+    <div class="container">  <!-- container -->
+    </div>  <!-- /container -->
+  </div>  <!-- /segment-post-footer -->
+
+  <!-- JS and analytics only. -->
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="assets/js/bootstrap.min.js"> </script>
+  <script type="text/javascript" src="assets/js/respond.min.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard.min.js"> </script>
+  <script type="text/javascript" src="assets/js/clipboard-btn.js"> </script>
+  <script type="text/javascript" src="assets/js/anchor-hover.js"> </script>
+  <!-- Analytics Below
+  ================================================== -->
+  </body>
+</html>
+

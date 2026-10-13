@@ -1,0 +1,29 @@
+{
+  "resourceType" : "ValueSet",
+  "id" : "kontakttyp-vs",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: ValueSet kontakttyp-vs</b></p><a name=\"kontakttyp-vs\"> </a><a name=\"hckontakttyp-vs\"> </a><ul><li>Include alla koder som definieras i <a href=\"CodeSystem-kontakttyp.html\"><code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code></a><span title=\"Versionen är inte uttryckligen angiven, vilket innebär att den är fast till den version som tillhandahålls i denna specifikation\"> version &#x1F4E6;0.1.0</span></li></ul></div>"
+  },
+  "url" : "http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs",
+  "version" : "0.1.0",
+  "name" : "KontakttypVS",
+  "title" : "Kontakttyp – ValueSet",
+  "status" : "draft",
+  "experimental" : true,
+  "date" : "2026-10-13T17:29:30+00:00",
+  "publisher" : "FHIR-utbildning",
+  "description" : "Alla koder i kodsystemet Kontakttyp.",
+  "jurisdiction" : [{
+    "coding" : [{
+      "system" : "urn:iso:std:iso:3166",
+      "code" : "SE",
+      "display" : "Sweden"
+    }]
+  }],
+  "compose" : {
+    "include" : [{
+      "system" : "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"
+    }]
+  }
+}

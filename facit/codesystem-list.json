@@ -1,0 +1,10 @@
+{
+  "codeSystems" : [{
+    "url" : "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp",
+    "version" : "0.1.0",
+    "status" : "draft",
+    "name" : "KontakttypCS",
+    "title" : "Kontakttyp",
+    "description" : "Typ av vårdkontakt (fiktivt kodsystem för utbildningen)."
+  }]
+}

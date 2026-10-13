@@ -1,0 +1,4 @@
+URL,Version,Status,OIDs,Name,Title,Description,Uses,Used,Sources
+http://example.org/fhir/education/kursig/ValueSet/education-encounter-class,0.1.0,draft,,EducationEncounterClassVS,Klass av vårdkontakt,"Ett urval av koder ur HL7 v3 ActCode som får användas i Encounter.class.","StructureDefinition/EducationEncounter","THO (V3)"
+http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs,0.1.0,draft,,KontakttypVS,Kontakttyp – ValueSet,"Alla koder i kodsystemet Kontakttyp.","StructureDefinition/EducationEncounter","Internal"
+http://hl7.org/fhir/ValueSet/marital-status,4.0.1,active,"2.16.840.1.113883.4.642.3.29",Marital Status Codes,MaritalStatus,"This value set defines the set of codes that can be used to indicate the marital status of a person.","StructureDefinition/EducationPatient","THO (V3)"

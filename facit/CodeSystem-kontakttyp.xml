@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CodeSystem xmlns="http://hl7.org/fhir">
+  <id value="kontakttyp"/>
+  <text>
+    <status value="generated"/><div xmlns="http://www.w3.org/1999/xhtml"><p class="res-header-id"><b>Genererad berättande text: CodeSystem kontakttyp</b></p><a name="kontakttyp"> </a><a name="hckontakttyp"> </a><p>Detta case-sensitive kodsystem <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code> definierar följande koder:</p><table class="codes"><tr><td style="white-space:nowrap"><b>Kod</b></td><td><b>Visning</b></td><td><b>Definition</b></td></tr><tr><td style="white-space:nowrap">besok<a name="kontakttyp-besok"> </a></td><td>Besök</td><td>Fysiskt besök på en vårdenhet.</td></tr><tr><td style="white-space:nowrap">hembesok<a name="kontakttyp-hembesok"> </a></td><td>Hembesök</td><td>Besök i patientens hem.</td></tr><tr><td style="white-space:nowrap">video<a name="kontakttyp-video"> </a></td><td>Videokontakt</td><td>Distanskontakt via video.</td></tr><tr><td style="white-space:nowrap">telefon<a name="kontakttyp-telefon"> </a></td><td>Telefonkontakt</td><td>Distanskontakt via telefon.</td></tr></table></div>
+  </text>
+  <url value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"/>
+  <version value="0.1.0"/>
+  <name value="KontakttypCS"/>
+  <title value="Kontakttyp"/>
+  <status value="draft"/>
+  <experimental value="true"/>
+  <date value="2026-10-13T17:29:30+00:00"/>
+  <publisher value="FHIR-utbildning"/>
+  <description value="Typ av vårdkontakt (fiktivt kodsystem för utbildningen)."/>
+  <jurisdiction>
+    <coding>
+      <system value="urn:iso:std:iso:3166"/>
+      <code value="SE"/>
+      <display value="Sweden"/>
+    </coding>
+  </jurisdiction>
+  <caseSensitive value="true"/>
+  <content value="complete"/>
+  <count value="4"/>
+  <concept>
+    <code value="besok"/>
+    <display value="Besök"/>
+    <definition value="Fysiskt besök på en vårdenhet."/>
+  </concept>
+  <concept>
+    <code value="hembesok"/>
+    <display value="Hembesök"/>
+    <definition value="Besök i patientens hem."/>
+  </concept>
+  <concept>
+    <code value="video"/>
+    <display value="Videokontakt"/>
+    <definition value="Distanskontakt via video."/>
+  </concept>
+  <concept>
+    <code value="telefon"/>
+    <display value="Telefonkontakt"/>
+    <definition value="Distanskontakt via telefon."/>
+  </concept>
+</CodeSystem>

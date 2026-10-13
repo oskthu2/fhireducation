@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Patient xmlns="http://hl7.org/fhir">
+  <id value="patient-tolvan"/>
+  <meta>
+    <profile value="http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient"/>
+  </meta>
+  <text>
+    <status value="generated"/><div xmlns="http://www.w3.org/1999/xhtml"><p class="res-header-id"><b>Genererad berättande text: Patient patient-tolvan</b></p><a name="patient-tolvan"> </a><a name="hcpatient-tolvan"> </a><div style="display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%"><p style="margin-bottom: 0px"/><p style="margin-bottom: 0px">Profil: <a href="StructureDefinition-EducationPatient.html">Education Patient</a></p></div><p style="border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;">Tolvan Tolvansson (official) Male, Födelsedatum: 1912-12-12 ( http://electronichealth.se/identifier/personnummer#191212121212)</p><hr/><table class="grid"><tr><td style="background-color: #f3f5da" title="Känt civilstånd för patienten">Civilstånd:</td><td colspan="3"><span title="Koder:{http://terminology.hl7.org/CodeSystem/v3-MaritalStatus M}">Married</span></td></tr><tr><td style="background-color: #f3f5da" title="Indicates whether an interpreter is required to facilitate communication in a healthcare setting. While this extension is named patient-interpreterRequired for backwards compatibility, it may also be used on RelatedPerson, Practitioner, Encounter, Appointment and ServiceRequest."><a href="http://hl7.org/fhir/extensions/5.3.0/StructureDefinition-patient-interpreterRequired.html">Interpreter Required</a></td><td colspan="3">false</td></tr><tr><td style="background-color: #f3f5da" title="Anger om patienten har skyddade personuppgifter (t.ex. sekretessmarkering eller skyddad folkbokföring)."><a href="StructureDefinition-SkyddadIdentitet.html">Skyddad identitet</a></td><td colspan="3">false</td></tr></table></div>
+  </text>
+  <extension url="http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired">
+    <valueBoolean value="false"/>
+  </extension>
+  <extension url="http://example.org/fhir/education/kursig/StructureDefinition/SkyddadIdentitet">
+    <valueBoolean value="false"/>
+  </extension>
+  <identifier>
+    <system value="http://electronichealth.se/identifier/personnummer"/>
+    <value value="191212121212"/>
+  </identifier>
+  <name>
+    <use value="official"/>
+    <family value="Tolvansson"/>
+    <given value="Tolvan"/>
+  </name>
+  <gender value="male"/>
+  <birthDate value="1912-12-12"/>
+  <maritalStatus>
+    <coding>
+      <system value="http://terminology.hl7.org/CodeSystem/v3-MaritalStatus"/>
+      <code value="M"/>
+      <display value="Married"/>
+    </coding>
+  </maritalStatus>
+</Patient>

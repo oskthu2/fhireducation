@@ -1,0 +1,45 @@
+{
+  "resourceType" : "Encounter",
+  "id" : "encounter-tolvan-1",
+  "meta" : {
+    "profile" : ["http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter"]
+  },
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: Encounter encounter-tolvan-1</b></p><a name=\"encounter-tolvan-1\"> </a><a name=\"hcencounter-tolvan-1\"> </a><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\"/><p style=\"margin-bottom: 0px\">Profil: <a href=\"StructureDefinition-EducationEncounter.html\">Education Encounter</a></p></div><p><b>status</b>: Finished</p><p><b>class</b>: <a href=\"http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-AMB\">ActCode: AMB</a> (ambulatory)</p><p><b>type</b>: <span title=\"Koder:{http://example.org/fhir/education/kursig/CodeSystem/kontakttyp besok}\">Besök</span></p><p><b>subject</b>: <a href=\"Patient-patient-tolvan.html\">Tolvan Tolvansson (official) Male, Födelsedatum: 1912-12-12 ( http://electronichealth.se/identifier/personnummer#191212121212)</a></p><p><b>period</b>: 2026-10-01 09:00:00+0200 --&gt; 2026-10-01 09:30:00+0200</p><p><b>reasonCode</b>: <span title=\"Koder:{http://hl7.org/fhir/sid/icd-10 J45.9}\">Asthma, unspecified</span></p><p><b>serviceProvider</b>: Vårdcentralen Kursköping (Identifier: <code>urn:oid:1.2.752.29.4.19</code>/SE2321000016-KURS)</p></div>"
+  },
+  "status" : "finished",
+  "class" : {
+    "system" : "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+    "code" : "AMB",
+    "display" : "ambulatory"
+  },
+  "type" : [{
+    "coding" : [{
+      "system" : "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp",
+      "code" : "besok",
+      "display" : "Besök"
+    }]
+  }],
+  "subject" : {
+    "reference" : "Patient/patient-tolvan"
+  },
+  "period" : {
+    "start" : "2026-10-01T09:00:00+02:00",
+    "end" : "2026-10-01T09:30:00+02:00"
+  },
+  "reasonCode" : [{
+    "coding" : [{
+      "system" : "http://hl7.org/fhir/sid/icd-10",
+      "code" : "J45.9",
+      "display" : "Asthma, unspecified"
+    }]
+  }],
+  "serviceProvider" : {
+    "identifier" : {
+      "system" : "urn:oid:1.2.752.29.4.19",
+      "value" : "SE2321000016-KURS"
+    },
+    "display" : "Vårdcentralen Kursköping"
+  }
+}

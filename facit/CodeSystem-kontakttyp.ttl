@@ -1,0 +1,64 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/CodeSystem/kontakttyp> a fhir:CodeSystem ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:Resource.id [ fhir:value "kontakttyp"] ;
+  fhir:DomainResource.text [
+     fhir:Narrative.status [ fhir:value "generated" ] ;
+     fhir:Narrative.div "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: CodeSystem kontakttyp</b></p><a name=\"kontakttyp\"> </a><a name=\"hckontakttyp\"> </a><p>Detta case-sensitive kodsystem <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code> definierar följande koder:</p><table class=\"codes\"><tr><td style=\"white-space:nowrap\"><b>Kod</b></td><td><b>Visning</b></td><td><b>Definition</b></td></tr><tr><td style=\"white-space:nowrap\">besok<a name=\"kontakttyp-besok\"> </a></td><td>Besök</td><td>Fysiskt besök på en vårdenhet.</td></tr><tr><td style=\"white-space:nowrap\">hembesok<a name=\"kontakttyp-hembesok\"> </a></td><td>Hembesök</td><td>Besök i patientens hem.</td></tr><tr><td style=\"white-space:nowrap\">video<a name=\"kontakttyp-video\"> </a></td><td>Videokontakt</td><td>Distanskontakt via video.</td></tr><tr><td style=\"white-space:nowrap\">telefon<a name=\"kontakttyp-telefon\"> </a></td><td>Telefonkontakt</td><td>Distanskontakt via telefon.</td></tr></table></div>"
+  ] ;
+  fhir:CodeSystem.url [ fhir:value "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"] ;
+  fhir:CodeSystem.version [ fhir:value "0.1.0"] ;
+  fhir:CodeSystem.name [ fhir:value "KontakttypCS"] ;
+  fhir:CodeSystem.title [ fhir:value "Kontakttyp"] ;
+  fhir:CodeSystem.status [ fhir:value "draft"] ;
+  fhir:CodeSystem.experimental [ fhir:value "true"^^xsd:boolean] ;
+  fhir:CodeSystem.date [ fhir:value "2026-10-13T17:29:30+00:00"^^xsd:dateTime] ;
+  fhir:CodeSystem.publisher [ fhir:value "FHIR-utbildning"] ;
+  fhir:CodeSystem.description [ fhir:value "Typ av vårdkontakt (fiktivt kodsystem för utbildningen)."] ;
+  fhir:CodeSystem.jurisdiction [
+     fhir:index 0 ;
+     fhir:CodeableConcept.coding [
+       fhir:index 0 ;
+       fhir:Coding.system [ fhir:value "urn:iso:std:iso:3166" ] ;
+       fhir:Coding.code [ fhir:value "SE" ] ;
+       fhir:Coding.display [ fhir:value "Sweden" ]
+     ]
+  ] ;
+  fhir:CodeSystem.caseSensitive [ fhir:value "true"^^xsd:boolean] ;
+  fhir:CodeSystem.content [ fhir:value "complete"] ;
+  fhir:CodeSystem.count [ fhir:value "4"^^xsd:nonNegativeInteger] ;
+  fhir:CodeSystem.concept [
+     fhir:index 0 ;
+     fhir:CodeSystem.concept.code [ fhir:value "besok" ] ;
+     fhir:CodeSystem.concept.display [ fhir:value "Besök" ] ;
+     fhir:CodeSystem.concept.definition [ fhir:value "Fysiskt besök på en vårdenhet." ]
+  ], [
+     fhir:index 1 ;
+     fhir:CodeSystem.concept.code [ fhir:value "hembesok" ] ;
+     fhir:CodeSystem.concept.display [ fhir:value "Hembesök" ] ;
+     fhir:CodeSystem.concept.definition [ fhir:value "Besök i patientens hem." ]
+  ], [
+     fhir:index 2 ;
+     fhir:CodeSystem.concept.code [ fhir:value "video" ] ;
+     fhir:CodeSystem.concept.display [ fhir:value "Videokontakt" ] ;
+     fhir:CodeSystem.concept.definition [ fhir:value "Distanskontakt via video." ]
+  ], [
+     fhir:index 3 ;
+     fhir:CodeSystem.concept.code [ fhir:value "telefon" ] ;
+     fhir:CodeSystem.concept.display [ fhir:value "Telefonkontakt" ] ;
+     fhir:CodeSystem.concept.definition [ fhir:value "Distanskontakt via telefon." ]
+  ] .
+
+# - ontology header ------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/CodeSystem/kontakttyp.ttl> a owl:Ontology ;
+  owl:imports fhir:fhir.ttl .
+
+# -------------------------------------------------------------------------------------
+

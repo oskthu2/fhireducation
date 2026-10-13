@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Bundle xmlns="http://hl7.org/fhir">
+  <id value="67324e1c-3276-40d6-8631-4e1476ca91a0"/>
+  <meta>
+    <lastUpdated value="2026-10-13T17:29:30.126+00:00"/>
+  </meta>
+  <type value="collection"/>
+  <entry>
+    <fullUrl value="http://example.org/fhir/education/kursig/ValueSet/education-encounter-class"/>
+    <resource>
+      <ValueSet>
+        <text>
+          <status value="generated"/>
+          <div xmlns="http://www.w3.org/1999/xhtml" data-fhir="generated">
+            <p class="res-header-id"/>
+            <p style="border: black 1px dotted; background-color: #EEEEEE; padding: 8px; margin-bottom: 8px">Expansion utförd internt baserad på 
+              <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html">codesystem ActCode v11.0.0 (CodeSystem)</a>
+              <span class="copy-text-inline">
+                <button data-clipboard-text="http://terminology.hl7.org/CodeSystem/v3-ActCode|11.0.0" title="Klicka för att kopiera URL" class="btn-copy" aria-label="copy"> </button>
+              </span>
+            </p>
+            <p>Denna värdemängd innehåller 5 begrepp</p>
+            <table class="codes" data-fhir="generated">
+              <tr>
+                <td>
+                  <b>System</b>
+                </td>
+                <td style="white-space:nowrap">
+                  <b>Kod</b>
+                </td>
+                <td>
+                  <b>Visning (sv)</b>
+                </td>
+                <td>
+                  <b>Definition</b>
+                </td>
+                <td>
+                  <b>JSON</b>
+                </td>
+                <td>
+                  <b>XML</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://terminology.hl7.org/CodeSystem/v3-ActCode-AMB"> </a>
+                  <code>http://terminology.hl7.org/CodeSystem/v3-ActCode</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-AMB">AMB</a>
+                </td>
+                <td/>
+                <td>
+                  <div>
+                    <p>A comprehensive term for health care provided in a healthcare facility (e.g. a practitioneraTMs office, clinic setting, or hospital) on a nonresident basis. The term ambulatory usually implies that the patient has come to the location and is not assigned to a bed. Sometimes referred to as an outpatient encounter.</p>
+
+                  </div>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;, &quot;version&quot;: &quot;11.0.0&quot;, &quot;code&quot;: &quot;AMB&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;/&gt;&lt;version value=&quot;11.0.0&quot;/&gt;&lt;code value=&quot;AMB&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://terminology.hl7.org/CodeSystem/v3-ActCode-IMP"> </a>
+                  <code>http://terminology.hl7.org/CodeSystem/v3-ActCode</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-IMP">IMP</a>
+                </td>
+                <td/>
+                <td>
+                  <div>
+                    <p>A patient encounter where a patient is admitted by a hospital or equivalent facility, assigned to a location where patients generally stay at least overnight and provided with room, board, and continuous nursing service.</p>
+
+                  </div>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;, &quot;version&quot;: &quot;11.0.0&quot;, &quot;code&quot;: &quot;IMP&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;/&gt;&lt;version value=&quot;11.0.0&quot;/&gt;&lt;code value=&quot;IMP&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://terminology.hl7.org/CodeSystem/v3-ActCode-EMER"> </a>
+                  <code>http://terminology.hl7.org/CodeSystem/v3-ActCode</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-EMER">EMER</a>
+                </td>
+                <td/>
+                <td>
+                  <div>
+                    <p>A patient encounter that takes place at a dedicated healthcare service delivery location where the patient receives immediate evaluation and treatment, provided until the patient can be discharged or responsibility for the patient's care is transferred elsewhere (for example, the patient could be admitted as an inpatient or transferred to another facility.)</p>
+
+                  </div>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;, &quot;version&quot;: &quot;11.0.0&quot;, &quot;code&quot;: &quot;EMER&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;/&gt;&lt;version value=&quot;11.0.0&quot;/&gt;&lt;code value=&quot;EMER&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://terminology.hl7.org/CodeSystem/v3-ActCode-HH"> </a>
+                  <code>http://terminology.hl7.org/CodeSystem/v3-ActCode</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-HH">HH</a>
+                </td>
+                <td/>
+                <td>
+                  <div>
+                    <p>Healthcare encounter that takes place in the residence of the patient or a designee</p>
+
+                  </div>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;, &quot;version&quot;: &quot;11.0.0&quot;, &quot;code&quot;: &quot;HH&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;/&gt;&lt;version value=&quot;11.0.0&quot;/&gt;&lt;code value=&quot;HH&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://terminology.hl7.org/CodeSystem/v3-ActCode-VR"> </a>
+                  <code>http://terminology.hl7.org/CodeSystem/v3-ActCode</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-VR">VR</a>
+                </td>
+                <td/>
+                <td>
+                  <div>
+                    <p>A patient encounter where the patient and the practitioner(s) are not in the same physical location. Examples include telephone conference, email exchange, robotic surgery, and televideo conference.</p>
+
+                  </div>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;, &quot;version&quot;: &quot;11.0.0&quot;, &quot;code&quot;: &quot;VR&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://terminology.hl7.org/CodeSystem/v3-ActCode&quot;/&gt;&lt;version value=&quot;11.0.0&quot;/&gt;&lt;code value=&quot;VR&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </text>
+        <url value="http://example.org/fhir/education/kursig/ValueSet/education-encounter-class"/>
+        <version value="0.1.0"/>
+        <name value="EducationEncounterClassVS"/>
+        <title value="Klass av vårdkontakt"/>
+        <status value="draft"/>
+        <experimental value="true"/>
+        <date value="2026-10-13T17:29:30+00:00"/>
+        <jurisdiction>
+          <coding>
+            <system value="urn:iso:std:iso:3166"/>
+            <code value="SE"/>
+            <display value="Sweden"/>
+          </coding>
+        </jurisdiction>
+        <expansion>
+          <identifier value="urn:uuid:04e91dc2-1b06-404e-ad94-3c96fe49dcad"/>
+          <timestamp value="2026-10-13T17:30:06+00:00"/>
+          <total value="5"/>
+          <offset value="0"/>
+          <parameter>
+            <name value="displayLanguage"/>
+            <valueCode value="sv"/>
+          </parameter>
+          <parameter>
+            <name value="count"/>
+            <valueInteger value="1000"/>
+          </parameter>
+          <parameter>
+            <name value="offset"/>
+            <valueInteger value="0"/>
+          </parameter>
+          <parameter>
+            <name value="excludeNested"/>
+            <valueBoolean value="false"/>
+          </parameter>
+          <parameter>
+            <name value="used-codesystem"/>
+            <valueUri value="http://terminology.hl7.org/CodeSystem/v3-ActCode|11.0.0"/>
+          </parameter>
+          <contains>
+            <system value="http://terminology.hl7.org/CodeSystem/v3-ActCode"/>
+            <code value="AMB"/>
+          </contains>
+          <contains>
+            <system value="http://terminology.hl7.org/CodeSystem/v3-ActCode"/>
+            <code value="IMP"/>
+          </contains>
+          <contains>
+            <system value="http://terminology.hl7.org/CodeSystem/v3-ActCode"/>
+            <code value="EMER"/>
+          </contains>
+          <contains>
+            <system value="http://terminology.hl7.org/CodeSystem/v3-ActCode"/>
+            <code value="HH"/>
+          </contains>
+          <contains>
+            <system value="http://terminology.hl7.org/CodeSystem/v3-ActCode"/>
+            <code value="VR"/>
+          </contains>
+        </expansion>
+      </ValueSet>
+    </resource>
+  </entry>
+  <entry>
+    <fullUrl value="http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs"/>
+    <resource>
+      <ValueSet>
+        <text>
+          <status value="generated"/>
+          <div xmlns="http://www.w3.org/1999/xhtml" data-fhir="generated">
+            <p class="res-header-id"/>
+            <p style="border: black 1px dotted; background-color: #EEEEEE; padding: 8px; margin-bottom: 8px">Expansion utförd internt baserad på 
+              <a href="CodeSystem-kontakttyp.html">codesystem Kontakttyp v0.1.0 (CodeSystem)</a>
+              <span class="copy-text-inline">
+                <button data-clipboard-text="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp|0.1.0" title="Klicka för att kopiera URL" class="btn-copy" aria-label="copy"> </button>
+              </span>
+            </p>
+            <p>Denna värdemängd innehåller 4 begrepp</p>
+            <table class="codes" data-fhir="generated">
+              <tr>
+                <td>
+                  <b>System</b>
+                </td>
+                <td style="white-space:nowrap">
+                  <b>Kod</b>
+                </td>
+                <td>
+                  <b>Visning (sv)</b>
+                </td>
+                <td>
+                  <b>Definition</b>
+                </td>
+                <td>
+                  <b>JSON</b>
+                </td>
+                <td>
+                  <b>XML</b>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://example.org/fhir/education/kursig/CodeSystem/kontakttyp-besok"> </a>
+                  <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="CodeSystem-kontakttyp.html#kontakttyp-besok">besok</a>
+                </td>
+                <td/>
+                <td>Fysiskt besök på en vårdenhet.</td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;, &quot;version&quot;: &quot;0.1.0&quot;, &quot;code&quot;: &quot;besok&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;/&gt;&lt;version value=&quot;0.1.0&quot;/&gt;&lt;code value=&quot;besok&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://example.org/fhir/education/kursig/CodeSystem/kontakttyp-hembesok"> </a>
+                  <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="CodeSystem-kontakttyp.html#kontakttyp-hembesok">hembesok</a>
+                </td>
+                <td/>
+                <td>Besök i patientens hem.</td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;, &quot;version&quot;: &quot;0.1.0&quot;, &quot;code&quot;: &quot;hembesok&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;/&gt;&lt;version value=&quot;0.1.0&quot;/&gt;&lt;code value=&quot;hembesok&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://example.org/fhir/education/kursig/CodeSystem/kontakttyp-video"> </a>
+                  <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="CodeSystem-kontakttyp.html#kontakttyp-video">video</a>
+                </td>
+                <td/>
+                <td>Distanskontakt via video.</td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;, &quot;version&quot;: &quot;0.1.0&quot;, &quot;code&quot;: &quot;video&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;/&gt;&lt;version value=&quot;0.1.0&quot;/&gt;&lt;code value=&quot;video&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <a name="x-http://example.org/fhir/education/kursig/CodeSystem/kontakttyp-telefon"> </a>
+                  <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code>
+                </td>
+                <td style="white-space:nowrap">  
+                  <a href="CodeSystem-kontakttyp.html#kontakttyp-telefon">telefon</a>
+                </td>
+                <td/>
+                <td>Distanskontakt via telefon.</td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="{&quot;system&quot;: &quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;, &quot;version&quot;: &quot;0.1.0&quot;, &quot;code&quot;: &quot;telefon&quot;}" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+                <td>
+                  <span class="copy-text-inline">
+                    <button data-clipboard-text="&lt;coding&gt;&lt;system value=&quot;http://example.org/fhir/education/kursig/CodeSystem/kontakttyp&quot;/&gt;&lt;version value=&quot;0.1.0&quot;/&gt;&lt;code value=&quot;telefon&quot;/&gt;&lt;/coding&gt;" title="Klicka för att kopiera som Coding" class="btn-copy" aria-label="copy"> </button>
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </text>
+        <url value="http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs"/>
+        <version value="0.1.0"/>
+        <name value="KontakttypVS"/>
+        <title value="Kontakttyp – ValueSet"/>
+        <status value="draft"/>
+        <experimental value="true"/>
+        <date value="2026-10-13T17:29:30+00:00"/>
+        <jurisdiction>
+          <coding>
+            <system value="urn:iso:std:iso:3166"/>
+            <code value="SE"/>
+            <display value="Sweden"/>
+          </coding>
+        </jurisdiction>
+        <expansion>
+          <identifier value="urn:uuid:8cfcd693-06f1-47cc-bd8f-90c7b3f8b5c3"/>
+          <timestamp value="2026-10-13T17:30:06+00:00"/>
+          <total value="4"/>
+          <offset value="0"/>
+          <parameter>
+            <name value="displayLanguage"/>
+            <valueCode value="sv"/>
+          </parameter>
+          <parameter>
+            <name value="count"/>
+            <valueInteger value="1000"/>
+          </parameter>
+          <parameter>
+            <name value="offset"/>
+            <valueInteger value="0"/>
+          </parameter>
+          <parameter>
+            <name value="excludeNested"/>
+            <valueBoolean value="false"/>
+          </parameter>
+          <parameter>
+            <name value="used-codesystem"/>
+            <valueUri value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp|0.1.0"/>
+          </parameter>
+          <contains>
+            <system value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"/>
+            <code value="besok"/>
+          </contains>
+          <contains>
+            <system value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"/>
+            <code value="hembesok"/>
+          </contains>
+          <contains>
+            <system value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"/>
+            <code value="video"/>
+          </contains>
+          <contains>
+            <system value="http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"/>
+            <code value="telefon"/>
+          </contains>
+        </expansion>
+      </ValueSet>
+    </resource>
+  </entry>
+</Bundle>

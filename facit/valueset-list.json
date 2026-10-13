@@ -1,0 +1,20 @@
+{
+  "codeSystems" : [{
+    "url" : "http://example.org/fhir/education/kursig/ValueSet/education-encounter-class",
+    "version" : "0.1.0",
+    "status" : "draft",
+    "name" : "EducationEncounterClassVS",
+    "title" : "Klass av vårdkontakt",
+    "description" : "Ett urval av koder ur HL7 v3 ActCode som får användas i Encounter.class.",
+    "systems" : ["http://terminology.hl7.org/CodeSystem/v3-ActCode"]
+  },
+  {
+    "url" : "http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs",
+    "version" : "0.1.0",
+    "status" : "draft",
+    "name" : "KontakttypVS",
+    "title" : "Kontakttyp – ValueSet",
+    "description" : "Alla koder i kodsystemet Kontakttyp.",
+    "systems" : ["http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"]
+  }]
+}

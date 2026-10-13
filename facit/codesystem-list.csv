@@ -1,0 +1,2 @@
+URL,Version,Status,OIDs,Name,Title,Description,Used
+http://example.org/fhir/education/kursig/CodeSystem/kontakttyp,0.1.0,draft,,KontakttypCS,Kontakttyp,"Typ av vårdkontakt (fiktivt kodsystem för utbildningen).",

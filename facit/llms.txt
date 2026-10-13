@@ -1,0 +1,39 @@
+# fhir.education.kursig#0.1.0: FHIR-utbildning – Kurs-IG (facit)
+
+## Pages
+
+* [Hem](index.md)
+* [Artifacts Summary](artifacts.md)
+
+## Resources
+
+### CodeSystems
+
+* [Kontakttyp](CodeSystem-kontakttyp.md)
+
+### ValueSets
+
+* [Klass av vårdkontakt](ValueSet-education-encounter-class.md)
+* [Kontakttyp – ValueSet](ValueSet-kontakttyp-vs.md)
+
+### Resource Profiles
+
+* [Education Encounter](StructureDefinition-EducationEncounter.md)
+* [Education Patient](StructureDefinition-EducationPatient.md)
+
+### Extensions
+
+* [Skyddad identitet](StructureDefinition-SkyddadIdentitet.md)
+
+### CapabilityStatements
+
+* [Krav på FHIR-server för Kurs-IG](CapabilityStatement-EducationServerCapabilities.md)
+
+### ImplementationGuides
+
+* [FHIR-utbildning – Kurs-IG (facit)](index.md)
+
+### Examples
+
+* [encounter-tolvan-1 (Encounter)](Encounter-encounter-tolvan-1.md)
+* [patient-tolvan (Patient)](Patient-patient-tolvan.md)

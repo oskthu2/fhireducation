@@ -1,0 +1,68 @@
+@prefix fhir: <http://hl7.org/fhir/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# - resource -------------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/Encounter/encounter-tolvan-1> a fhir:Encounter ;
+  fhir:nodeRole fhir:treeRoot ;
+  fhir:Resource.id [ fhir:value "encounter-tolvan-1"] ;
+  fhir:Resource.meta [
+     fhir:Meta.profile [
+       fhir:value "http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter" ;
+       fhir:index 0 ;
+       fhir:link <http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter>
+     ]
+  ] ;
+  fhir:DomainResource.text [
+     fhir:Narrative.status [ fhir:value "generated" ] ;
+     fhir:Narrative.div "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: Encounter encounter-tolvan-1</b></p><a name=\"encounter-tolvan-1\"> </a><a name=\"hcencounter-tolvan-1\"> </a><div style=\"display: inline-block; background-color: #d9e0e7; padding: 6px; margin: 4px; border: 1px solid #8da1b4; border-radius: 5px; line-height: 60%\"><p style=\"margin-bottom: 0px\"/><p style=\"margin-bottom: 0px\">Profil: <a href=\"StructureDefinition-EducationEncounter.html\">Education Encounter</a></p></div><p><b>status</b>: Finished</p><p><b>class</b>: <a href=\"http://terminology.hl7.org/7.4.0/CodeSystem-v3-ActCode.html#v3-ActCode-AMB\">ActCode: AMB</a> (ambulatory)</p><p><b>type</b>: <span title=\"Koder:{http://example.org/fhir/education/kursig/CodeSystem/kontakttyp besok}\">Besök</span></p><p><b>subject</b>: <a href=\"Patient-patient-tolvan.html\">Tolvan Tolvansson (official) Male, Födelsedatum: 1912-12-12 ( http://electronichealth.se/identifier/personnummer#191212121212)</a></p><p><b>period</b>: 2026-10-01 09:00:00+0200 --&gt; 2026-10-01 09:30:00+0200</p><p><b>reasonCode</b>: <span title=\"Koder:{http://hl7.org/fhir/sid/icd-10 J45.9}\">Asthma, unspecified</span></p><p><b>serviceProvider</b>: Vårdcentralen Kursköping (Identifier: <code>urn:oid:1.2.752.29.4.19</code>/SE2321000016-KURS)</p></div>"
+  ] ;
+  fhir:Encounter.status [ fhir:value "finished"] ;
+  fhir:Encounter.class [
+     fhir:Coding.system [ fhir:value "http://terminology.hl7.org/CodeSystem/v3-ActCode" ] ;
+     fhir:Coding.code [ fhir:value "AMB" ] ;
+     fhir:Coding.display [ fhir:value "ambulatory" ]
+  ] ;
+  fhir:Encounter.type [
+     fhir:index 0 ;
+     fhir:CodeableConcept.coding [
+       fhir:index 0 ;
+       fhir:Coding.system [ fhir:value "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp" ] ;
+       fhir:Coding.code [ fhir:value "besok" ] ;
+       fhir:Coding.display [ fhir:value "Besök" ]
+     ]
+  ] ;
+  fhir:Encounter.subject [
+     fhir:link <http://example.org/fhir/education/kursig/Patient/patient-tolvan> ;
+     fhir:Reference.reference [ fhir:value "Patient/patient-tolvan" ]
+  ] ;
+  fhir:Encounter.period [
+     fhir:Period.start [ fhir:value "2026-10-01T09:00:00+02:00"^^xsd:dateTime ] ;
+     fhir:Period.end [ fhir:value "2026-10-01T09:30:00+02:00"^^xsd:dateTime ]
+  ] ;
+  fhir:Encounter.reasonCode [
+     fhir:index 0 ;
+     fhir:CodeableConcept.coding [
+       fhir:index 0 ;
+       fhir:Coding.system [ fhir:value "http://hl7.org/fhir/sid/icd-10" ] ;
+       fhir:Coding.code [ fhir:value "J45.9" ] ;
+       fhir:Coding.display [ fhir:value "Asthma, unspecified" ]
+     ]
+  ] ;
+  fhir:Encounter.serviceProvider [
+     fhir:Reference.identifier [
+       fhir:Identifier.system [ fhir:value "urn:oid:1.2.752.29.4.19" ] ;
+       fhir:Identifier.value [ fhir:value "SE2321000016-KURS" ]
+     ] ;
+     fhir:Reference.display [ fhir:value "Vårdcentralen Kursköping" ]
+  ] .
+
+# - ontology header ------------------------------------------------------------
+
+<http://example.org/fhir/education/kursig/Encounter/encounter-tolvan-1.ttl> a owl:Ontology ;
+  owl:imports fhir:fhir.ttl .
+
+# -------------------------------------------------------------------------------------
+

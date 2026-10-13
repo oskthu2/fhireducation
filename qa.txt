@@ -3,7 +3,7 @@ FhirEducationKursIG : Validation Results
 
 err = 0, warn = 9, info = 5, broken links = 0
 IG Publisher Version: 3.0.0
-Generated Tue Oct 13 14:35:31 UTC 2026. FHIR version 4.0.1 for fhir.education.kursig#0.1.0 (canonical = http://example.org/fhir/education/kursig)
+Generated Tue Oct 13 17:29:43 UTC 2026. FHIR version 4.0.1 for fhir.education.kursig#0.1.0 (canonical = http://example.org/fhir/education/kursig)
  Build Errors : 0 / 8 / 0
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig : 0 / 0 / 3
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan : 0 / 1 / 1

@@ -1,0 +1,47 @@
+{
+  "resourceType" : "CodeSystem",
+  "id" : "kontakttyp",
+  "text" : {
+    "status" : "generated",
+    "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p class=\"res-header-id\"><b>Genererad berättande text: CodeSystem kontakttyp</b></p><a name=\"kontakttyp\"> </a><a name=\"hckontakttyp\"> </a><p>Detta case-sensitive kodsystem <code>http://example.org/fhir/education/kursig/CodeSystem/kontakttyp</code> definierar följande koder:</p><table class=\"codes\"><tr><td style=\"white-space:nowrap\"><b>Kod</b></td><td><b>Visning</b></td><td><b>Definition</b></td></tr><tr><td style=\"white-space:nowrap\">besok<a name=\"kontakttyp-besok\"> </a></td><td>Besök</td><td>Fysiskt besök på en vårdenhet.</td></tr><tr><td style=\"white-space:nowrap\">hembesok<a name=\"kontakttyp-hembesok\"> </a></td><td>Hembesök</td><td>Besök i patientens hem.</td></tr><tr><td style=\"white-space:nowrap\">video<a name=\"kontakttyp-video\"> </a></td><td>Videokontakt</td><td>Distanskontakt via video.</td></tr><tr><td style=\"white-space:nowrap\">telefon<a name=\"kontakttyp-telefon\"> </a></td><td>Telefonkontakt</td><td>Distanskontakt via telefon.</td></tr></table></div>"
+  },
+  "url" : "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp",
+  "version" : "0.1.0",
+  "name" : "KontakttypCS",
+  "title" : "Kontakttyp",
+  "status" : "draft",
+  "experimental" : true,
+  "date" : "2026-10-13T17:29:30+00:00",
+  "publisher" : "FHIR-utbildning",
+  "description" : "Typ av vårdkontakt (fiktivt kodsystem för utbildningen).",
+  "jurisdiction" : [{
+    "coding" : [{
+      "system" : "urn:iso:std:iso:3166",
+      "code" : "SE",
+      "display" : "Sweden"
+    }]
+  }],
+  "caseSensitive" : true,
+  "content" : "complete",
+  "count" : 4,
+  "concept" : [{
+    "code" : "besok",
+    "display" : "Besök",
+    "definition" : "Fysiskt besök på en vårdenhet."
+  },
+  {
+    "code" : "hembesok",
+    "display" : "Hembesök",
+    "definition" : "Besök i patientens hem."
+  },
+  {
+    "code" : "video",
+    "display" : "Videokontakt",
+    "definition" : "Distanskontakt via video."
+  },
+  {
+    "code" : "telefon",
+    "display" : "Telefonkontakt",
+    "definition" : "Distanskontakt via telefon."
+  }]
+}

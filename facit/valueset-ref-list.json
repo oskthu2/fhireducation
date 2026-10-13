@@ -1,0 +1,41 @@
+{
+  "codeSystems" : [{
+    "url" : "http://example.org/fhir/education/kursig/ValueSet/education-encounter-class",
+    "version" : "0.1.0",
+    "status" : "draft",
+    "name" : "EducationEncounterClassVS",
+    "title" : "Klass av vårdkontakt",
+    "description" : "Ett urval av koder ur HL7 v3 ActCode som får användas i Encounter.class.",
+    "systems" : ["http://terminology.hl7.org/CodeSystem/v3-ActCode"],
+    "uses" : {
+    },
+    "StructureDefinition-EducationEncounter.html" : "Education Encounter"
+  },
+  {
+    "url" : "http://example.org/fhir/education/kursig/ValueSet/kontakttyp-vs",
+    "version" : "0.1.0",
+    "status" : "draft",
+    "name" : "KontakttypVS",
+    "title" : "Kontakttyp – ValueSet",
+    "description" : "Alla koder i kodsystemet Kontakttyp.",
+    "systems" : ["http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"],
+    "uses" : {
+    },
+    "StructureDefinition-EducationEncounter.html" : "Education Encounter"
+  },
+  {
+    "url" : "http://hl7.org/fhir/ValueSet/marital-status",
+    "version" : "4.0.1",
+    "status" : "active",
+    "name" : "Marital Status Codes",
+    "title" : "MaritalStatus",
+    "description" : "This value set defines the set of codes that can be used to indicate the marital status of a person.",
+    "systems" : ["http://terminology.hl7.org/CodeSystem/v3-MaritalStatus",
+    "http://terminology.hl7.org/CodeSystem/v3-NullFlavor"],
+    "oids" : ["2.16.840.1.113883.4.642.3.29"],
+    "sources" : ["2.16.840.1.113883.4.642.3.29"],
+    "uses" : {
+    },
+    "StructureDefinition-EducationPatient.html" : "Education Patient"
+  }]
+}
