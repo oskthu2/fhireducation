@@ -1,7 +1,10 @@
 # Bygger och testar HAPI FHIR-fasaden (modul 5) och provkör den.
 #
-# Körs när du checkar in en ändring under hapi-fasad/. Svaren från några anrop mot den
-# startade servern visas i jobbets sammanfattning (fliken Actions -> körningen).
+# Fasaden hämtar data från journalsystemets proprietära REST-API och mappar den till FHIR med
+# FHIR Mapping Language (hapi-fasad/src/main/resources/fml/*.map).
+#
+# Körs när du checkar in en ändring under hapi-fasad/, t.ex. i en .map-fil. Källdatan och
+# FHIR-resultatet visas sida vid sida i jobbets sammanfattning (fliken Actions -> körningen).
 name: HAPI-fasad
 
 on:
@@ -51,26 +54,44 @@ jobs:
 
       - name: Provkör API:t
         run: |
-          BASE=http://localhost:8080/fhir
-          call() {
-            echo "### \`GET $1\`"
+          BASE=http://localhost:8080
+          visa() {
+            echo "#### \`GET $1\`"
             echo ""
             echo '```json'
-            curl -s "$BASE/$1"
-            echo ""
+            curl -s "$BASE$1" | jq .
             echo '```'
             echo ""
           }
           {
             echo "## Provkörning av FHIR-fasaden"
             echo ""
-            echo "### CapabilityStatement i korthet (\`GET metadata\`)"
+            echo "### Patient: källa och resultat"
+            echo ""
+            echo "Journalsystemets eget API (källan) och samma patient som FHIR efter mappningen i \`fml/patient.map\`."
+            echo ""
+            visa "/journalsystem-api/patienter/191212121212"
+            visa "/fhir/Patient/191212121212"
+            echo "### Vårdkontakter: källa och resultat"
+            echo ""
+            echo "Mappning i \`fml/besok.map\`. Titta på besöket med kontakttypen DIG (övning 5.3)."
+            echo ""
+            visa "/journalsystem-api/patienter/194208106593/besok"
+            visa "/fhir/Encounter?patient=194208106593"
+            echo "### CapabilityStatement i korthet (\`GET /fhir/metadata\`)"
             echo ""
             echo "| Resurs | Interaktioner | Sökparametrar | Profil |"
             echo "|---|---|---|---|"
-            curl -s "$BASE/metadata" | jq -r '.rest[0].resource[] | "| \(.type) | \([.interaction[]?.code] | join(", ")) | \([.searchParam[]?.name] | join(", ")) | \(.supportedProfile // [] | join(", ")) |"'
+            curl -s "$BASE/fhir/metadata" | jq -r '.rest[0].resource[] | "| \(.type) | \([.interaction[]?.code] | join(", ")) | \([.searchParam[]?.name] | join(", ")) | \(.supportedProfile // [] | join(", ")) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Tips vid fel
+        if: failure()
+        run: |
+          {
+            echo "## ❌ Bygget misslyckades"
             echo ""
-            call "Patient/191212121212"
-            call "Patient?identifier=http://electronichealth.se/identifier/personnummer|194208106593"
-            call "Encounter?patient=191212121212"
+            echo "- **Fel i en .map-fil?** Öppna steget *Bygg och kör tester* och sök efter \`FHIRLexerException\`."
+            echo "  Felet anges som \`Error @rad, kolumn\`. Vanliga orsaker: saknat semikolon, citattecken eller \`->\`."
+            echo "- **Fel i Java-koden?** Leta efter \`COMPILATION ERROR\` i samma steg."
           } >> "$GITHUB_STEP_SUMMARY"

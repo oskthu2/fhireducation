@@ -48,6 +48,27 @@
       <groupId>ca.uhn.hapi.fhir</groupId>
       <artifactId>hapi-fhir-server</artifactId>
     </dependency>
+    <!-- FHIR:s grunddefinitioner (datatyper m.m.) som FML-motorn behöver -->
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-validation-resources-r4</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>ca.uhn.hapi.fhir</groupId>
+      <artifactId>hapi-fhir-caching-caffeine</artifactId>
+      <version>${hapi.version}</version>
+    </dependency>
+    <!-- Valfria beroenden till HL7:s referensbibliotek som FML-motorn behöver -->
+    <dependency>
+      <groupId>org.fhir</groupId>
+      <artifactId>ucum</artifactId>
+      <version>1.0.10</version>
+    </dependency>
+    <!-- HL7:s JSON-parser för logiska modeller bygger på Gson -->
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
     <!-- Klientbiblioteket används i testerna -->
     <dependency>
       <groupId>ca.uhn.hapi.fhir</groupId>
