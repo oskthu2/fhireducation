@@ -19,7 +19,7 @@
   <name value="EducationPatient"/>
   <title value="Education Patient"/>
   <status value="draft"/>
-  <date value="2026-10-13T17:29:18+00:00"/>
+  <date value="2026-10-17T12:59:36+00:00"/>
   <publisher value="FHIR-utbildning"/>
   <description value="Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen."/>
   <jurisdiction>

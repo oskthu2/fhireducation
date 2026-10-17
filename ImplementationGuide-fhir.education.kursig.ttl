@@ -17,7 +17,7 @@
   fhir:ImplementationGuide.name [ fhir:value "FhirEducationKursIG"] ;
   fhir:ImplementationGuide.title [ fhir:value "FHIR-utbildning – Kurs-IG"] ;
   fhir:ImplementationGuide.status [ fhir:value "draft"] ;
-  fhir:ImplementationGuide.date [ fhir:value "2026-10-13T17:29:18+00:00"^^xsd:dateTime] ;
+  fhir:ImplementationGuide.date [ fhir:value "2026-10-17T12:59:36+00:00"^^xsd:dateTime] ;
   fhir:ImplementationGuide.publisher [ fhir:value "FHIR-utbildning"] ;
   fhir:ImplementationGuide.description [ fhir:value "En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen."] ;
   fhir:ImplementationGuide.jurisdiction [

@@ -10,7 +10,7 @@
   "name" : "FhirEducationKursIG",
   "title" : "FHIR-utbildning – Kurs-IG",
   "status" : "draft",
-  "date" : "2026-10-13T17:29:18+00:00",
+  "date" : "2026-10-17T12:59:36+00:00",
   "publisher" : "FHIR-utbildning",
   "description" : "En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen.",
   "jurisdiction" : [{
