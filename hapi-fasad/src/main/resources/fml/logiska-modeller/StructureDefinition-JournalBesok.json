@@ -1,0 +1,394 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "JournalBesok",
+  "url": "http://example.org/fhir/education/journalsystem/StructureDefinition/JournalBesok",
+  "version": "0.1.0",
+  "name": "JournalBesok",
+  "title": "Journalsystemets besök",
+  "status": "draft",
+  "description": "Ett besök så som journalsystemets REST-API returnerar det: GET /journalsystem-api/patienter/{personnummer}/besok",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    }
+  ],
+  "kind": "logical",
+  "abstract": false,
+  "type": "http://example.org/fhir/education/journalsystem/StructureDefinition/JournalBesok",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Base",
+  "derivation": "specialization",
+  "snapshot": {
+    "element": [
+      {
+        "id": "JournalBesok",
+        "path": "JournalBesok",
+        "short": "Journalsystemets besök",
+        "definition": "Ett besök så som journalsystemets REST-API returnerar det: GET /journalsystem-api/patienter/{personnummer}/besok",
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "JournalBesok",
+          "min": 0,
+          "max": "*"
+        },
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ],
+        "isModifier": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.besoksId",
+        "path": "JournalBesok.besoksId",
+        "short": "Besökets id i journalsystemet",
+        "definition": "Besökets id i journalsystemet",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.besoksId",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.personnummer",
+        "path": "JournalBesok.personnummer",
+        "short": "Patientens personnummer",
+        "definition": "Patientens personnummer",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.personnummer",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.kontakttyp",
+        "path": "JournalBesok.kontakttyp",
+        "short": "BES = besök, HEM = hembesök, VID = video, TEL = telefon, DIG = digital kontakt",
+        "definition": "BES = besök, HEM = hembesök, VID = video, TEL = telefon, DIG = digital kontakt",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.kontakttyp",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.status",
+        "path": "JournalBesok.status",
+        "short": "PLAN = planerad, PAGAR = pågår, AVSL = avslutad",
+        "definition": "PLAN = planerad, PAGAR = pågår, AVSL = avslutad",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.status",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.start",
+        "path": "JournalBesok.start",
+        "short": "Starttid (ISO 8601 med tidszon)",
+        "definition": "Starttid (ISO 8601 med tidszon)",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.start",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.slut",
+        "path": "JournalBesok.slut",
+        "short": "Sluttid (ISO 8601 med tidszon)",
+        "definition": "Sluttid (ISO 8601 med tidszon)",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.slut",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.diagnoskod",
+        "path": "JournalBesok.diagnoskod",
+        "short": "Diagnoskod enligt ICD-10",
+        "definition": "Diagnoskod enligt ICD-10",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.diagnoskod",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.enhetHsaId",
+        "path": "JournalBesok.enhetHsaId",
+        "short": "Vårdenhetens HSA-id",
+        "definition": "Vårdenhetens HSA-id",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalBesok.enhetHsaId",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "JournalBesok",
+        "path": "JournalBesok",
+        "short": "Journalsystemets besök",
+        "definition": "Ett besök så som journalsystemets REST-API returnerar det: GET /journalsystem-api/patienter/{personnummer}/besok"
+      },
+      {
+        "id": "JournalBesok.besoksId",
+        "path": "JournalBesok.besoksId",
+        "short": "Besökets id i journalsystemet",
+        "definition": "Besökets id i journalsystemet",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.personnummer",
+        "path": "JournalBesok.personnummer",
+        "short": "Patientens personnummer",
+        "definition": "Patientens personnummer",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.kontakttyp",
+        "path": "JournalBesok.kontakttyp",
+        "short": "BES = besök, HEM = hembesök, VID = video, TEL = telefon, DIG = digital kontakt",
+        "definition": "BES = besök, HEM = hembesök, VID = video, TEL = telefon, DIG = digital kontakt",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.status",
+        "path": "JournalBesok.status",
+        "short": "PLAN = planerad, PAGAR = pågår, AVSL = avslutad",
+        "definition": "PLAN = planerad, PAGAR = pågår, AVSL = avslutad",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.start",
+        "path": "JournalBesok.start",
+        "short": "Starttid (ISO 8601 med tidszon)",
+        "definition": "Starttid (ISO 8601 med tidszon)",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.slut",
+        "path": "JournalBesok.slut",
+        "short": "Sluttid (ISO 8601 med tidszon)",
+        "definition": "Sluttid (ISO 8601 med tidszon)",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "dateTime"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.diagnoskod",
+        "path": "JournalBesok.diagnoskod",
+        "short": "Diagnoskod enligt ICD-10",
+        "definition": "Diagnoskod enligt ICD-10",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalBesok.enhetHsaId",
+        "path": "JournalBesok.enhetHsaId",
+        "short": "Vårdenhetens HSA-id",
+        "definition": "Vårdenhetens HSA-id",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      }
+    ]
+  }
+}

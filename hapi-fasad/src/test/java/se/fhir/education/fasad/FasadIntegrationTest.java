@@ -57,6 +57,22 @@ class FasadIntegrationTest {
   }
 
   @Test
+  void journalsystemetsApiArInteFhir() {
+    String json = new org.springframework.web.client.RestTemplate()
+        .getForObject("http://localhost:" + port + "/journalsystem-api/patienter/191212121212", String.class);
+
+    assertThat(json).contains("\"efternamn\":\"Tolvansson\"").doesNotContain("resourceType");
+  }
+
+  @Test
+  void lasVardkontakt() {
+    Encounter encounter = client.read().resource(Encounter.class).withId("B1001").execute();
+
+    assertThat(encounter.getStatus()).isEqualTo(Encounter.EncounterStatus.FINISHED);
+    assertThat(encounter.getSubject().getReference()).isEqualTo("Patient/191212121212");
+  }
+
+  @Test
   void capabilityStatementBeskriverApiet() {
     CapabilityStatement cs = client.capabilities().ofType(CapabilityStatement.class).execute();
 

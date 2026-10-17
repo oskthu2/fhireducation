@@ -9,11 +9,12 @@ GitHub Pages. Den som vill kan också bygga lokalt med Docker.
 
 | Innehåll | |
 |----------|---|
-| [`presentation/`](presentation/README.md) | Presentationen (PowerPoint, 78 bilder med talarmanus) |
+| [`presentation/`](presentation/README.md) | Presentationen (PowerPoint, 79 bilder med talarmanus) |
 | [`kursmaterial/`](kursmaterial/README.md) | Övningar, facit och lösningar för de sex modulerna, schema och avslutning |
+| [`kursbok/`](kursbok/README.md) | Kursboken: fördjupning per modul och kapitel om REST, HAPI FHIR, SMART, FML, terminologi och IG-förvaltning. Publiceras på `https://<konto>.github.io/<repo>/kursbok/` |
 | [`test-ig/`](test-ig/) | Kursens IG: startprofilen `EducationPatient` som byggs ut under dagen |
 | [`validering/`](validering/) | JSON-instanser som valideras automatiskt mot dina profiler (modul 6) |
-| [`hapi-fasad/`](hapi-fasad/README.md) | FHIR-fasad med HAPI FHIR ovanpå ett simulerat journalsystem (modul 5) |
+| [`hapi-fasad/`](hapi-fasad/README.md) | FHIR-fasad med HAPI FHIR som mappar ett proprietärt REST-API till FHIR med FHIR Mapping Language (modul 5) |
 | [`hapi-fhir-sandbox/`](hapi-fhir-sandbox/README.md) | Lokal HAPI FHIR-server med svenska testpatienter (Docker) |
 | `.github/workflows/` | Byggen i GitHub Actions |
 | `scripts/` | Byggskript: PowerShell + Docker, eller bash utan Docker |
@@ -26,7 +27,7 @@ GitHub Pages. Den som vill kan också bygga lokalt med Docker.
 | 2 | Profiler, IG:er och verktyg | Tolka en profil, slicing |
 | 3 | FHIR Shorthand (FSH) | Profil, terminologibindning, extension och slicing i `test-ig` |
 | 4 | FHIRPath | Egna invarianter i profilerna |
-| 5 | Utveckling med HAPI FHIR | FHIR-API ovanpå befintligt system, API-säkerhet, SMART on FHIR, IHE |
+| 5 | Utveckling med HAPI FHIR | FHIR-fasad ovanpå ett proprietärt REST-API med FHIR Mapping Language (FML), API-säkerhet, SMART on FHIR, IHE |
 | 6 | Följsamhet, krav och validering | Kravställning mot IG, CapabilityStatement, capability discovery, validering mot profil |
 | – | Avslutning (15 min) | Ta hem miljön: lokal installation och egen IG |
 
@@ -77,9 +78,9 @@ Testa direkt: ändra `title` i `test-ig/sushi-config.yaml`, checka in, och se de
 
 | Arbetsflöde | Startar när … | Gör |
 |-------------|---------------|-----|
-| **Bygg IG** | något ändras i `test-ig/` (eller manuellt) | Kör SUSHI och IG Publisher, publicerar på GitHub Pages och sparar IG:n som artefakt. Bygger även facit-IG:n under `/facit/` när den saknas |
+| **Bygg IG** | något ändras i `test-ig/` (eller manuellt) | Kör SUSHI och IG Publisher, publicerar på GitHub Pages och sparar IG:n som artefakt. Bygger även facit-IG:n under `/facit/` när den saknas och publicerar kursboken under `/kursbok/` |
 | **Validera instanser** | något ändras i `validering/` eller i FSH-filerna | Validerar JSON-filerna i `validering/` mot dina profiler med HL7 FHIR Validator |
-| **HAPI-fasad** | något ändras i `hapi-fasad/` | Bygger och testar FHIR-fasaden, startar den och visar svar på några anrop |
+| **HAPI-fasad** | något ändras i `hapi-fasad/`, t.ex. en `.map`-fil | Bygger och testar FHIR-fasaden, startar den och visar källans JSON och FHIR-resultatet sida vid sida |
 | **Kom ikapp** | du startar det manuellt | Ersätter dina FSH-filer med lösningen efter vald modul och startar bygget |
 | **Kontrollera lösningar** | lösningarna ändras (eller manuellt) | För kursledaren: bygger alla lösningar och kontrollerar valideringsövningen |
 

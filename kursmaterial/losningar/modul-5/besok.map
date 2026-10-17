@@ -1,0 +1,62 @@
+// Mappning från journalsystemets proprietära besöks-JSON till en FHIR Encounter enligt profilen EducationEncounter.
+
+map "http://example.org/fhir/education/StructureMap/JournalBesokTillFhir" = "JournalBesokTillFhir"
+
+// Journalsystemets statuskoder -> FHIR:s (required-bundna) statuskoder
+conceptmap "status" {
+  prefix s = "http://example.org/fhir/education/journalsystem/besoksstatus"
+  prefix t = "http://hl7.org/fhir/encounter-status"
+
+  s:PLAN == t:planned
+  s:PAGAR == t:"in-progress"
+  s:AVSL == t:finished
+}
+
+// Journalsystemets kontakttyper -> kursens kodsystem Kontakttyp  (LÖSNING ÖVNING 5.3: raden för DIG)
+conceptmap "kontakttyp" {
+  prefix s = "http://example.org/fhir/education/journalsystem/kontakttyp"
+  prefix t = "http://example.org/fhir/education/kursig/CodeSystem/kontakttyp"
+
+  s:BES == t:besok
+  s:HEM == t:hembesok
+  s:VID == t:video
+  s:TEL == t:telefon
+  s:DIG == t:video
+}
+
+// Journalsystemets kontakttyper -> HL7 v3 ActCode (Encounter.class)  (LÖSNING ÖVNING 5.3: raden för DIG)
+conceptmap "klass" {
+  prefix s = "http://example.org/fhir/education/journalsystem/kontakttyp"
+  prefix t = "http://terminology.hl7.org/CodeSystem/v3-ActCode"
+
+  s:BES == t:AMB
+  s:HEM == t:HH
+  s:VID == t:VR
+  s:TEL == t:VR
+  s:DIG == t:VR
+}
+
+uses "http://example.org/fhir/education/journalsystem/StructureDefinition/JournalBesok" alias JournalBesok as source
+uses "http://hl7.org/fhir/StructureDefinition/Encounter" alias Encounter as target
+
+group JournalBesokTillFhir(source src : JournalBesok, target tgt : Encounter) {
+  src -> tgt.meta as meta, meta.profile = 'http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter' "profil";
+  // Resursens logiska id (besoksId) sätts av fasaden, inte av mappningen.
+
+  src.status as status -> tgt.status = translate(status, '#status', 'code') "status";
+  src.kontakttyp as typ -> tgt.class = translate(typ, '#klass', 'Coding') "klass";
+  src.kontakttyp as typ -> tgt.type as type, type.coding = translate(typ, '#kontakttyp', 'Coding') "typ";
+
+  // Referens till patienten: Patient/<personnummer>
+  src.personnummer as pnr -> tgt.subject as subject, subject.reference = append('Patient/', pnr) "patient";
+
+  src -> tgt.period as period then {
+    src.start as start -> period.start = start "start";
+    src.slut as slut -> period.end = slut "slut";
+  } "period";
+
+  src.diagnoskod as kod -> tgt.reasonCode as reason, reason.coding as coding, coding.system = 'http://hl7.org/fhir/sid/icd-10', coding.code = kod "diagnos";
+
+  // Vårdenheten som logisk referens med HSA-id
+  src.enhetHsaId as hsa -> tgt.serviceProvider as sp, sp.identifier as spid, spid.system = 'urn:oid:1.2.752.29.4.19', spid.value = hsa "vardenhet";
+}

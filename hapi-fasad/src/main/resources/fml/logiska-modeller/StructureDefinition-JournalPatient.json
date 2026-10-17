@@ -1,0 +1,312 @@
+{
+  "resourceType": "StructureDefinition",
+  "id": "JournalPatient",
+  "url": "http://example.org/fhir/education/journalsystem/StructureDefinition/JournalPatient",
+  "version": "0.1.0",
+  "name": "JournalPatient",
+  "title": "Journalsystemets patient",
+  "status": "draft",
+  "description": "En patient så som journalsystemets REST-API returnerar den: GET /journalsystem-api/patienter/{personnummer}",
+  "fhirVersion": "4.0.1",
+  "mapping": [
+    {
+      "identity": "rim",
+      "uri": "http://hl7.org/v3",
+      "name": "RIM Mapping"
+    }
+  ],
+  "kind": "logical",
+  "abstract": false,
+  "type": "http://example.org/fhir/education/journalsystem/StructureDefinition/JournalPatient",
+  "baseDefinition": "http://hl7.org/fhir/StructureDefinition/Base",
+  "derivation": "specialization",
+  "snapshot": {
+    "element": [
+      {
+        "id": "JournalPatient",
+        "path": "JournalPatient",
+        "short": "Journalsystemets patient",
+        "definition": "En patient så som journalsystemets REST-API returnerar den: GET /journalsystem-api/patienter/{personnummer}",
+        "min": 0,
+        "max": "*",
+        "base": {
+          "path": "JournalPatient",
+          "min": 0,
+          "max": "*"
+        },
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ],
+        "isModifier": false,
+        "mapping": [
+          {
+            "identity": "rim",
+            "map": "n/a"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.personnummer",
+        "path": "JournalPatient.personnummer",
+        "short": "Personnummer, 12 siffror",
+        "definition": "Personnummer, 12 siffror",
+        "min": 1,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.personnummer",
+          "min": 1,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.fornamn",
+        "path": "JournalPatient.fornamn",
+        "short": "Förnamn",
+        "definition": "Förnamn",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.fornamn",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.efternamn",
+        "path": "JournalPatient.efternamn",
+        "short": "Efternamn",
+        "definition": "Efternamn",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.efternamn",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.kon",
+        "path": "JournalPatient.kon",
+        "short": "Kön: M (man) eller K (kvinna)",
+        "definition": "Kön: M (man) eller K (kvinna)",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.kon",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.fodelsedatum",
+        "path": "JournalPatient.fodelsedatum",
+        "short": "Födelsedatum (ÅÅÅÅ-MM-DD)",
+        "definition": "Födelsedatum (ÅÅÅÅ-MM-DD)",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.fodelsedatum",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "date"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.telefon",
+        "path": "JournalPatient.telefon",
+        "short": "Telefonnummer i fritext",
+        "definition": "Telefonnummer i fritext",
+        "min": 0,
+        "max": "1",
+        "base": {
+          "path": "JournalPatient.telefon",
+          "min": 0,
+          "max": "1"
+        },
+        "type": [
+          {
+            "code": "string"
+          }
+        ],
+        "constraint": [
+          {
+            "key": "ele-1",
+            "severity": "error",
+            "human": "All FHIR elements must have a @value or children",
+            "expression": "hasValue() or (children().count() > id.count())",
+            "xpath": "@value|f:*|h:div",
+            "source": "http://hl7.org/fhir/StructureDefinition/Element"
+          }
+        ]
+      }
+    ]
+  },
+  "differential": {
+    "element": [
+      {
+        "id": "JournalPatient",
+        "path": "JournalPatient",
+        "short": "Journalsystemets patient",
+        "definition": "En patient så som journalsystemets REST-API returnerar den: GET /journalsystem-api/patienter/{personnummer}"
+      },
+      {
+        "id": "JournalPatient.personnummer",
+        "path": "JournalPatient.personnummer",
+        "short": "Personnummer, 12 siffror",
+        "definition": "Personnummer, 12 siffror",
+        "min": 1,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.fornamn",
+        "path": "JournalPatient.fornamn",
+        "short": "Förnamn",
+        "definition": "Förnamn",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.efternamn",
+        "path": "JournalPatient.efternamn",
+        "short": "Efternamn",
+        "definition": "Efternamn",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.kon",
+        "path": "JournalPatient.kon",
+        "short": "Kön: M (man) eller K (kvinna)",
+        "definition": "Kön: M (man) eller K (kvinna)",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.fodelsedatum",
+        "path": "JournalPatient.fodelsedatum",
+        "short": "Födelsedatum (ÅÅÅÅ-MM-DD)",
+        "definition": "Födelsedatum (ÅÅÅÅ-MM-DD)",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "date"
+          }
+        ]
+      },
+      {
+        "id": "JournalPatient.telefon",
+        "path": "JournalPatient.telefon",
+        "short": "Telefonnummer i fritext",
+        "definition": "Telefonnummer i fritext",
+        "min": 0,
+        "max": "1",
+        "type": [
+          {
+            "code": "string"
+          }
+        ]
+      }
+    ]
+  }
+}

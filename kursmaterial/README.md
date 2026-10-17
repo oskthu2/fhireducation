@@ -9,7 +9,7 @@ Sex moduler à 50 minuter (plus 10 minuters paus mellan modulerna), en kort inle
 | 2 | [Profiler och Implementation Guides](modul-2-profiler-och-ig/README.md) | Läs en profil, vilken slice? | [facit](modul-2-profiler-och-ig/facit.md) |
 | 3 | [FHIR Shorthand (FSH)](modul-3-fsh/README.md) | EducationEncounter, terminologi, extensions, slicing | [losningar/modul-3](losningar/modul-3/fsh/) |
 | 4 | [FHIRPath och invarianter](modul-4-fhirpath/README.md) | FHIRPath Lab, egna invarianter | [facit](modul-4-fhirpath/facit.md), [losningar/modul-4](losningar/modul-4/fsh/) |
-| 5 | [Utveckling med HAPI FHIR](modul-5-hapi-fhir/README.md) | Utforska ett FHIR-API, mappa ett fält i fasaden, scopes | [losningar/modul-5](losningar/modul-5/PatientMapper.java) |
+| 5 | [Utveckling med HAPI FHIR](modul-5-hapi-fhir/README.md) | Utforska ett FHIR-API, lägg till en regel i FML-mappningen, ny kod i ConceptMap, scopes | [losningar/modul-5](losningar/modul-5/) |
 | 6 | [Följsamhet och validering](modul-6-foljsamhet/README.md) | Kravställning, CapabilityStatement, validera instanser, formulera krav | [facit](modul-6-foljsamhet/facit.md), [losningar/modul-6](losningar/modul-6/fsh/) |
 | – | [Avslutning: ta hem miljön](avslutning/README.md) | Lokal installation, starta en egen IG | |
 
@@ -17,6 +17,9 @@ Sex moduler à 50 minuter (plus 10 minuters paus mellan modulerna), en kort inle
 Den används i övning 2.1 och 4.0 för att läsa en profil i IG Publishers vyer.
 
 Presentationen finns i [`presentation/FHIR-utbildning.pptx`](../presentation/README.md).
+
+**Kursbok:** fördjupande texter till varje modul, kontrollfrågor och länkar för egna studier finns i
+[`kursbok/`](../kursbok/README.md), publicerad på `https://<konto>.github.io/<repo>/kursbok/`.
 
 ## Förslag på schema
 

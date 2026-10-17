@@ -7,8 +7,7 @@ import org.hl7.fhir.r4.model.CapabilityStatement.CapabilityStatementRestResource
 import ca.uhn.fhir.interceptor.api.Hook;
 import ca.uhn.fhir.interceptor.api.Interceptor;
 import ca.uhn.fhir.interceptor.api.Pointcut;
-import se.fhir.education.fasad.mapping.EncounterMapper;
-import se.fhir.education.fasad.mapping.PatientMapper;
+import se.fhir.education.fasad.mapping.Kanoniska;
 
 /**
  * HAPI genererar ett CapabilityStatement automatiskt utifrån våra resource providers.
@@ -17,21 +16,19 @@ import se.fhir.education.fasad.mapping.PatientMapper;
 @Interceptor
 public class CapabilityStatementCustomizer {
 
-  static final String KURS_IG = "http://example.org/fhir/education/kursig";
-
   @Hook(Pointcut.SERVER_CAPABILITY_STATEMENT_GENERATED)
   public void customize(IBaseConformance theCapabilityStatement) {
     CapabilityStatement cs = (CapabilityStatement) theCapabilityStatement;
 
     cs.setPublisher("FHIR-utbildning");
     // "Den här servern uppfyller kraven i ..." – se övning 6.2
-    cs.addInstantiates(KURS_IG + "/CapabilityStatement/EducationServerCapabilities");
-    cs.addImplementationGuide(KURS_IG + "/ImplementationGuide/fhir.education.kursig");
+    cs.addInstantiates(Kanoniska.KURS_IG + "/CapabilityStatement/EducationServerCapabilities");
+    cs.addImplementationGuide(Kanoniska.KURS_IG + "/ImplementationGuide/fhir.education.kursig");
 
     for (CapabilityStatementRestResourceComponent resource : cs.getRestFirstRep().getResource()) {
       switch (resource.getType()) {
-        case "Patient" -> resource.addSupportedProfile(PatientMapper.PROFIL);
-        case "Encounter" -> resource.addSupportedProfile(EncounterMapper.PROFIL);
+        case "Patient" -> resource.addSupportedProfile(Kanoniska.EDUCATION_PATIENT);
+        case "Encounter" -> resource.addSupportedProfile(Kanoniska.EDUCATION_ENCOUNTER);
         default -> { }
       }
     }

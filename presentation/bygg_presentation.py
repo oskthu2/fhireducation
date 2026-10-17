@@ -79,7 +79,7 @@ d.table(s, [
     ["11.15 – 12.05", "3  FHIR Shorthand (FSH)", "Profil, terminologi, extension och slicing i FSH"],
     ["12.05 – 13.00", "Lunch", ""],
     ["13.00 – 13.50", "4  FHIRPath", "Uttryck, invarianter och constraints"],
-    ["14.00 – 14.50", "5  Utveckling med HAPI FHIR", "FHIR-fasad, REST, API-säkerhet, SMART on FHIR, IHE"],
+    ["14.00 – 14.50", "5  Utveckling med HAPI FHIR", "FHIR-fasad med FML, REST, API-säkerhet, SMART, IHE"],
     ["15.00 – 15.50", "6  Följsamhet, krav och validering", "Kravställning, CapabilityStatement, discovery, validering"],
     ["15.50 – 16.05", "Avslutning", "Ta hem miljön: lokal installation och egen IG"],
 ], MARGIN, CONTENT_TOP + I(0.05), CONTENT_W, col_widths=[2.2, 4.2, 6.6], size=15, row_height=I(0.5))
@@ -106,7 +106,7 @@ I stället för nya exempel i varje modul följer vi samma två resurser hela da
 Testpersonen är Tolvan Tolvansson (191212121212), Skatteverkets klassiska testperson.
 
 Modul 1: vi läser resurserna. Modul 2: vi tolkar profilerna. Modul 3: vi skriver profilerna i FSH.
-Modul 4: vi lägger till regler med FHIRPath. Modul 5: vi exponerar data från ett "journalsystem" via ett FHIR-API.
+Modul 4: vi lägger till regler med FHIRPath. Modul 5: vi exponerar data från ett "journalsystem" via ett FHIR-API, med mappningar i FHIR Mapping Language.
 Modul 6: vi beskriver kraven i ett CapabilityStatement och validerar instanser.
 """)
 steps = [
@@ -114,7 +114,7 @@ steps = [
     ("2", "Tolka", "Profilen\nEducationPatient"),
     ("3", "Skriva", "Profiler, terminologi,\nextension, slicing"),
     ("4", "Regler", "Invarianter\ni FHIRPath"),
-    ("5", "Exponera", "FHIR-fasad\nmed HAPI"),
+    ("5", "Exponera", "FHIR-fasad\nmed FML"),
     ("6", "Kvalitetssäkra", "Capability-\nStatement och\nvalidering"),
 ]
 w, gap = I(1.85), I(0.18)
@@ -775,10 +775,11 @@ d.table(s, [
     ["**FHIR Validator**", "Validera instanser mot bas, profiler och terminologi", "Modul 6"],
     ["**FHIRPath Lab**", "Testa FHIRPath-uttryck", "Modul 4"],
     ["**HAPI FHIR**", "Java-bibliotek, klient och server", "Modul 5"],
+    ["**FHIR Mapping Language**", "Mappa mellan strukturer, t.ex. proprietär JSON → FHIR", "Modul 5"],
     ["Forge / Simplifier", "Grafisk profilering och publicering (Firely)", ""],
     ["Inferno / Touchstone", "Testa API-beteende och konformitet", "Modul 6"],
     ["GitHub Actions", "Automatiskt bygge och validering vid varje incheckning", "Hela dagen"],
-], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.6, 7.4, 2.0], size=15, row_height=I(0.52))
+], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.6, 7.4, 2.0], size=15, row_height=I(0.48))
 
 d.exercise_slide("2.1 Läs en profil  ·  2.2 Vilken slice?", [
     "**2.1** Öppna profilen i **facit-IG:n**: `https://<konto>.github.io/<repo>/facit/` → Artifacts → EducationPatient",
@@ -910,9 +911,10 @@ d.table(s, [
     ["`CodeSystem:`", "CodeSystem", "Egna kodverk"],
     ["`Instance:`", "Valfri resurs", "Exempel, CapabilityStatement m.m."],
     ["`Invariant:`", "constraint i profilen", "FHIRPath-regler (modul 4)"],
+    ["`Logical:`", "StructureDefinition (logical)", "Logiska modeller, t.ex. källsystemets struktur (modul 5)"],
     ["`Alias:`", "–", "Korta namn för långa URL:er, t.ex. `$personnummer`"],
     ["`RuleSet:`", "–", "Återanvändbara regler"],
-], MARGIN, CONTENT_TOP, I(8.2), col_widths=[1.8, 3.0, 3.4], size=15, row_height=I(0.52))
+], MARGIN, CONTENT_TOP, I(8.2), col_widths=[1.8, 3.0, 3.4], size=14, row_height=I(0.48))
 d.code(s, """Profile: EducationPatient
 Parent: Patient
 Id: EducationPatient
@@ -1317,11 +1319,15 @@ Nu lämnar vi IG:n en stund och tittar på hur man faktiskt erbjuder ett FHIR-AP
 d.module_slide(5, "Utveckling med HAPI FHIR", [
     "beskriva FHIR:s REST-API: interaktioner och sökning",
     "förstå hur en FHIR-fasad ovanpå ett befintligt system byggs med HAPI",
+    "läsa och ändra en mappning i FHIR Mapping Language (FML)",
     "känna till grunderna i API-säkerhet: OAuth 2.0 och SMART on FHIR",
     "känna till relevanta IHE-profiler för integration",
 ], [(25, "Genomgång och demo"), (20, "Övningar 5.1–5.3"), (5, "Summering")], notes="""
 Modulen har en blandad publik: utvecklare vill se kod, kravställare vill förstå arkitekturval och säkerhet.
-Visa koden översiktligt och lägg tid på mappningsutmaningarna och säkerheten.
+FML passar båda: mappningen är läsbar som en specifikation, inte bara som kod.
+
+Tidsplan: REST och sökning går fort (deltagarna provar själva i 5.1). Lägg tiden på fasaden, FML och
+mappningsutmaningarna, och ta säkerhet och IHE i högt tempo.
 """)
 
 s = d.content_slide("FHIR:s REST-API", notes="""
@@ -1385,67 +1391,120 @@ Valet beror på krav på aktualitet, prestanda, skrivning, sökning och var "san
 """)
 cols = [
     ("FHIR-server med lagring", "HAPI JPA Server, Firely,\nmolntjänster", ["Full sökning och CRUD", "Versionshistorik", "Data måste synkas/kopieras"], TEAL_LIGHT),
-    ("FHIR-fasad", "HAPI Plain Server,\negen kod", ["Data stannar i källsystemet", "Alltid aktuellt", "Bara det du implementerar"], ORANGE_LIGHT),
+    ("FHIR-fasad", "HAPI Plain Server +\nFML eller egen kod", ["Data stannar i källsystemet", "Alltid aktuellt", "Bara det du implementerar"], ORANGE_LIGHT),
     ("Integrationsplattform", "Integrationsmotor,\ntjänsteplattform", ["Återanvänder befintlig integration", "Transformering av meddelanden", "Ofta asynkront"], LIGHT),
 ]
 for i, (head, tech, points, fill) in enumerate(cols):
     x = MARGIN + i * I(4.1)
     d.box(s, f"**{head}**\n{tech}", x, CONTENT_TOP + I(0.1), I(3.9), I(1.3), fill=fill, size=16)
     d.bullets(s, points, x, CONTENT_TOP + I(1.6), I(3.9), I(2.0), size=16)
-d.callout(s, "Kursens exempel `hapi-fasad/` är en **fasad**: ett FHIR-API ovanpå ett simulerat journalsystem med egna tabeller och koder.",
+d.callout(s, "Kursens exempel `hapi-fasad/` är en **fasad**: ett FHIR-API ovanpå ett journalsystems proprietära REST-API, med mappningar i **FHIR Mapping Language**.",
           MARGIN, CONTENT_TOP + I(3.9), CONTENT_W, I(0.85), kind="info", size=16)
 
 s = d.content_slide("Kursens FHIR-fasad", notes="""
-Visa koden i repot: hapi-fasad/src/main/java/se/fhir/education/fasad.
+Flödet: klienten anropar GET /fhir/Patient/191212121212. HAPI:s RestfulServer anropar PatientProvider.read().
+Den hämtar JSON från journalsystemets eget REST-API (/journalsystem-api/patienter/191212121212), och FmlMotor
+kör mappningen fml/patient.map som gör om JSON till en FHIR Patient med meta.profile = EducationPatient.
 
-Flödet: klienten anropar GET /fhir/Patient/191212121212. HAPI:s RestfulServer tolkar anropet och anropar
-PatientProvider.read(). Den hämtar raden från Journalsystem och mappar den med PatientMapper till en FHIR Patient
-med meta.profile = EducationPatient. HAPI serialiserar till JSON.
+Visa gärna båda URL:erna sida vid sida i webbläsaren (eller sammanfattningen i arbetsflödet HAPI-fasad).
 
-CapabilityStatement genereras automatiskt utifrån annoteringarna (@Read, @Search) i resource providers.
+Poängen: Java-koden är generell. Hur fälten översätts står i FML-filen, som kan läsas och ändras utan att
+röra koden. Resursens id sätts dock av fasaden, eftersom det är serverns ansvar.
 """)
-d.box(s, "**Klient**\napp, annat system", MARGIN, CONTENT_TOP + I(0.4), I(2.1), I(1.4), fill=LIGHT, size=16)
-d.box(s, "**FHIR-fasad (HAPI)**\nRestfulServer\nPatientProvider · EncounterProvider\nPatientMapper · EncounterMapper\nCapabilityStatement (auto)",
-      I(3.6), CONTENT_TOP + I(0.1), I(4.4), I(2.0), fill=NAVY, color=WHITE, size=15)
-d.box(s, "**Journalsystem**\ntabeller PATIENT, BESOK\negna koder: M/K, AVSL, BES", I(9.3), CONTENT_TOP + I(0.4), I(3.4), I(1.4), fill=ORANGE_LIGHT, size=15)
-d.arrow(s, I(2.75), CONTENT_TOP + I(1.1), I(3.55), CONTENT_TOP + I(1.1))
-d.arrow(s, I(8.05), CONTENT_TOP + I(1.1), I(9.25), CONTENT_TOP + I(1.1))
-d.text(s, "FHIR/REST", I(2.65), CONTENT_TOP + I(0.7), I(1.0), I(0.35), size=12, color=GREY, align=PP_ALIGN.CENTER)
-d.text(s, "SQL / API", I(8.1), CONTENT_TOP + I(0.7), I(1.2), I(0.35), size=12, color=GREY, align=PP_ALIGN.CENTER)
-d.code(s, """@Component
-public class PatientProvider implements IResourceProvider {
+d.box(s, "**Klient**\napp, annat system", MARGIN, CONTENT_TOP + I(0.2), I(2.1), I(1.3), fill=LIGHT, size=15)
+d.box(s, "**FHIR-fasad (HAPI)**\nPatientProvider · EncounterProvider\nFmlMotor: patient.map, besok.map\nCapabilityStatement (auto)",
+      I(3.55), CONTENT_TOP + I(0.05), I(4.6), I(1.6), fill=NAVY, color=WHITE, size=14)
+d.box(s, "**Journalsystemets REST-API**\nproprietär JSON\negna koder: M/K, AVSL, BES", I(9.3), CONTENT_TOP + I(0.2), I(3.4), I(1.3), fill=ORANGE_LIGHT, size=14)
+d.arrow(s, I(2.75), CONTENT_TOP + I(0.85), I(3.5), CONTENT_TOP + I(0.85))
+d.arrow(s, I(8.2), CONTENT_TOP + I(0.85), I(9.25), CONTENT_TOP + I(0.85))
+d.text(s, "FHIR", I(2.65), CONTENT_TOP + I(0.45), I(1.0), I(0.35), size=12, color=GREY, align=PP_ALIGN.CENTER)
+d.text(s, "JSON", I(8.2), CONTENT_TOP + I(0.45), I(1.0), I(0.35), size=12, color=GREY, align=PP_ALIGN.CENTER)
+d.code(s, """GET /journalsystem-api/
+    patienter/191212121212
 
-  @Read
-  public Patient read(@IdParam IdType id) {
-    return journalsystem.hamtaPatient(id.getIdPart())
-        .map(PatientMapper::toFhir)
-        .orElseThrow(() -> new ResourceNotFoundException(id));
-  }
+{
+  "personnummer": "191212121212",
+  "fornamn": "Tolvan",
+  "efternamn": "Tolvansson",
+  "kon": "M",
+  "fodelsedatum": "1912-12-12",
+  "telefon": "070-1234567"
+}""", MARGIN, CONTENT_TOP + I(1.95), I(5.0), I(3.35), lang="json", size=13, title="Källa: journalsystemets API")
+d.text(s, "FML\n→", I(5.7), CONTENT_TOP + I(3.2), I(0.9), I(0.8), size=18, bold=True, color=ORANGE, align=PP_ALIGN.CENTER)
+d.code(s, """GET /fhir/Patient/191212121212
 
-  @Search
-  public List<Patient> search(@OptionalParam(name = "identifier") TokenParam id) { … }
-}""", MARGIN, CONTENT_TOP + I(2.45), CONTENT_W, I(2.9), lang="java", size=14)
+{ "resourceType": "Patient", "id": "191212121212",
+  "meta": { "profile": [ ".../EducationPatient" ] },
+  "identifier": [ { "system": ".../personnummer",
+                    "value": "191212121212" } ],
+  "name": [ { "use": "official", "family": "Tolvansson",
+              "given": [ "Tolvan" ] } ],
+  "gender": "male",
+  "birthDate": "1912-12-12" }""", I(6.7), CONTENT_TOP + I(1.95), I(6.0), I(3.35), lang="json", size=13, title="Resultat: FHIR (telefon saknas – övning 5.2)")
+
+s = d.content_slide("FHIR Mapping Language (FML)", notes="""
+FML är HL7:s standardspråk för att beskriva hur en struktur översätts till en annan. En mappning kompileras till
+resursen StructureMap och körs av en FML-motor: HL7:s referensbibliotek (som fasaden använder), HAPI eller Matchbox.
+
+Gå igenom delarna:
+- conceptmap: kodöversättning, här journalsystemets M/K till FHIR:s male/female.
+- uses: källans och målets struktur. Källan är inte FHIR, den beskrivs av en logisk modell (FSH: Logical:).
+- group och regler: källa -> mål "namn". Finns inte källelementet körs regeln inte, så inga tomma element skapas.
+- then { }: inre regler som fyller ett element som skapats i yttre regeln.
+
+Varför FML i stället för Java? Mappningen blir en läsbar och granskningsbar specifikation som informatiker
+kan förstå, och den kan publiceras i en IG. Nackdel: ett eget språk, och stödet varierar mellan FHIR-versioner.
+""")
+d.code(s, """conceptmap "kon" {
+  prefix s = "http://example.org/.../journalsystem/kon"
+  prefix t = "http://hl7.org/fhir/administrative-gender"
+  s:M == t:male
+  s:K == t:female
+}
+
+uses ".../StructureDefinition/JournalPatient" alias JournalPatient as source
+uses "http://hl7.org/fhir/StructureDefinition/Patient" alias Patient as target
+
+group JournalPatientTillFhir(source src : JournalPatient, target tgt : Patient) {
+  src.personnummer as pnr -> tgt.identifier as ident,
+      ident.system = 'http://electronichealth.se/identifier/personnummer',
+      ident.value = pnr "personnummer";
+  src -> tgt.name as namn, namn.use = 'official' then {
+    src.efternamn as efternamn -> namn.family = efternamn "efternamn";
+    src.fornamn as fornamn -> namn.given = fornamn "fornamn";
+  } "namn";
+  src.kon as kon -> tgt.gender = translate(kon, '#kon', 'code') "kon";
+  src.fodelsedatum as fd -> tgt.birthDate = fd "fodelsedatum";
+}""", MARGIN, CONTENT_TOP + I(0.05), I(8.3), I(5.25), size=12, title="hapi-fasad/src/main/resources/fml/patient.map (förkortad)")
+d.box(s, "**conceptmap**\nkodöversättning M/K → male/female", I(9.15), CONTENT_TOP + I(0.4), I(3.55), I(0.95), size=14, fill=ORANGE_LIGHT)
+d.box(s, "**uses**\nkällans logiska modell och målets resurs", I(9.15), CONTENT_TOP + I(1.5), I(3.55), I(0.95), size=14)
+d.box(s, "**regel**\nkälla -> mål \"namn\";", I(9.15), CONTENT_TOP + I(2.6), I(3.55), I(0.95), size=14, fill=NAVY, color=WHITE)
+d.box(s, "**then { … }**\ninre regler fyller samma element", I(9.15), CONTENT_TOP + I(3.7), I(3.55), I(0.95), size=14)
 
 s = d.content_slide("Mappning: där det svåra finns", notes="""
-Det tekniska ramverket är den enkla delen. Det svåra är mappningen. Exempel från fasaden:
+Det tekniska ramverket är den enkla delen. Det svåra är mappningen, oavsett om den skrivs i FML eller kod.
+Exempel från fasaden:
 
-- Kön lagras som M/K och mappas till male/female (required-bindning).
-- Tidszoner: vi råkade själva få födelsedatumet en dag fel när ett LocalDate konverterades via tidszon. Datatypen
-  date ska inte ha tidszon.
+- Kön lagras som M/K och översätts med en ConceptMap till male/female (required-bindning).
+- Nya koder i källan: journalsystemet har infört DIG. Den finns inte i ConceptMap:en, så type och class blir
+  tomma och resultatet bryter mot profilen. Det är övning 5.3, och ett skäl att validera i drift (modul 6).
+- Tidszoner: date ska inte ha tidszon, men dateTime med klockslag måste ha det. Här levererar API:t ISO 8601
+  med tidszon. Annars hade mappningen behövt lägga till den, med hänsyn till sommartid.
 - Logiska id: personnummer som resurs-id är enkelt men problematiskt. Personnummer kan bytas, och id:t läcker
   personuppgifter i URL:er och loggar.
-- Saknade värden: utelämna elementet, skicka aldrig tomma element (ele-1).
+- Saknade värden: en FML-regel körs inte om källan saknas, så inga tomma element skapas (ele-1).
 """)
 d.table(s, [
     ["Utmaning", "Exempel i fasaden", "Att tänka på"],
-    ["Kodverk", "Kön `M`/`K` → `male`/`female`", "Required-bindningar kräver korrekt mappning"],
-    ["Datum och tid", "LocalDate → `date` (utan tidszon!)", "`dateTime` med klockslag kräver tidszon"],
+    ["Kodverk", "Kön `M`/`K` → `male`/`female` (ConceptMap)", "Required-bindningar kräver korrekt mappning"],
+    ["Nya koder", "Kontakttypen `DIG` saknas i ConceptMap:en", "Upptäck med validering. Förvalta mappningen"],
+    ["Datum och tid", "API:t levererar ISO 8601 med tidszon", "`dateTime` med klockslag kräver tidszon"],
     ["Identitet", "Personnummer som logiskt id", "Byte av personnummer, personuppgifter i URL:er"],
-    ["Saknade värden", "Telefonnummer saknas", "Utelämna elementet, skicka aldrig tomma element"],
+    ["Saknade värden", "Britta saknar telefonnummer", "Regeln körs inte – inga tomma element"],
     ["Referenser", "Vårdenhet som HSA-id", "Logisk eller bokstavlig referens?"],
     ["Prestanda", "Sökning utan index i källsystemet", "Paginering, `_count`, cache"],
     ["Profiler", "`meta.profile` = EducationPatient", "Validera svaren mot profilen i test"],
-], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.0, 4.6, 5.4], size=15, row_height=I(0.6))
+], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.0, 4.8, 5.2], size=15, row_height=I(0.58))
 
 s = d.content_slide("API-säkerhet i lager", notes="""
 Säkerhet är mer än en token. Gå igenom lagren:
@@ -1524,17 +1583,20 @@ d.table(s, [
 ], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[4.3, 4.2, 3.5], size=15, row_height=I(0.58))
 
 d.exercise_slide("REST, fasad och behörighet", [
-    "**5.1** Utforska ett FHIR-API: **hapi.fhir.org/baseR4** (testdata!) eller fasaden i Codespaces  (10 min)",
-    (1, "`/metadata`, `Patient?family=Smith&_count=5`, `_summary=count`, `_include`, `_history`"),
-    "**5.2** Mappa ett nytt fält i fasaden  (10 min)",
-    (1, "Öppna `hapi-fasad/…/mapping/PatientMapper.java` och hitta `ÖVNING 5.2`"),
-    (1, "Mappa telefonnummer till `Patient.telecom`. Utelämna elementet om värdet saknas"),
-    (1, "Commit → arbetsflödet **HAPI-fasad** bygger, testar och visar svaret i sammanfattningen"),
-    "**5.3** (demo/extra) Starta fasaden med `--fasad.sakerhet.aktiv=true` och prova demo-tokens",
-    (1, "Vilket scope krävs för Encounter? Vad saknas jämfört med en riktig lösning?"),
+    "**5.1** Utforska ett FHIR-API: **hapi.fhir.org/baseR4** (testdata!)  (5 min)",
+    (1, "`/metadata`, `Patient?family=Smith&_count=5`, `_summary=count`, `_include`"),
+    "**5.2** Lägg till en regel i FML-mappningen  (10 min)",
+    (1, "Öppna `hapi-fasad/src/main/resources/fml/patient.map` och hitta `ÖVNING 5.2`"),
+    (1, "Mappa `src.telefon` till `Patient.telecom` med `system = phone`"),
+    (1, "Commit → arbetsflödet **HAPI-fasad** visar källans JSON och FHIR-resultatet sida vid sida"),
+    "**5.3** (extra) Källsystemet har en ny kod, `DIG`. Lägg till den i ConceptMap:arna i `besok.map`",
+    "**5.4** (demo) Fasaden med `--fasad.sakerhet.aktiv=true`: vilket scope krävs för Encounter?",
 ], where="kursmaterial/modul-5-hapi-fhir/README.md  ·  hapi-fasad/README.md  ·  lösning: kursmaterial/losningar/modul-5/", minutes=20, notes="""
 5.2 fungerar helt i webbläsaren: arbetsflödet HAPI-fasad bygger med Maven, kör testerna, startar servern och visar
-svaret på GET Patient/191212121212 i sammanfattningen. Tar cirka 1–2 minuter.
+journalsystemets JSON och FHIR-resultatet sida vid sida i sammanfattningen. Tar cirka 1–2 minuter.
+Lösningsregeln:
+  src.telefon as tel -> tgt.telecom as telecom, telecom.system = 'phone', telecom.value = tel "telefon";
+Fel i FML-filen ger rött i steget "Bygg och kör tester", med Error @rad, kolumn i loggen.
 
 För den som vill köra lokalt: Codespaces eller Java 17 + Maven, mvn spring-boot:run i hapi-fasad.
 
@@ -1544,7 +1606,8 @@ Varna för att lägga riktiga personuppgifter på den publika testservern.
 summary_slide([
     "FHIR:s **REST-API**: ett fåtal interaktioner och kraftfull **sökning**",
     "Server med lagring, **fasad** eller integrationsplattform: välj efter behov",
-    "HAPI: **resource providers** + mappning, och CapabilityStatement skapas automatiskt",
+    "HAPI: **resource providers**, och CapabilityStatement skapas automatiskt",
+    "**FML** beskriver mappningen som data: regler, ConceptMaps och logiska modeller för källan",
     "Det svåra är **mappningen**: kodverk, tidszoner, identitet och saknade värden",
     "Säkerhet i lager: TLS, autentisering, **SMART/OAuth-scopes**, loggning",
     "**IHE-profiler** beskriver vanliga integrationsmönster",
@@ -1774,7 +1837,7 @@ recap = [
     ("2", "Tolka", "profiler, slicing,\nMust Support, IG:er"),
     ("3", "Skriva", "FSH + SUSHI +\nIG Publisher"),
     ("4", "Regler", "FHIRPath och\ninvarianter"),
-    ("5", "Exponera", "FHIR-fasad, REST,\nSMART, IHE"),
+    ("5", "Exponera", "FML-fasad, REST,\nSMART, IHE"),
     ("6", "Kvalitetssäkra", "Capability-\nStatement och\nvalidering"),
 ]
 w, gap = I(1.85), I(0.18)
