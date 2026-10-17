@@ -1,0 +1,2195 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kursbok FHIR i praktiken</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Kursbok till endagskursen FHIR i praktiken: fördjupning per modul, övningar och vägar vidare inom HAPI FHIR, SMART on FHIR, FML, terminologi och IG-förvaltning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: en bok med fast innehållsförteckning till vänster och en lässpalt på ~68 tecken.
+   Moduler numreras 1–6 (de följer dagens ordning), fördjupningskapitel A–I (fristående). */
+:root {
+  --bg: #f4f6f3;
+  --surface: #ffffff;
+  --ink: #1a2127;
+  --muted: #56626b;
+  --rule: #d6ddd7;
+  --accent: #1d5c70;
+  --accent-soft: #e1ecee;
+  --mark: #8f5b00;
+  --mark-soft: #f6ecd8;
+  --code-bg: #e9eee9;
+  --ok: #2f6b3a;
+
+  --font-body: "Spectral", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  --font-head: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.6rem;
+  --step-3: 2.2rem;
+  --step-4: 3rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11171b; --surface: #182026; --ink: #e3e8ea; --muted: #9ba7ae; --rule: #2b353c;
+    --accent: #7fc1d5; --accent-soft: #1b323a; --mark: #e2ab52; --mark-soft: #36291a;
+    --code-bg: #1b242a; --ok: #8fd19e; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11171b; --surface: #182026; --ink: #e3e8ea; --muted: #9ba7ae; --rule: #2b353c;
+  --accent: #7fc1d5; --accent-soft: #1b323a; --mark: #e2ab52; --mark-soft: #36291a;
+  --code-bg: #1b242a; --ok: #8fd19e; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: var(--step-0); line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+::selection { background: var(--accent-soft); }
+
+.wrap {
+  max-width: 78rem; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Omslag ---------- */
+.omslag { border-bottom: 1px solid var(--rule); }
+.omslag .wrap { padding-block: 3.5rem 2.75rem; display: grid; gap: 1.25rem; }
+.omslag .kicker {
+  font-family: var(--font-head); font-size: var(--step--1); letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted); margin: 0;
+}
+.omslag h1 {
+  font-family: var(--font-head); font-weight: 700; font-size: clamp(2.3rem, 6vw, var(--step-4));
+  line-height: 1.02; letter-spacing: -0.01em; margin: 0; text-wrap: balance; max-width: 18ch;
+}
+.omslag h1 .res { color: var(--accent); font-family: var(--font-mono); font-weight: 500; font-size: 0.62em; letter-spacing: 0; display: block; margin-bottom: 0.35rem; }
+.omslag .ingress { font-size: var(--step-1); line-height: 1.5; max-width: 40rem; margin: 0; }
+.fakta { display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; margin: 0.25rem 0 0; padding: 0; list-style: none;
+  font-family: var(--font-head); font-size: var(--step--1); color: var(--muted); }
+.fakta b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+.genvagar { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; }
+.genvagar a {
+  font-family: var(--font-head); font-weight: 500; font-size: 0.95rem; text-decoration: none;
+  border: 1px solid var(--rule); background: var(--surface); color: var(--ink);
+  padding: 0.45rem 0.85rem; border-radius: 3px;
+}
+.genvagar a:hover { border-color: var(--accent); color: var(--accent); }
+.genvagar a.primar { background: var(--accent); border-color: var(--accent); color: var(--bg); }
+.genvagar a.primar:hover { color: var(--bg); opacity: 0.9; }
+
+/* ---------- Bokens layout ---------- */
+.bok { display: grid; grid-template-columns: 16.5rem minmax(0, 1fr); gap: 3.5rem; padding-block: 2.5rem 5rem; }
+.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.25rem); align-self: start;
+  max-height: calc(100vh - 2.5rem); overflow-y: auto; font-family: var(--font-head); font-size: 0.94rem; padding-right: 0.25rem; }
+.toc summary { display: none; }
+.toc h2 { font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 0.4rem; font-weight: 600; }
+.toc h2:first-of-type { margin-top: 0; }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.05rem; }
+.toc a { display: grid; grid-template-columns: 1.6rem 1fr auto; align-items: baseline; gap: 0.2rem;
+  text-decoration: none; color: var(--ink); padding: 0.28rem 0.4rem; border-radius: 3px; line-height: 1.3; }
+.toc a:hover { background: var(--accent-soft); }
+.toc a[aria-current="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.toc .nr { color: var(--muted); font-variant-numeric: tabular-nums; }
+.toc .last { color: var(--ok); font-size: 0.8rem; visibility: hidden; }
+.toc a.ar-last .last { visibility: visible; }
+.toc .framsteg { margin-top: 1.5rem; font-size: 0.82rem; color: var(--muted); }
+
+main { min-width: 0; }
+.kapitel { max-width: 44rem; padding-bottom: 3.5rem; margin-bottom: 3.5rem; border-bottom: 1px solid var(--rule); }
+.kapitel:last-of-type { border-bottom: 0; }
+.delrubrik { font-family: var(--font-head); font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 2.5rem; padding-top: 0.4rem; border-top: 3px solid var(--accent); max-width: 44rem; }
+.delrubrik span { display: block; color: var(--muted); letter-spacing: 0; text-transform: none; font-size: 1rem; margin-top: 0.35rem; font-family: var(--font-body); }
+
+.kap-huvud { display: grid; grid-template-columns: auto 1fr; gap: 0 1.1rem; align-items: start; margin-bottom: 1.5rem; }
+.kap-nr { font-family: var(--font-head); font-weight: 700; font-size: var(--step-4); line-height: 0.9; color: var(--accent); min-width: 2.2rem; }
+.kap-huvud .eyebrow { font-family: var(--font-head); font-size: var(--step--1); color: var(--muted); letter-spacing: 0.04em; margin: 0 0 0.2rem; }
+.kap-huvud h2 { font-family: var(--font-head); font-weight: 600; font-size: var(--step-3); line-height: 1.1; margin: 0; text-wrap: balance; }
+.kap-huvud .verktyg { grid-column: 2; margin-top: 0.6rem; }
+.las-knapp { font-family: var(--font-head); font-size: 0.85rem; background: none; border: 1px solid var(--rule); color: var(--muted);
+  padding: 0.2rem 0.6rem; border-radius: 3px; cursor: pointer; }
+.las-knapp:hover { border-color: var(--accent); color: var(--accent); }
+.las-knapp[aria-pressed="true"] { border-color: var(--ok); color: var(--ok); }
+
+.ingress-kap { font-size: var(--step-1); line-height: 1.55; margin: 0 0 1.75rem; }
+main h3 { font-family: var(--font-head); font-weight: 600; font-size: var(--step-2); line-height: 1.2; margin: 2.4rem 0 0.6rem; text-wrap: balance; }
+main h4 { font-family: var(--font-head); font-weight: 600; font-size: var(--step-1); margin: 1.8rem 0 0.4rem; }
+main p, main li { max-width: 68ch; }
+main p { margin: 0 0 1rem; }
+main ul, main ol { padding-left: 1.3rem; margin: 0 0 1rem; }
+main li { margin-bottom: 0.3rem; }
+main li::marker { color: var(--muted); }
+strong { font-weight: 600; }
+em { font-style: italic; }
+
+code { font-family: var(--font-mono); font-size: 0.84em; background: var(--code-bg); padding: 0.08em 0.3em; border-radius: 2px; overflow-wrap: anywhere; }
+pre { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.55; background: var(--code-bg); padding: 0.9rem 1rem; margin: 0 0 1.25rem;
+  overflow-x: auto; border-radius: 3px; tab-size: 2; }
+pre code { background: none; padding: 0; font-size: inherit; overflow-wrap: normal; }
+pre .k { color: var(--accent); font-weight: 500; }
+pre .c { color: var(--muted); font-style: italic; }
+pre .s { color: var(--mark); }
+.kodrubrik { font-family: var(--font-head); font-size: 0.8rem; color: var(--muted); margin: 0 0 0.3rem; letter-spacing: 0.04em; }
+
+.tabell { overflow-x: auto; margin: 0 0 1.25rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.95rem; line-height: 1.45; }
+th, td { text-align: left; vertical-align: top; padding: 0.5rem 0.7rem 0.5rem 0; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--font-head); font-weight: 600; font-size: 0.85rem; color: var(--muted); border-bottom-color: var(--ink); white-space: nowrap; }
+td:first-child { white-space: nowrap; }
+td.bryt { white-space: normal; }
+
+.not { font-size: 0.95rem; background: var(--accent-soft); padding: 0.85rem 1rem; margin: 0 0 1.25rem; border-radius: 3px; }
+.not p:last-child { margin-bottom: 0; }
+.not .etikett { font-family: var(--font-head); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 0.2rem; }
+
+/* Övningsruta: färgat band med etikett, ingen sidokant */
+.ovningar { background: var(--mark-soft); margin: 2.25rem 0 1.5rem; padding: 1rem 1.15rem 0.6rem; border-radius: 3px; }
+.ovningar h4 { margin: 0 0 0.6rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mark); }
+.ovningar ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.15rem; }
+.ovningar li { display: grid; grid-template-columns: 3.4rem minmax(0, 1fr); gap: 0.4rem; margin: 0 0 0.45rem; max-width: none; }
+.ovningar .onr { font-family: var(--font-head); font-weight: 600; color: var(--mark); font-variant-numeric: tabular-nums; }
+
+/* Kontrollfrågor */
+.fragor { margin: 1.5rem 0; }
+.fragor h4 { margin: 0 0 0.5rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.fragor details { border-top: 1px solid var(--rule); padding: 0.55rem 0; }
+.fragor details:last-child { border-bottom: 1px solid var(--rule); }
+.fragor summary { cursor: pointer; font-weight: 500; list-style: none; display: grid; grid-template-columns: 1.4rem 1fr; }
+.fragor summary::-webkit-details-marker { display: none; }
+.fragor summary::before { content: "+"; font-family: var(--font-mono); color: var(--accent); }
+.fragor details[open] summary::before { content: "–"; }
+.fragor details > div { padding: 0.4rem 0 0.2rem 1.4rem; font-size: 0.97rem; }
+.fragor details > div p:last-child { margin-bottom: 0; }
+
+/* Läs vidare */
+.vidare { margin-top: 1.75rem; }
+.vidare h4 { margin: 0 0 0.5rem; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.vidare ul { list-style: none; padding: 0; margin: 0; }
+.vidare li { padding: 0.5rem 0; border-top: 1px solid var(--rule); margin: 0; max-width: none; display: grid; gap: 0.1rem; }
+.vidare li:last-child { border-bottom: 1px solid var(--rule); }
+.vidare a { font-family: var(--font-head); font-weight: 500; font-size: 1.02rem; }
+.vidare .om { font-size: 0.93rem; color: var(--muted); }
+
+.vagar { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; margin: 0 0 1.5rem; }
+.vag { background: var(--surface); border: 1px solid var(--rule); padding: 1rem; border-radius: 3px; min-width: 0; }
+.vag h4 { margin: 0 0 0.35rem; font-size: 1.05rem; }
+.vag p { font-size: 0.93rem; margin: 0 0 0.5rem; }
+.vag ol { font-family: var(--font-head); font-size: 0.9rem; margin: 0; padding-left: 1.1rem; }
+
+dl.ordlista { display: grid; grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr); gap: 0; margin: 0 0 1rem; }
+dl.ordlista dt { font-family: var(--font-head); font-weight: 600; padding: 0.5rem 1rem 0.5rem 0; border-top: 1px solid var(--rule); }
+dl.ordlista dd { margin: 0; padding: 0.5rem 0; border-top: 1px solid var(--rule); font-size: 0.97rem; }
+
+.slut { font-family: var(--font-head); font-size: var(--step--1); color: var(--muted); border-top: 1px solid var(--rule); }
+.slut .wrap { padding-block: 1.5rem 2.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; justify-content: space-between; }
+
+@media (max-width: 960px) {
+  .bok { grid-template-columns: minmax(0, 1fr); gap: 1.5rem; padding-top: 1.5rem; }
+  .toc { position: static; max-height: none; background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 0.2rem 0.8rem; }
+  .toc summary { display: block; cursor: pointer; font-weight: 600; padding: 0.55rem 0; }
+  .toc details[open] { padding-bottom: 0.8rem; }
+}
+@media (max-width: 560px) {
+  .kap-huvud { grid-template-columns: minmax(0, 1fr); }
+  .kap-nr { font-size: var(--step-3); }
+  .kap-huvud .verktyg { grid-column: 1; }
+  dl.ordlista { grid-template-columns: minmax(0, 1fr); }
+  dl.ordlista dd { border-top: 0; padding-top: 0; }
+  .ovningar li { grid-template-columns: minmax(0, 1fr); gap: 0; }
+}
+</style>
+</head>
+<body>
+<header class="omslag">
+  <div class="wrap">
+    <p class="kicker">Kursbok · endagskurs i sex moduler</p>
+    <h1><span class="res">"resourceType": "Book"</span>FHIR i praktiken</h1>
+    <p class="ingress">Den här boken följer kursdagen modul för modul och går djupare där dagen bara hinner nämna saker.
+      Den fungerar som repetition efter kursen och som väg in för dig som vill läsa på egen hand.</p>
+    <ul class="fakta">
+      <li><b>6</b> moduler</li>
+      <li><b>9</b> fördjupningskapitel</li>
+      <li><b>FHIR R4</b> 4.0.1</li>
+      <li>Röd tråd: <b>Patient</b> och <b>Encounter</b> för Tolvan Tolvansson</li>
+    </ul>
+    <nav class="genvagar" aria-label="Genvägar">
+      <a class="primar" href="https://github.com/oskthu2/fhireducation">Kursens repo</a>
+      <a href="https://oskthu2.github.io/fhireducation/">Kursens IG</a>
+      <a href="https://oskthu2.github.io/fhireducation/facit/">Facit-IG</a>
+      <a href="https://github.com/oskthu2/fhireducation/blob/main/presentation/README.md">Presentationen</a>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap bok">
+  <nav class="toc" aria-label="Innehåll">
+    <details id="toc-details" open>
+      <summary>Innehåll</summary>
+      <h2>Inledning</h2>
+      <ol>
+        <li><a href="#om"><span class="nr">·</span><span>Om boken och studievägar</span><span class="last">✓</span></a></li>
+        <li><a href="#miljo"><span class="nr">·</span><span>Kursmiljön i GitHub</span><span class="last">✓</span></a></li>
+      </ol>
+      <h2>Del I · Kursens moduler</h2>
+      <ol>
+        <li><a href="#m1"><span class="nr">1</span><span>Läsa en FHIR-resurs</span><span class="last">✓</span></a></li>
+        <li><a href="#m2"><span class="nr">2</span><span>Profiler och IG</span><span class="last">✓</span></a></li>
+        <li><a href="#m3"><span class="nr">3</span><span>FHIR Shorthand</span><span class="last">✓</span></a></li>
+        <li><a href="#m4"><span class="nr">4</span><span>FHIRPath och invarianter</span><span class="last">✓</span></a></li>
+        <li><a href="#m5"><span class="nr">5</span><span>API, fasad och säkerhet</span><span class="last">✓</span></a></li>
+        <li><a href="#m6"><span class="nr">6</span><span>Följsamhet och validering</span><span class="last">✓</span></a></li>
+        <li><a href="#efter"><span class="nr">·</span><span>Efter kursen</span><span class="last">✓</span></a></li>
+      </ol>
+      <h2>Del II · Fördjupning</h2>
+      <ol>
+        <li><a href="#rest"><span class="nr">A</span><span>REST-API:t på djupet</span><span class="last">✓</span></a></li>
+        <li><a href="#hapi"><span class="nr">B</span><span>HAPI FHIR</span><span class="last">✓</span></a></li>
+        <li><a href="#smart"><span class="nr">C</span><span>SMART on FHIR</span><span class="last">✓</span></a></li>
+        <li><a href="#fml"><span class="nr">D</span><span>FML och StructureMap</span><span class="last">✓</span></a></li>
+        <li><a href="#terminologi"><span class="nr">E</span><span>Terminologi</span><span class="last">✓</span></a></li>
+        <li><a href="#forvaltning"><span class="nr">F</span><span>IG-förvaltning och versioner</span><span class="last">✓</span></a></li>
+        <li><a href="#ihe"><span class="nr">G</span><span>IHE, Sverige och Europa</span><span class="last">✓</span></a></li>
+        <li><a href="#mer"><span class="nr">H</span><span>Mer i FHIR-världen</span><span class="last">✓</span></a></li>
+        <li><a href="#ordlista"><span class="nr">I</span><span>Ordlista och länkar</span><span class="last">✓</span></a></li>
+      </ol>
+      <p class="framsteg" id="framsteg" aria-live="polite"></p>
+    </details>
+  </nav>
+
+  <main id="innehall">
+
+<section class="kapitel" id="om" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">§</div>
+    <div>
+      <p class="eyebrow">Inledning</p>
+      <h2>Om boken och studievägar</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Kursen handlar om att <em>använda</em> FHIR: läsa resurser, profilera, bygga en Implementation Guide (IG),
+    binda terminologi, skriva regler och kontrollera att data och system följer en IG. Det är begreppen som återkommer i
+    kravställning, utveckling och kvalitetssäkring.</p>
+
+  <p>Varje kapitel i del I motsvarar en modul på kursdagen. Kapitlet börjar med det modulen tar upp och fortsätter
+    med det som inte hinns med på 50 minuter. Sist i kapitlet finns övningarna i repot, kontrollfrågor med svar och en
+    lista med källor för vidare studier. Del II är fristående fördjupningskapitel. Där finns sådant som en
+    hälsoinformatiker bör känna till men som kursdagen bara snuddar vid: HAPI FHIR, SMART on FHIR, FHIR Mapping Language,
+    terminologitjänster, förvaltning av IG:er och den europeiska utvecklingen.</p>
+
+  <p>Läser du på egen hand kan du göra alla övningar i ditt eget GitHub-repo utan att installera något. Nästa
+    kapitel beskriver hur.</p>
+
+  <h3>Välj en studieväg</h3>
+  <p>Alla bör läsa modul 1–2. Därefter skiljer sig behoven åt beroende på roll.</p>
+  <div class="vagar">
+    <div class="vag">
+      <h4>Kravställare och informatiker</h4>
+      <p>Du ska kunna läsa en IG, ställa krav som går att verifiera och bedöma om en leverans följer dem.</p>
+      <ol>
+        <li><a href="#m1">Läsa en resurs</a></li>
+        <li><a href="#m2">Profiler och IG</a></li>
+        <li><a href="#m6">Följsamhet</a></li>
+        <li><a href="#terminologi">Terminologi</a></li>
+        <li><a href="#forvaltning">IG-förvaltning</a></li>
+        <li><a href="#ihe">IHE, Sverige och Europa</a></li>
+      </ol>
+    </div>
+    <div class="vag">
+      <h4>Utvecklare och arkitekter</h4>
+      <p>Du ska bygga och integrera FHIR-API:er, ofta ovanpå system som redan finns.</p>
+      <ol>
+        <li><a href="#m1">Läsa en resurs</a></li>
+        <li><a href="#m5">API och fasad</a></li>
+        <li><a href="#rest">REST-API:t på djupet</a></li>
+        <li><a href="#hapi">HAPI FHIR</a></li>
+        <li><a href="#smart">SMART on FHIR</a></li>
+        <li><a href="#fml">FML</a></li>
+      </ol>
+    </div>
+    <div class="vag">
+      <h4>Testare och kvalitetssäkrare</h4>
+      <p>Du ska verifiera data och API:er mot profiler och krav, helst automatiskt.</p>
+      <ol>
+        <li><a href="#m2">Profiler och IG</a></li>
+        <li><a href="#m4">FHIRPath</a></li>
+        <li><a href="#m6">Följsamhet</a></li>
+        <li><a href="#rest">REST-API:t på djupet</a></li>
+        <li><a href="#terminologi">Terminologi</a></li>
+      </ol>
+    </div>
+  </div>
+
+  <h3>Kursdagen i korthet</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Tid</th><th>Innehåll</th><th>Kapitel</th></tr></thead>
+    <tbody>
+      <tr><td>09.00–09.15</td><td class="bryt">Inledning, kontroll av allas repon</td><td><a href="#miljo">Kursmiljön</a></td></tr>
+      <tr><td>09.15–10.05</td><td class="bryt">Läsa en FHIR-resurs</td><td><a href="#m1">1</a></td></tr>
+      <tr><td>10.15–11.05</td><td class="bryt">Profiler och Implementation Guides</td><td><a href="#m2">2</a></td></tr>
+      <tr><td>11.15–12.05</td><td class="bryt">FHIR Shorthand (FSH)</td><td><a href="#m3">3</a></td></tr>
+      <tr><td>13.00–13.50</td><td class="bryt">FHIRPath och invarianter</td><td><a href="#m4">4</a></td></tr>
+      <tr><td>14.00–14.50</td><td class="bryt">HAPI FHIR, fasad med FML, säkerhet</td><td><a href="#m5">5</a></td></tr>
+      <tr><td>15.00–15.50</td><td class="bryt">Följsamhet, kravställning och validering</td><td><a href="#m6">6</a></td></tr>
+      <tr><td>15.50–16.05</td><td class="bryt">Ta hem miljön</td><td><a href="#efter">Efter kursen</a></td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="kapitel" id="miljo" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">§</div>
+    <div>
+      <p class="eyebrow">Inledning</p>
+      <h2>Kursmiljön i GitHub</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Övningarna görs i ett eget repo som skapas från kursens mall. Du ändrar filer direkt i webbläsaren,
+    och varje incheckning bygger din IG med SUSHI och IG Publisher i GitHub Actions.</p>
+
+  <h3>Kom igång på tio minuter</h3>
+  <ol>
+    <li>Logga in på <a href="https://github.com">github.com</a> (skapa ett gratiskonto om du saknar ett).</li>
+    <li>Öppna <a href="https://github.com/oskthu2/fhireducation/blob/main/README.md">kursens repo</a> och välj <strong>Use this template → Create a new repository</strong>. Välj <em>Public</em>.</li>
+    <li>Gå till fliken <strong>Actions</strong> i ditt nya repo och vänta tills arbetsflödet <em>Bygg IG</em> är grönt (cirka 2 minuter).
+      Startar det inte av sig självt: välj <em>Bygg IG → Run workflow</em>.</li>
+    <li>Gå till <strong>Settings → Pages</strong>, välj <em>Deploy from a branch</em>, grenen <code>gh-pages</code> och mappen <code>/ (root)</code>.</li>
+    <li>Efter någon minut finns din IG på <code>https://&lt;ditt-konto&gt;.github.io/&lt;repo&gt;/</code>. Den här boken finns på samma adress under <code>/kursbok/</code>.</li>
+  </ol>
+
+  <h3>Så arbetar du</h3>
+  <p>Öppna en fil i GitHub, klicka på pennan, ändra och välj <em>Commit changes</em>. Vill du ändra flera filer i samma
+    incheckning trycker du på punkt (<code>.</code>) i repot. Då öppnas github.dev, en VS Code i webbläsaren.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Arbetsflöde</th><th>Startar när du ändrar</th><th>Gör</th></tr></thead>
+    <tbody>
+      <tr><td>Bygg IG</td><td class="bryt"><code>test-ig/**</code></td><td class="bryt">SUSHI, IG Publisher, publicering på GitHub Pages. Sammanfattningen visar antal fel och varningar.</td></tr>
+      <tr><td>Validera</td><td class="bryt"><code>validering/*.json</code></td><td class="bryt">HL7 FHIR Validator mot din IG (modul 6)</td></tr>
+      <tr><td>HAPI-fasad</td><td class="bryt"><code>hapi-fasad/**</code></td><td class="bryt">Bygger och testar FHIR-fasaden och visar källdata och FHIR-resultat sida vid sida (modul 5)</td></tr>
+      <tr><td>Kom ikapp</td><td class="bryt">startas manuellt</td><td class="bryt">Ersätter din FSH med lösningen för ett visst läge. Dina filer sparas i <code>mina-filer/</code>.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="not"><span class="etikett">Tips</span>
+    <p>Steget <em>Kör SUSHI</em> är klart efter cirka 30 sekunder. Blir det grönt är din FSH korrekt. Fel i profiler och
+      exempel som bara IG Publisher hittar visas i <code>qa.html</code> i den publicerade IG:n.</p></div>
+
+  <p>Vill du arbeta lokalt finns tre spår till: Codespaces, lokal installation utan Docker och Docker. De beskrivs i
+    <a href="https://github.com/oskthu2/fhireducation/blob/main/README.md">README</a>. Där finns också felsökning.</p>
+</section>
+
+<h2 class="delrubrik">Del I · Kursens moduler<span>Ett kapitel per modul, i dagens ordning. Varje kapitel bygger på det förra.</span></h2>
+
+<!-- ================= MODUL 1 ================= -->
+<section class="kapitel" id="m1" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">1</div>
+    <div>
+      <p class="eyebrow">Modul 1 · 09.15–10.05</p>
+      <h2>Läsa en FHIR-resurs</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Allt annat i FHIR bygger på att kunna läsa en resurs: vad varje element betyder, vilken datatyp det har,
+    vilka koder som är tillåtna och vad som är tillägg. Det kapitlet tränar.</p>
+
+  <h3>Resursen är den minsta enheten</h3>
+  <p>En resurs är en avgränsad mängd information som går att hämta, skicka och lagra för sig: en <code>Patient</code>,
+    en <code>Encounter</code> (vårdkontakt), en <code>Observation</code>. FHIR R4 har cirka 145 resurstyper. Var och en är
+    utformad efter en 80/20-princip: basresursen innehåller det som de flesta system behöver. Resten läggs till med
+    extensions och preciseras med profiler.</p>
+  <p>Alla resurser har samma ram:</p>
+  <pre><code>{
+  <span class="k">"resourceType"</span>: <span class="s">"Patient"</span>,      <span class="c">// vilken sorts resurs</span>
+  <span class="k">"id"</span>: <span class="s">"tolvan"</span>,                  <span class="c">// logiskt id på just den här servern</span>
+  <span class="k">"meta"</span>: { ... },                  <span class="c">// version, ändringstid, profiler, märkning</span>
+  <span class="k">"text"</span>: { ... },                  <span class="c">// människoläsbar sammanfattning (XHTML)</span>
+  <span class="k">"extension"</span>: [ ... ],             <span class="c">// tillägg</span>
+  <span class="k">"identifier"</span>: [ ... ],            <span class="c">// resursens egna element börjar här</span>
+  ...
+}</code></pre>
+  <p><strong><code>id</code> och <code>identifier</code> är olika saker.</strong> <code>id</code> är serverns tekniska nyckel och
+    ingår i resursens adress (<code>Patient/tolvan</code>). Den kan bli en annan om resursen flyttas till en annan server.
+    <code>identifier</code> är en verksamhetsidentitet, till exempel ett personnummer eller ett HSA-id. Den följer med
+    överallt och är den du söker på mellan system.</p>
+
+  <h3>Läsa specifikationens tabeller</h3>
+  <p>Varje resurssida i specifikationen har en tabell med kolumnerna <em>Name</em>, <em>Flags</em>, <em>Card.</em>,
+    <em>Type</em> och <em>Description &amp; Constraints</em>. Flaggorna är lätta att missa men viktiga:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Flagga</th><th>Betydelse</th></tr></thead>
+    <tbody>
+      <tr><td><code>?!</code></td><td class="bryt"><em>Is-modifier</em>. Elementet kan ändra betydelsen av resten av resursen, till exempel <code>Patient.active</code> eller <code>Encounter.status = entered-in-error</code>. En mottagare får inte ignorera det.</td></tr>
+      <tr><td><code>Σ</code></td><td class="bryt">Ingår i sammanfattningen som returneras vid <code>_summary=true</code>.</td></tr>
+      <tr><td><code>I</code></td><td class="bryt">Elementet omfattas av en invariant, en regel skriven i FHIRPath (modul 4).</td></tr>
+      <tr><td><code>S</code></td><td class="bryt">Must Support. Syns bara i profiler (modul 2).</td></tr>
+      <tr><td><code>N</code>, <code>TU</code></td><td class="bryt">Normativ respektive <em>trial use</em>. Normativa delar ändras inte på ett sätt som bryter bakåtkompatibiliteten.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Kardinaliteten <code>0..1</code>, <code>1..1</code>, <code>0..*</code> eller <code>1..*</code> anger hur många gånger
+    elementet får förekomma. I JSON blir ett element med <code>*</code> alltid en lista, även om den bara har ett värde.</p>
+
+  <h3>Primitiva och komplexa datatyper</h3>
+  <p>Primitiva datatyper är enkla värden: <code>string</code>, <code>boolean</code>, <code>integer</code>,
+    <code>decimal</code>, <code>uri</code>, <code>code</code>, <code>date</code>, <code>dateTime</code>, <code>instant</code>.
+    Datum får ha lägre precision. <code>"1912"</code>, <code>"1912-12"</code> och <code>"1912-12-12"</code> är alla giltiga
+    värden för <code>date</code>. En <code>dateTime</code> med klockslag måste ha tidszon.</p>
+  <p>Komplexa datatyper är sammansatta och återkommer i alla resurser:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Datatyp</th><th>Används till</th><th>Viktiga element</th></tr></thead>
+    <tbody>
+      <tr><td><code>Identifier</code></td><td class="bryt">Verksamhetsidentiteter</td><td class="bryt"><code>system</code> (vilken sorts id), <code>value</code>, <code>use</code></td></tr>
+      <tr><td><code>HumanName</code></td><td class="bryt">Personnamn</td><td class="bryt"><code>family</code>, <code>given</code>, <code>use</code>, <code>text</code></td></tr>
+      <tr><td><code>Coding</code></td><td class="bryt">En kod ur ett kodsystem</td><td class="bryt"><code>system</code>, <code>code</code>, <code>display</code>, <code>version</code></td></tr>
+      <tr><td><code>CodeableConcept</code></td><td class="bryt">Ett begrepp, kodat på ett eller flera sätt</td><td class="bryt"><code>coding</code> (lista), <code>text</code></td></tr>
+      <tr><td><code>Reference</code></td><td class="bryt">Pekare till en annan resurs</td><td class="bryt"><code>reference</code>, <code>identifier</code>, <code>display</code></td></tr>
+      <tr><td><code>Period</code>, <code>Quantity</code></td><td class="bryt">Tidsintervall, mätvärden med enhet</td><td class="bryt"><code>start</code>/<code>end</code>, <code>value</code>/<code>unit</code>/<code>system</code>/<code>code</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Valtyper</strong> skrivs <code>value[x]</code> i specifikationen. I instansen ersätts <code>[x]</code> med
+    datatypens namn: <code>valueQuantity</code>, <code>valueString</code>, <code>deceasedBoolean</code>,
+    <code>deceasedDateTime</code>.</p>
+  <p><strong>Referenser</strong> finns i tre former. En <em>literal</em> referens (<code>"reference": "Patient/tolvan"</code>)
+    går att följa. En <em>logisk</em> referens (<code>identifier</code> med system och värde) pekar ut något utan att säga var det
+    finns. Kursens <code>serviceProvider</code> med HSA-id är ett exempel. En referens som börjar med <code>#</code> pekar
+    på en <em>contained</em> resurs inuti samma resurs.</p>
+
+  <h3>Koder och bindningsstyrkor</h3>
+  <p>Kodade element är kärnan i semantisk interoperabilitet. En <code>Coding</code> identifierar sitt kodsystem med en URI i
+    <code>system</code>. Koden <code>J45.9</code> betyder ingenting förrän man vet att systemet är ICD-10. En
+    <code>CodeableConcept</code> kan ha flera <code>coding</code>. De ska då uttrycka <em>samma</em> begrepp i olika kodsystem
+    och är inte en lista med olika diagnoser.</p>
+  <pre><code><span class="k">"reasonCode"</span>: [{
+  <span class="k">"coding"</span>: [{
+    <span class="k">"system"</span>: <span class="s">"http://hl7.org/fhir/sid/icd-10"</span>,
+    <span class="k">"code"</span>: <span class="s">"J45.9"</span>,
+    <span class="k">"display"</span>: <span class="s">"Asthma, unspecified"</span>
+  }],
+  <span class="k">"text"</span>: <span class="s">"Astma"</span>
+}]</code></pre>
+  <p>Specifikationen och profiler <em>binder</em> kodade element till ett ValueSet med en av fyra styrkor:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Styrka</th><th>Betydelse</th><th>Validatorn</th></tr></thead>
+    <tbody>
+      <tr><td><code>required</code></td><td class="bryt">Koden måste finnas i ValueSet:et</td><td class="bryt">Fel om den saknas</td></tr>
+      <tr><td><code>extensible</code></td><td class="bryt">Använd en kod därifrån om någon passar, annars får en annan kod användas</td><td class="bryt">Varning (den kan inte avgöra om en kod passade)</td></tr>
+      <tr><td><code>preferred</code></td><td class="bryt">Rekommendation</td><td class="bryt">Information</td></tr>
+      <tr><td><code>example</code></td><td class="bryt">Bara ett exempel</td><td class="bryt">Ingenting</td></tr>
+    </tbody>
+  </table></div>
+  <p>I basspecifikationen är det mest <code>code</code>-element som <code>Patient.gender</code> och
+    <code>Encounter.status</code> som har <code>required</code>. De flesta kliniska koder har <code>example</code> eller
+    <code>preferred</code>, eftersom basen inte kan välja kodverk åt hela världen. Det är profilerna som skärper
+    bindningarna för ett visst land eller användningsområde.</p>
+
+  <h3>Extensions</h3>
+  <p>En extension har en <code>url</code> som pekar på dess definition och antingen ett värde (<code>value[x]</code>) eller
+    egna nästlade extensions. Det senare kallas komplex extension.</p>
+  <pre><code><span class="k">"extension"</span>: [{
+  <span class="k">"url"</span>: <span class="s">"http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired"</span>,
+  <span class="k">"valueBoolean"</span>: true
+}]</code></pre>
+  <p>Även primitiva värden kan ha extensions. De läggs då i ett syskonelement med understreck. Ett exempel är
+    <code>_birthDate</code> intill <code>birthDate</code>, som kan bära extensionen <code>patient-birthTime</code> med
+    exakt klockslag.</p>
+  <p><code>modifierExtension</code> används för extensions som ändrar betydelsen av resursen, till exempel att en
+    ordination <em>inte</em> ska utföras. Ett system som inte förstår en modifierExtension får inte bearbeta resursen som om
+    den saknades.</p>
+
+  <h3>meta: version, profiler och märkning</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Element</th><th>Betydelse</th></tr></thead>
+    <tbody>
+      <tr><td><code>meta.versionId</code></td><td class="bryt">Resursens version på servern. Används för versionshistorik och optimistisk låsning (avsnitt A)</td></tr>
+      <tr><td><code>meta.lastUpdated</code></td><td class="bryt">När resursen senast ändrades på servern</td></tr>
+      <tr><td><code>meta.profile</code></td><td class="bryt">Ett <em>påstående</em> om att resursen följer en profil. Det är inte en garanti. Först validering visar om påståendet stämmer.</td></tr>
+      <tr><td><code>meta.security</code></td><td class="bryt">Säkerhetsmärkning, till exempel sekretessnivå. HL7 Sveriges basprofiler uttrycker skyddad identitet här.</td></tr>
+      <tr><td><code>meta.tag</code></td><td class="bryt">Operativa taggar som inte ändrar resursens betydelse, till exempel att något är testdata</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Format och regler som är lätta att missa</h3>
+  <ul>
+    <li>Samma resurs kan uttryckas i JSON, XML och RDF. Innehållet är detsamma.</li>
+    <li>Tomma element, tomma listor och <code>null</code> är inte tillåtna. Ett element finns med ett värde eller inte alls.</li>
+    <li>Ordningen på elementen spelar roll i XML men inte i JSON.</li>
+    <li>Narrativen i <code>text</code> ska spegla innehållet. Den används när mottagaren inte kan tolka de strukturerade delarna.</li>
+  </ul>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">1.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-1-lasa-en-resurs/README.md#övning-11--tolka-en-patient-10-min">Tolka en Patient</a>: identifierare, extensions, bindningar och referenser i <a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-1-lasa-en-resurs/exempel/Patient-tolvan.json">Patient-tolvan.json</a></span></li>
+      <li><span class="onr">1.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-1-lasa-en-resurs/README.md#övning-12--hitta-felet-i-en-encounter-510-min">Hitta felet i en Encounter</a>: en kod som bryter mot en <code>required</code>-bindning</span></li>
+      <li><span class="onr">Facit</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-1-lasa-en-resurs/facit.md">facit.md</a>. Titta efter att du försökt själv.</span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>Varför ska man söka på <code>identifier</code> och inte på <code>id</code> mellan system?</summary>
+      <div><p><code>id</code> är bara giltigt på den server som tilldelat det. <code>identifier</code> med <code>system</code> och <code>value</code> är en verksamhetsidentitet, som ett personnummer, och är densamma i alla system.</p></div></details>
+    <details><summary>En CodeableConcept har två <code>coding</code>, en SNOMED CT-kod och en ICD-10-kod. Är det två diagnoser?</summary>
+      <div><p>Nej. Alla <code>coding</code> i samma CodeableConcept ska uttrycka samma begrepp. Två diagnoser blir två element i listan, eller två <code>Condition</code>-resurser.</p></div></details>
+    <details><summary>Ett system tar emot en resurs med en okänd <code>modifierExtension</code>. Vad ska det göra?</summary>
+      <div><p>Det får inte behandla resursen som vanligt. Det ska avvisa resursen eller hantera den på ett säkert sätt, till exempel visa en varning. En vanlig extension som systemet inte förstår får däremot ignoreras.</p></div></details>
+    <details><summary>Betyder <code>meta.profile</code> att resursen följer profilen?</summary>
+      <div><p>Nej. Det är ett påstående från avsändaren. En validator kontrollerar påståendet. En resurs kan också följa en profil utan att ange den i <code>meta.profile</code>.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/overview.html">FHIR Overview</a><span class="om">Specifikationens egen introduktion, med separata vägar för kliniker, utvecklare och arkitekter.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/resource.html">Resource</a> och <a href="https://hl7.org/fhir/R4/datatypes.html">Data Types</a><span class="om">Ramen för alla resurser och samtliga datatyper med exempel.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/formats.html#table">Resource Formats: tabellnotationen</a><span class="om">Förklarar flaggor, kardinalitet och ikoner i specifikationens tabeller.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/references.html">References</a><span class="om">Literala, logiska och contained referenser, och hur de löses upp.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/terminologies.html">Using Codes in Resources</a><span class="om">Kodsystem, ValueSets och bindningsstyrkor.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/extensibility.html">Extensibility</a><span class="om">Extensions, modifierExtension och primitiva extensions.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/patient.html">Patient</a> och <a href="https://hl7.org/fhir/R4/encounter.html">Encounter</a><span class="om">Kursens två resurser. Läs avsnitten <em>Scope and Usage</em> och <em>Notes</em>, där mycket av den praktiska vägledningen finns.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MODUL 2 ================= -->
+<section class="kapitel" id="m2" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">2</div>
+    <div>
+      <p class="eyebrow">Modul 2 · 10.15–11.05</p>
+      <h2>Profiler och Implementation Guides</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Basresurserna är avsiktligt generella. En profil anger vad som gäller i ett visst sammanhang, och en
+    Implementation Guide samlar profiler, terminologi, exempel och text till en publicerad helhet.</p>
+
+  <h3>Vad en profil kan göra</h3>
+  <p>En profil är en <code>StructureDefinition</code> med <code>derivation = constraint</code>. Den får bara
+    <em>begränsa</em> sin bas, aldrig utvidga den. Därför följer en instans som uppfyller profilen också basspecifikationen.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Ändring</th><th>Exempel</th></tr></thead>
+    <tbody>
+      <tr><td>Kardinalitet</td><td class="bryt"><code>Encounter.subject</code> från <code>0..1</code> till <code>1..1</code>. Aldrig vidare än basen.</td></tr>
+      <tr><td>Datatyper och mål</td><td class="bryt"><code>subject</code> får bara referera till <code>EducationPatient</code></td></tr>
+      <tr><td>Fasta värden</td><td class="bryt"><code>serviceProvider.identifier.system</code> måste vara HSA-id:s OID</td></tr>
+      <tr><td>Terminologi</td><td class="bryt"><code>Encounter.type</code> binds till ett eget ValueSet med styrkan <code>extensible</code></td></tr>
+      <tr><td>Must Support</td><td class="bryt">Markera de element som system måste kunna hantera</td></tr>
+      <tr><td>Extensions</td><td class="bryt">Lägg till <code>tolkbehov</code> på Patient</td></tr>
+      <tr><td>Slicing</td><td class="bryt">Dela upp <code>identifier</code> i personnummer, samordningsnummer …</td></tr>
+      <tr><td>Invarianter</td><td class="bryt">Regler i FHIRPath, till exempel att ett personnummer har tolv siffror</td></tr>
+    </tbody>
+  </table></div>
+  <p>En profil lagras på två sätt. <strong>Differential</strong> innehåller bara det profilen ändrar. Det är vad
+    författaren skriver och det man läser för att förstå syftet. <strong>Snapshot</strong> är hela den beräknade strukturen,
+    bas plus ändringar. Det är vad en validator använder.</p>
+
+  <h4>Fixed och pattern</h4>
+  <p>Ett fast värde kan uttryckas på två sätt. <code>fixed[x]</code> kräver att värdet är <em>exakt</em> det angivna, utan
+    andra element. <code>pattern[x]</code> kräver att instansen <em>innehåller</em> det angivna men tillåter mer. För en
+    CodeableConcept betyder pattern alltså: minst en <code>coding</code> med detta system och denna kod, men gärna fler
+    och gärna en <code>text</code>. I praktiken är pattern nästan alltid rätt val. FSH:s <code>=</code> ger pattern som
+    standard.</p>
+
+  <h3>Must Support betyder det IG:n säger</h3>
+  <p>Must Support (MS) har ingen fast betydelse i FHIR. Varje IG måste själv definiera det, och definitionerna skiljer sig
+    mellan IG:er. Vanligt är att en avsändare ska skicka elementet när informationen finns och att en mottagare ska kunna ta
+    emot, lagra eller visa det utan fel. MS betyder inte att elementet är obligatoriskt. Det styrs av kardinaliteten.
+    Läs alltid IG:ns avsnitt om Must Support innan du kravställer eller testar mot den.</p>
+
+  <h3>Extensions definieras med StructureDefinition</h3>
+  <p>En extension-definition är också en <code>StructureDefinition</code>, med <code>type = Extension</code>. Dess canonical
+    URL är den <code>url</code> som står i instansen. <code>context</code> anger var extensionen får användas, till exempel
+    bara på <code>Patient</code>. Leta efter en befintlig extension innan du skapar en egen: i specifikationen, i HL7:s
+    <em>extensions pack</em>, i HL7 Sveriges basprofiler eller i en europeisk IG. Varje egen extension är något alla
+    mottagare måste lära sig.</p>
+
+  <h3>Slicing</h3>
+  <p>Slicing delar upp ett upprepande element i namngivna delar med egna regler. Kursens <code>EducationPatient</code>
+    delar <code>identifier</code> i slices för personnummer och samordningsnummer. Den viktigaste insikten är att
+    slice-namnet bara finns i profilen. I instansen finns ingen etikett, bara en lista:</p>
+  <pre><code><span class="k">"identifier"</span>: [
+  { <span class="k">"system"</span>: <span class="s">"http://electronichealth.se/identifier/personnummer"</span>, <span class="k">"value"</span>: <span class="s">"191212121212"</span> }
+]</code></pre>
+  <p>Validatorn räknar ut vilken slice varje element hör till med hjälp av <strong>diskriminatorn</strong>:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Typ</th><th>Skiljer slices åt genom</th><th>Typiskt för</th></tr></thead>
+    <tbody>
+      <tr><td><code>value</code></td><td class="bryt">Ett fast värde i en sökväg, t.ex. <code>system</code></td><td class="bryt">Identifierare, kodningar</td></tr>
+      <tr><td><code>pattern</code></td><td class="bryt">Ett mönster. Ersätts av <code>value</code> i R5, så använd <code>value</code> i nya profiler</td><td class="bryt">Äldre profiler</td></tr>
+      <tr><td><code>exists</code></td><td class="bryt">Om ett element finns eller inte</td><td class="bryt">Sällsynt</td></tr>
+      <tr><td><code>type</code></td><td class="bryt">Datatypen</td><td class="bryt"><code>value[x]</code>, <code>effective[x]</code></td></tr>
+      <tr><td><code>profile</code></td><td class="bryt">Vilken profil elementet uppfyller</td><td class="bryt">Bundle-poster, <code>Observation.hasMember</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Slicingens <code>rules</code> anger om andra element än de definierade får förekomma: <code>open</code> tillåter det,
+    <code>closed</code> förbjuder det och <code>openAtEnd</code> tillåter dem bara sist. Med öppen slicing hamnar ett
+    personnummer med felstavat <code>system</code> bland "övriga" utan att valideras mot slicens regler. Det är en vanlig
+    källa till falsk trygghet, och övning 6.3 visar den.</p>
+
+  <h3>Implementation Guide</h3>
+  <p>En IG är både en webbplats för människor och ett paket för maskiner. Paketet (<code>package.tgz</code>) följer
+    npm-formatet och innehåller alla konformitetsresurser som JSON. Validatorer, servrar och andra IG:er läser in det som
+    ett beroende. Paketets id och version, till exempel <code>hl7se.fhir.base#1.1.0</code>, är det sättet att peka ut en IG
+    entydigt.</p>
+  <p>Varje konformitetsresurs har en <strong>canonical URL</strong>, en global identitet som
+    <code>http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient</code>. Den behöver inte gå att
+    öppna i en webbläsare. Den används för att referera till resursen, eventuellt med version:
+    <code>…/EducationPatient|0.1.0</code>.</p>
+  <p>Så läser du en profilsida i en IG byggd med IG Publisher:</p>
+  <ul>
+    <li><strong>Differential Table</strong>: vad profilen ändrar. Börja här.</li>
+    <li><strong>Snapshot Table</strong>: hela strukturen. Använd den för att se vad som ärvs.</li>
+    <li><strong>Must Support</strong>-vyn: bara MS-elementen. Den är bra vid kravställning.</li>
+    <li><strong>Terminology Bindings</strong> och <strong>Constraints</strong>: alla bindningar och invarianter samlade.</li>
+    <li>Flikarna <strong>XML</strong>, <strong>JSON</strong> och <strong>TTL</strong>: själva StructureDefinition-resursen.</li>
+  </ul>
+  <p>Varje IG har också en kvalitetsrapport, <code>qa.html</code>, med alla fel och varningar från bygget. Titta på den
+    innan du förlitar dig på en IG. Rapporten säger mycket om hur väl IG:n förvaltas.</p>
+
+  <h3>Verktyg</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Verktyg</th><th>Används till</th></tr></thead>
+    <tbody>
+      <tr><td>FSH och SUSHI</td><td class="bryt">Skriva profiler som text och kompilera till JSON (modul 3)</td></tr>
+      <tr><td>IG Publisher</td><td class="bryt">HL7:s verktyg som bygger IG-webbplatsen, paketet och kvalitetsrapporten</td></tr>
+      <tr><td>Forge och Simplifier.net</td><td class="bryt">Grafisk profilering och publicering från Firely. Simplifier används av flera nationella projekt</td></tr>
+      <tr><td>HL7 FHIR Validator</td><td class="bryt">Validera instanser mot bas och profiler (modul 6)</td></tr>
+      <tr><td>FHIRPath Lab</td><td class="bryt">Testa FHIRPath-uttryck mot egna resurser (modul 4)</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">2.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-2-profiler-och-ig/README.md#övning-21--läs-en-profil-10-min">Läs en profil</a> i <a href="https://oskthu2.github.io/fhireducation/facit/StructureDefinition-EducationPatient.html">facit-IG:n</a>: kardinalitet, MS, bindningar, extensions</span></li>
+      <li><span class="onr">2.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-2-profiler-och-ig/README.md#övning-22--vilken-slice-5-min">Vilken slice?</a> Avgör vilken slice varje identifierare i <a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-2-profiler-och-ig/exempel/Patient-identifierare.json">Patient-identifierare.json</a> hör till</span></li>
+      <li><span class="onr">2.3</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-2-profiler-och-ig/README.md#övning-23--titta-på-en-riktig-ig-om-tid-finns">Titta på en riktig IG</a>: HL7 Sveriges basprofiler</span></li>
+      <li><span class="onr">Facit</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-2-profiler-och-ig/facit.md">facit.md</a></span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>Kan en profil ändra kardinaliteten på ett element från <code>0..1</code> till <code>0..*</code>?</summary>
+      <div><p>Nej. En profil får bara begränsa. Behöver man fler värden får man använda en extension eller ett annat element.</p></div></details>
+    <details><summary>Vad är skillnaden mellan Must Support och <code>1..1</code>?</summary>
+      <div><p><code>1..1</code> betyder att elementet alltid måste finnas i instansen. Must Support betyder att system måste kunna hantera elementet när det finns, enligt IG:ns definition. Ett element kan vara <code>0..1 MS</code>.</p></div></details>
+    <details><summary>Varför måste diskriminatorns sökväg ha ett fast värde i varje slice?</summary>
+      <div><p>Validatorn använder värdet för att avgöra vilken slice ett element tillhör. Utan ett fast värde går det inte att skilja slices åt, och IG Publisher rapporterar ett fel.</p></div></details>
+    <details><summary>En identifierare har <code>system</code> felstavat. Profilen har öppen slicing och personnummer-slicen är <code>1..1</code>. Vad blir resultatet?</summary>
+      <div><p>Identifieraren matchar ingen slice och räknas som "övrig", vilket är tillåtet. Däremot saknas nu personnummer, så valideringen ger fel för att slicen har för få förekomster. Hade slicen varit <code>0..1</code> hade felet passerat obemärkt.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/profiling.html">Profiling FHIR</a><span class="om">Specifikationens kapitel om profilering, inklusive slicing och diskriminatorer.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/elementdefinition.html">ElementDefinition</a><span class="om">Alla egenskaper ett element kan få i en profil: <code>fixed</code>, <code>pattern</code>, <code>binding</code>, <code>constraint</code>, <code>mustSupport</code>.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/conformance-rules.html">Conformance Rules</a><span class="om">Hur Must Support, kardinalitet och modifierare ska tolkas.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/implementationguide.html">ImplementationGuide</a><span class="om">Resursen som beskriver en IG, med beroenden och sidor.</span></li>
+      <li><a href="https://hl7.se/fhir/ig/base/">HL7 Sveriges basprofiler</a><span class="om">Svenska basprofiler för bland annat Patient, med slices för personnummer och samordningsnummer.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/ips/">International Patient Summary (IPS)</a><span class="om">En välförvaltad internationell IG. Bra att studera för struktur, Must Support-definition och exempel.</span></li>
+      <li><a href="https://registry.fhir.org/">FHIR Package Registry</a> och <a href="https://simplifier.net/">Simplifier.net</a><span class="om">Sök efter publicerade IG:er, profiler och extensions innan du skapar egna.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MODUL 3 ================= -->
+<section class="kapitel" id="m3" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">3</div>
+    <div>
+      <p class="eyebrow">Modul 3 · 11.15–12.05</p>
+      <h2>FHIR Shorthand (FSH)</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">FSH är ett textspråk för att skriva profiler, extensions, terminologi och exempel. Kompilatorn
+    SUSHI gör om FSH till FHIR-JSON. Eftersom det är text går det att versionshantera, granska och bygga automatiskt,
+    precis som kod.</p>
+
+  <h3>Uppbyggnad</h3>
+  <p>En FSH-fil består av <em>objekt</em>. Varje objekt börjar med ett nyckelord, följt av metadata och sedan regler som
+    börjar med <code>*</code>.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Nyckelord</th><th>Skapar</th></tr></thead>
+    <tbody>
+      <tr><td><code>Profile:</code></td><td class="bryt">En profil (StructureDefinition, constraint)</td></tr>
+      <tr><td><code>Extension:</code></td><td class="bryt">En extension-definition</td></tr>
+      <tr><td><code>ValueSet:</code>, <code>CodeSystem:</code></td><td class="bryt">Terminologiresurser</td></tr>
+      <tr><td><code>Instance:</code></td><td class="bryt">En instans: ett exempel, ett CapabilityStatement, en SearchParameter …</td></tr>
+      <tr><td><code>Invariant:</code></td><td class="bryt">En regel i FHIRPath som profiler kan referera till med <code>obeys</code></td></tr>
+      <tr><td><code>Logical:</code>, <code>Resource:</code></td><td class="bryt">Logiska modeller och egna resurser. Kursens fasad använder logiska modeller (kapitel D)</td></tr>
+      <tr><td><code>RuleSet:</code></td><td class="bryt">Återanvändbara regler som infogas med <code>insert</code>. Kan ta parametrar</td></tr>
+      <tr><td><code>Alias:</code></td><td class="bryt">Kortnamn för långa URL:er, till exempel <code>$hsaid</code></td></tr>
+      <tr><td><code>Mapping:</code></td><td class="bryt">Dokumenterar hur element motsvarar en annan standard</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Reglerna du använder mest</h3>
+  <p class="kodrubrik">profiles/EducationEncounter.fsh (utdrag ur lösningen)</p>
+  <pre><code><span class="k">Profile:</span> EducationEncounter
+<span class="k">Parent:</span> Encounter
+<span class="k">Id:</span> EducationEncounter
+<span class="k">Title:</span> <span class="s">"Education Encounter"</span>
+<span class="k">Description:</span> <span class="s">"Profil för en vårdkontakt i FHIR-utbildningen."</span>
+* ^status = #draft                                  <span class="c">// ^ = metadata på StructureDefinition</span>
+* class from EducationEncounterClassVS (required)  <span class="c">// bindning</span>
+* type 1..1 MS                                      <span class="c">// kardinalitet + Must Support</span>
+* type from KontakttypVS (extensible)
+* subject only Reference(EducationPatient)          <span class="c">// begränsa referensmål</span>
+* serviceProvider.identifier.system = $hsaid        <span class="c">// fast värde (pattern)</span>
+* obeys edu-enc-1 and edu-enc-2                     <span class="c">// invarianter (modul 4)</span></code></pre>
+  <ul>
+    <li><strong>Sökvägar</strong> följer elementnamnen: <code>name.family</code>, <code>identifier[personnummer].value</code>,
+      <code>value[x]</code> eller <code>valueQuantity</code>.</li>
+    <li><strong>Caret-regler</strong> (<code>^</code>) sätter egenskaper på definitionen i stället för på instansdata:
+      <code>* ^experimental = true</code> på profilen, <code>* identifier ^short = "…"</code> på ett element.</li>
+    <li><strong>Index</strong> i instanser kan skrivas <code>[0]</code>, <code>[+]</code> (nästa) och <code>[=]</code> (samma
+      som förra). Då slipper du räkna när du lägger till element.</li>
+    <li><strong>Koder</strong> skrivs <code>system#kod "display"</code>, till exempel <code>$sct#38341003 "Hypertension"</code>.
+      Bara <code>#kod</code> används för element av typen <code>code</code>.</li>
+  </ul>
+
+  <h3>Terminologi: inkludera eller referera</h3>
+  <p>Det finns tre sätt att binda ett element till koder. De ser lika ut i profilen men får olika följder för
+    förvaltningen.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Sätt</th><th>FSH</th><th>När</th></tr></thead>
+    <tbody>
+      <tr><td class="bryt">Eget ValueSet som räknar upp koder</td><td class="bryt"><code>* include $v3-ActCode#AMB</code></td><td class="bryt">Ett urval ur ett större kodsystem. Du äger urvalet och måste förvalta det.</td></tr>
+      <tr><td class="bryt">Eget ValueSet som tar ett helt kodsystem</td><td class="bryt"><code>* include codes from system KontakttypCS</code></td><td class="bryt">Alla koder, också de som läggs till senare. Kan filtreras: <code>where concept is-a #123</code></td></tr>
+      <tr><td class="bryt">Referera till ett befintligt ValueSet</td><td class="bryt"><code>* maritalStatus from http://hl7.org/fhir/ValueSet/marital-status (extensible)</code></td><td class="bryt">Någon annan förvaltar listan, nationellt eller internationellt. Föredra det när det finns.</td></tr>
+    </tbody>
+  </table></div>
+  <p>Ett ValueSet kan också bygga på andra ValueSets med <code>include codes from valueset X</code>, och ta bort koder
+    med <code>exclude</code>. Kapitel <a href="#terminologi">E</a> går igenom hur en terminologiserver räknar fram resultatet.</p>
+
+  <h3>Extensions och slicing i FSH</h3>
+  <p>Extensions och slices läggs till med <code>contains</code>. För extensions kan du antingen definiera en egen eller
+    peka på en befintlig med dess canonical URL.</p>
+  <pre><code><span class="k">Extension:</span> SkyddadIdentitet
+<span class="k">Id:</span> SkyddadIdentitet
+<span class="k">Context:</span> Patient
+* value[x] 1..1
+* value[x] only boolean
+
+<span class="c">// I profilen:</span>
+* extension contains
+    SkyddadIdentitet named skyddadIdentitet 0..1 MS and
+    http://hl7.org/fhir/StructureDefinition/patient-interpreterRequired named tolkbehov 0..1 MS
+
+* identifier ^slicing.discriminator.type = #value
+* identifier ^slicing.discriminator.path = "system"
+* identifier ^slicing.rules = #open
+* identifier contains personnummer 0..1 MS and samordningsnummer 0..1 MS
+* identifier[personnummer].system = $personnummer</code></pre>
+  <p>För extensions sätter SUSHI upp slicing på <code>extension</code> automatiskt. För andra element måste du själv ange
+    diskriminatorn med caret-regler.</p>
+
+  <h3>sushi-config.yaml och beroenden</h3>
+  <p><code>sushi-config.yaml</code> beskriver IG:n: <code>id</code>, <code>canonical</code>, <code>version</code>,
+    <code>fhirVersion</code>, <code>status</code>, sidor och menyer. Där anger du också beroenden till andra IG:er:</p>
+  <pre><code><span class="k">dependencies:</span>
+  hl7se.fhir.base: 1.1.0</code></pre>
+  <p>Med beroendet kan profilen ärva från <code>SEBasePatient</code> och få slicing för personnummer, samordningsnummer och
+    nationellt reservnummer på köpet. I verkliga projekt i Sverige börjar man där i stället för på basresursen. Övning 3.6
+    visar hur.</p>
+
+  <h3>Arbetssätt och felsökning</h3>
+  <ul>
+    <li>SUSHI rapporterar fel med fil och rad. Läs det första felet först, eftersom följdfel är vanliga.</li>
+    <li><strong>FSH Online</strong> är en lekplats i webbläsaren där du kan prova FSH och se JSON direkt.</li>
+    <li><strong>GoFSH</strong> gör det omvända och översätter befintlig JSON till FSH. Det är användbart när du ska förvalta en IG som
+      skrivits i Forge eller för hand.</li>
+    <li>Håll en fil per profil, samla alias i en egen fil och lägg exemplen bredvid. Alla filer under <code>input/fsh</code>
+      läses in oavsett mappstruktur.</li>
+  </ul>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">3.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-31--titta-på-startprofilen-5-min">Titta på startprofilen</a> <code>EducationPatient</code> och dess exempel</span></li>
+      <li><span class="onr">3.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-32--skapa-profilen-educationencounter-10-min">Skapa profilen EducationEncounter</a></span></li>
+      <li><span class="onr">3.3</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-33--terminologibindning-10-min">Terminologibindning</a>: eget kodsystem, ValueSet och bindning till ett befintligt ValueSet</span></li>
+      <li><span class="onr">3.4</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-34--extensions-om-tid-finns-510-min">Extensions</a> (valfri)</span></li>
+      <li><span class="onr">3.5</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-35--slicing-om-tid-finns-510-min">Slicing</a> av <code>identifier</code> (valfri)</span></li>
+      <li><span class="onr">3.6</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-3-fsh/README.md#övning-36-extra--bygg-på-hl7-sveriges-basprofil">Bygg på HL7 Sveriges basprofil</a> (extra)</span></li>
+      <li><span class="onr">Lösning</span><span><a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/losningar/modul-3/fsh">losningar/modul-3</a>, <a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/losningar/extra-hl7se">losningar/extra-hl7se</a>. Kom ikapp: läge <code>3.2</code>, <code>3</code> eller <code>extra-hl7se</code>.</span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>Vad är skillnaden mellan <code>* status = #finished</code> och <code>* ^status = #draft</code> i en profil?</summary>
+      <div><p>Utan <code>^</code> gäller regeln instansdata: alla vårdkontakter som följer profilen måste ha status <code>finished</code>. Med <code>^</code> sätts egenskapen på själva StructureDefinition: profilen är ett utkast.</p></div></details>
+    <details><summary>Du binder <code>Encounter.type</code> till ett ValueSet som tar ett helt kodsystem. Vad händer när kodsystemet får en ny kod?</summary>
+      <div><p>Koden blir automatiskt giltig, utan att ValueSet:et eller profilen ändras. Räknar ValueSet:et upp koder måste någon lägga till den nya koden och publicera en ny version.</p></div></details>
+    <details><summary>Varför bygga på <code>SEBasePatient</code> i stället för <code>Patient</code>?</summary>
+      <div><p>Basprofilen har redan svenska identifierare, namnregler och säkerhetsmärkning. Man slipper uppfinna dem igen, och olika svenska IG:er blir kompatibla med varandra.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://fshschool.org/">FSH School</a><span class="om">Kom igång-guider, kurser och dokumentation för SUSHI och GoFSH.</span></li>
+      <li><a href="https://fshschool.org/FSHOnline/">FSH Online</a><span class="om">Skriv FSH i webbläsaren och se resultatet direkt. Bra för att prova en regel snabbt.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/shorthand/">FHIR Shorthand-specifikationen</a><span class="om">Den fullständiga språkdefinitionen, med alla regeltyper och exempel.</span></li>
+      <li><a href="https://github.com/FHIR/sushi">SUSHI</a> och <a href="https://github.com/FHIR/GoFSH">GoFSH</a> på GitHub<span class="om">Källkod, versionsnyheter och ärenden.</span></li>
+      <li><a href="https://hl7.se/fhir/ig/base/">HL7 Sveriges basprofiler</a><span class="om">Utgångspunkt för svenska profiler. Källkoden är skriven i FSH.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MODUL 4 ================= -->
+<section class="kapitel" id="m4" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">4</div>
+    <div>
+      <p class="eyebrow">Modul 4 · 13.00–13.50</p>
+      <h2>FHIRPath och invarianter</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Kardinalitet, typer och bindningar räcker långt men inte hela vägen. Regler som <em>"en avslutad
+    vårdkontakt ska ha en sluttid"</em> skrivs som invarianter i FHIRPath, ett frågespråk för att navigera i resurser.</p>
+
+  <h3>Allt är listor</h3>
+  <p>FHIRPath arbetar alltid med listor (collections). <code>Patient.name.given</code> ger alla förnamn i alla namn. Ett
+    uttryck som inte hittar något ger en tom lista, inte ett fel. Därför ser invarianter ofta ut så här:</p>
+  <pre><code>birthDate.empty() or birthDate &lt;= today()
+status = 'finished' implies period.end.exists()
+identifier.where(system = 'http://electronichealth.se/identifier/personnummer')
+          .all(value.matches('^[0-9]{12}$'))</code></pre>
+  <p>Jämförelser med en tom lista ger tom lista, inte <code>false</code>. Skriv därför invarianter så att de alltid ger
+    <code>true</code> eller <code>false</code>: använd <code>exists()</code>, <code>empty()</code>, <code>all()</code> och
+    <code>implies</code>. Ett uttryck som kan bli tomt tolkas inte likadant av alla verktyg.</p>
+
+  <h3>De viktigaste delarna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Del</th><th>Exempel</th></tr></thead>
+    <tbody>
+      <tr><td>Filtrera</td><td class="bryt"><code>name.where(use = 'official')</code>, <code>telecom.where(system = 'phone').first()</code></td></tr>
+      <tr><td>Finns / antal</td><td class="bryt"><code>exists()</code>, <code>empty()</code>, <code>count()</code>, <code>hasValue()</code></td></tr>
+      <tr><td>Villkor för alla</td><td class="bryt"><code>telecom.all(system.exists())</code></td></tr>
+      <tr><td>Logik</td><td class="bryt"><code>and</code>, <code>or</code>, <code>xor</code>, <code>implies</code>, <code>not()</code></td></tr>
+      <tr><td>Strängar</td><td class="bryt"><code>matches()</code>, <code>startsWith()</code>, <code>length()</code>, <code>substring()</code></td></tr>
+      <tr><td>Datum</td><td class="bryt"><code>today()</code>, <code>now()</code>, <code>birthDate + 18 years &lt;= today()</code></td></tr>
+      <tr><td>Typer</td><td class="bryt"><code>value.ofType(Quantity)</code>, <code>value is string</code></td></tr>
+      <tr><td>Extensions</td><td class="bryt"><code>extension('http://…/skyddad-identitet').value</code></td></tr>
+      <tr><td>Kontext</td><td class="bryt"><code>%resource</code> (hela resursen), <code>%context</code> (elementet regeln sitter på)</td></tr>
+      <tr><td>FHIR-specifikt</td><td class="bryt"><code>resolve()</code> följer en referens, <code>memberOf(valueset)</code> kontrollerar en kod mot ett ValueSet, <code>conformsTo(profil)</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Invarianter</h3>
+  <p>En invariant har en nyckel, en beskrivning för människor, ett FHIRPath-uttryck och en allvarlighetsgrad.
+    <code>error</code> gör instansen ogiltig. <code>warning</code> används för rekommendationer.</p>
+  <pre><code><span class="k">Invariant:</span> edu-enc-1
+<span class="k">Description:</span> <span class="s">"En avslutad vårdkontakt (status = finished) ska ha en sluttid (period.end)."</span>
+<span class="k">Expression:</span> <span class="s">"status = 'finished' implies period.end.exists()"</span>
+<span class="k">Severity:</span> #error</code></pre>
+  <p>Uttrycket utvärderas på det element där invarianten sitter. Sitter den på profilens rot är kontexten hela resursen.
+    Sitter den på <code>Patient.contact</code> utvärderas den en gång per kontaktperson, som specifikationens
+    <code>pat-1</code>. Nyckeln bör ha ett prefix som är unikt för din IG, till exempel <code>edu-</code>, så att den inte
+    krockar med specifikationens <code>ele-1</code>, <code>dom-6</code> och andra.</p>
+  <p>Ett bra test av en invariant är att skriva två exempel: ett som ska passera och ett som ska fallera. Det felande
+    exemplet kan läggas i <code>validering/</code> i ditt repo och kontrolleras med arbetsflödet <em>Validera</em>.</p>
+
+  <h3>Där FHIRPath används</h3>
+  <p>FHIRPath är mer än ett regelspråk. Den som lär sig det får nytta av det på många ställen:</p>
+  <ul>
+    <li><strong>Sökparametrar</strong>: <code>SearchParameter.expression</code> anger vilket element en parameter söker i.</li>
+    <li><strong>Slicing</strong>: diskriminatorns <code>path</code> är ett begränsat FHIRPath-uttryck.</li>
+    <li><strong>FML</strong>: villkor i mappningsregler skrivs i FHIRPath (kapitel <a href="#fml">D</a>).</li>
+    <li><strong>Formulär</strong>: SDC-formulär använder FHIRPath för beräknade fält och villkor.</li>
+    <li><strong>Analys</strong>: SQL on FHIR beskriver tabellvyer med FHIRPath (kapitel <a href="#mer">H</a>).</li>
+    <li><strong>CQL</strong>, språket för beslutsstöd och kvalitetsmått, bygger på FHIRPath.</li>
+  </ul>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">4.0</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-4-fhirpath/README.md#övning-40--läs-invarianterna-i-facit-ign-3-min">Läs invarianterna</a> i <a href="https://oskthu2.github.io/fhireducation/facit/StructureDefinition-EducationPatient.html">facit-IG:n</a></span></li>
+      <li><span class="onr">4.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-4-fhirpath/README.md#övning-41--testa-fhirpath-10-min">Testa FHIRPath</a> i FHIRPath Lab</span></li>
+      <li><span class="onr">4.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-4-fhirpath/README.md#övning-42--lägg-till-invarianter-15-min">Lägg till invarianter</a> i din IG</span></li>
+      <li><span class="onr">4.3</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-4-fhirpath/README.md#övning-43--egna-invarianter-extra">Egna invarianter</a> (extra)</span></li>
+      <li><span class="onr">Facit</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-4-fhirpath/facit.md">facit.md</a>, <a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/losningar/modul-4/fsh">losningar/modul-4</a>. Kom ikapp: läge <code>4</code>.</span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>Vad ger <code>Patient.name.given</code> om patienten har två namn med två förnamn vardera?</summary>
+      <div><p>En lista med fyra strängar. FHIRPath plattar ut listor när man navigerar.</p></div></details>
+    <details><summary>Varför <code>birthDate.empty() or birthDate &lt;= today()</code> och inte bara <code>birthDate &lt;= today()</code>?</summary>
+      <div><p>Saknas födelsedatum ger jämförelsen en tom lista, och resultatet blir otydligt. Med <code>empty() or</code> blir svaret alltid <code>true</code> eller <code>false</code>.</p></div></details>
+    <details><summary>När ska en invariant ha <code>warning</code> i stället för <code>error</code>?</summary>
+      <div><p>När regeln är en rekommendation eller kvalitetskontroll som inte ska stoppa data, som <code>edu-enc-2</code> om att sluttid inte bör vara före starttid. Fel blockerar ofta flödet helt, så använd dem bara för regler som verkligen måste gälla.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhirpath/">FHIRPath-specifikationen</a><span class="om">Den normativa språkdefinitionen med alla funktioner och operatorer.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/fhirpath.html">FHIRPath i FHIR R4</a><span class="om">FHIR-specifika tillägg som <code>resolve()</code>, <code>memberOf()</code> och variabler som <code>%resource</code>.</span></li>
+      <li><a href="https://fhirpath-lab.com/">FHIRPath Lab</a><span class="om">Testa uttryck mot egna resurser i flera motorer samtidigt.</span></li>
+      <li><a href="https://github.com/HL7/fhirpath.js">fhirpath.js</a><span class="om">JavaScript-implementationen, användbar för egna tester och verktyg.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/patient.html">Patient: Constraints</a><span class="om">Specifikationens egna invarianter, bra förebilder.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MODUL 5 ================= -->
+<section class="kapitel" id="m5" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">5</div>
+    <div>
+      <p class="eyebrow">Modul 5 · 14.00–14.50</p>
+      <h2>API, FHIR-fasad och säkerhet</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">De flesta verksamhetssystem pratar inte FHIR från början. Modulen visar hur man erbjuder ett FHIR-API
+    ovanpå ett befintligt system med HAPI FHIR, hur översättningen kan skrivas i FHIR Mapping Language och vad som krävs
+    för att skydda API:t.</p>
+
+  <h3>FHIR-server eller FHIR-fasad</h3>
+  <div class="tabell"><table>
+    <thead><tr><th></th><th>FHIR-server med egen lagring</th><th>FHIR-fasad</th></tr></thead>
+    <tbody>
+      <tr><td>Data</td><td class="bryt">Lagras som FHIR-resurser</td><td class="bryt">Ligger kvar i källsystemet och översätts vid varje anrop</td></tr>
+      <tr><td>Sökning</td><td class="bryt">Standardsökparametrar ingår</td><td class="bryt">Bara det du implementerar</td></tr>
+      <tr><td>Skrivning</td><td class="bryt">Full CRUD och historik</td><td class="bryt">Oftast bara läsning</td></tr>
+      <tr><td>Aktualitet</td><td class="bryt">Kräver synkronisering från källan</td><td class="bryt">Alltid aktuell</td></tr>
+      <tr><td>Exempel</td><td class="bryt">HAPI JPA Server, Firely Server, molntjänster</td><td class="bryt">HAPI Plain Server, integrationsplattformar</td></tr>
+    </tbody>
+  </table></div>
+  <p>Valet är sällan antingen eller. Ett vanligt mönster är en fasad för läsning av aktuell data och en server med
+    lagring för data som ska delas, analyseras eller kombineras från flera källor.</p>
+
+  <h3>Kursens fasad</h3>
+  <p>I repot finns ett simulerat journalsystem med ett eget REST-API: svenska fältnamn, egna koder som <code>M</code>/<code>K</code>,
+    <code>AVSL</code> och <code>BES</code>, och datum utan tidszon. Fasaden är en HAPI FHIR Plain Server. När den får
+    <code>GET /fhir/Patient/191212121212</code> händer följande:</p>
+  <ol>
+    <li><code>PatientProvider</code> tar emot anropet.</li>
+    <li><code>JournalsystemKlient</code> hämtar JSON från <code>/journalsystem-api/patienter/191212121212</code>.</li>
+    <li><code>FmlMotor</code> kör mappningen <code>patient.map</code> och får en FHIR <code>Patient</code> enligt profilen <code>EducationPatient</code>.</li>
+    <li>HAPI serialiserar resultatet och genererar CapabilityStatement automatiskt utifrån providers.</li>
+  </ol>
+  <p class="kodrubrik">hapi-fasad/src/main/resources/fml/patient.map (utdrag)</p>
+  <pre><code><span class="k">conceptmap</span> <span class="s">"kon"</span> {
+  prefix s = <span class="s">"http://example.org/fhir/education/journalsystem/kon"</span>
+  prefix t = <span class="s">"http://hl7.org/fhir/administrative-gender"</span>
+  s:M == t:male
+  s:K == t:female
+}
+
+<span class="k">group</span> JournalPatientTillFhir(<span class="k">source</span> src : JournalPatient, <span class="k">target</span> tgt : Patient) {
+  src.personnummer <span class="k">as</span> pnr -&gt; tgt.identifier <span class="k">as</span> ident,
+      ident.system = <span class="s">'http://electronichealth.se/identifier/personnummer'</span>,
+      ident.value = pnr <span class="s">"personnummer"</span>;
+  src.kon <span class="k">as</span> kon -&gt; tgt.gender = translate(kon, <span class="s">'#kon'</span>, <span class="s">'code'</span>) <span class="s">"kon"</span>;
+  src.fodelsedatum <span class="k">as</span> fd -&gt; tgt.birthDate = fd <span class="s">"fodelsedatum"</span>;
+  <span class="c">// ÖVNING 5.2: lägg till en regel för telefonnummer här</span>
+}</code></pre>
+  <p>Mappningen är data, inte kod. En informatiker kan läsa och granska den, den kan versionshanteras och publiceras, och
+    den kan köras av olika motorer. Kapitel <a href="#fml">D</a> går igenom språket på djupet och kapitel
+    <a href="#hapi">B</a> HAPI FHIR.</p>
+
+  <h3>REST-anrop du bör kunna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Anrop</th><th>Gör</th></tr></thead>
+    <tbody>
+      <tr><td><code>GET [bas]/metadata</code></td><td class="bryt">Serverns CapabilityStatement</td></tr>
+      <tr><td><code>GET [bas]/Patient/123</code></td><td class="bryt">Läs en resurs (read)</td></tr>
+      <tr><td><code>GET [bas]/Patient?identifier=system|värde</code></td><td class="bryt">Sök (search). Svaret är alltid en Bundle av typen <code>searchset</code></td></tr>
+      <tr><td><code>GET [bas]/Encounter?patient=123&amp;date=ge2026-01-01</code></td><td class="bryt">Sök med flera parametrar och prefix</td></tr>
+      <tr><td><code>…&amp;_include=Encounter:subject</code></td><td class="bryt">Ta med refererade resurser i samma svar</td></tr>
+      <tr><td><code>…&amp;_summary=count</code>, <code>_count=10</code></td><td class="bryt">Bara antal träffar, eller sidstorlek</td></tr>
+      <tr><td><code>GET [bas]/Patient/123/_history</code></td><td class="bryt">Versionshistorik</td></tr>
+    </tbody>
+  </table></div>
+  <p>Kapitel <a href="#rest">A</a> går igenom skrivning, transaktioner, villkorliga anrop, chained search och operationer.</p>
+
+  <h3>Säkerhet i korthet</h3>
+  <p>FHIR definierar inte själv någon säkerhetsmekanism. Specifikationen hänvisar till etablerade standarder:</p>
+  <ul>
+    <li><strong>TLS</strong> för all trafik, ibland ömsesidig TLS med certifikat, i Sverige ofta SITHS-certifikat.</li>
+    <li><strong>OAuth 2.0</strong> för behörighet: klienten får en åtkomstbiljett (access token) med begränsade rättigheter.</li>
+    <li><strong>SMART on FHIR</strong> standardiserar hur OAuth används mot FHIR: appstart från journalen, scopes som
+      <code>patient/Observation.rs</code> och system-till-system-anrop (Backend Services). Kapitel <a href="#smart">C</a>.</li>
+    <li><strong>IHE-profiler</strong> som IUA (token), BALP (loggning med <code>AuditEvent</code>), PDQm och PIXm
+      (patientsökning och identiteter) och MHD (dokumentdelning). Kapitel <a href="#ihe">G</a>.</li>
+  </ul>
+  <div class="not"><span class="etikett">Kom ihåg</span>
+    <p>Behörighet i vården handlar om mer än scopes. Vårdrelation, samtycke, spärrar och sammanhållen journalföring måste
+      också hanteras. FHIR och SMART ger byggstenarna men inte hela lösningen.</p></div>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">5.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-5-hapi-fhir/README.md#övning-51--utforska-ett-fhir-api-5-min">Utforska ett FHIR-API</a> på HAPI:s publika testserver</span></li>
+      <li><span class="onr">5.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-5-hapi-fhir/README.md#övning-52--lägg-till-en-regel-i-fml-mappningen-10-min">Lägg till en regel i FML-mappningen</a> för telefonnummer i <a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/src/main/resources/fml/patient.map">patient.map</a></span></li>
+      <li><span class="onr">5.3</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-5-hapi-fhir/README.md#övning-53-extra--en-ny-kod-i-källsystemet">En ny kod i källsystemet</a>: utöka en ConceptMap i <a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/src/main/resources/fml/besok.map">besok.map</a> (extra)</span></li>
+      <li><span class="onr">5.4</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-5-hapi-fhir/README.md#övning-54--behörighet-med-scopes-demo-eller-extra">Behörighet med scopes</a> (demo eller extra)</span></li>
+      <li><span class="onr">Kod</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/README.md">hapi-fasad/README.md</a>, <a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/src/main/resources/fml/README.md">FML och logiska modeller</a></span></li>
+      <li><span class="onr">Lösning</span><span><a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/losningar/modul-5">losningar/modul-5</a></span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>Fasaden stöder bara <code>Encounter?patient=</code>. En klient skickar <code>Encounter?status=finished</code>. Vad ska hända?</summary>
+      <div><p>Servern ska inte låtsas att den filtrerat. Antingen returnerar den fel (<code>400</code> med en OperationOutcome), eller så ignorerar den parametern och redovisar det i Bundle:ns <code>self</code>-länk, som visar vilka parametrar som faktiskt användes. CapabilityStatement talar om vilka parametrar som stöds.</p></div></details>
+    <details><summary>Varför skriva mappningen i FML i stället för i Java?</summary>
+      <div><p>Den blir läsbar och granskningsbar för informatiker, kan publiceras i en IG och kan köras av olika motorer. Priset är ett eget språk att lära sig och varierande verktygsstöd.</p></div></details>
+    <details><summary>Vad är skillnaden mellan autentisering och auktorisation?</summary>
+      <div><p>Autentisering fastställer <em>vem</em> användaren eller systemet är. Auktorisation avgör <em>vad</em> den får göra. OAuth 2.0 och SMART handlar främst om auktorisation. OpenID Connect lägger till autentisering av användare.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/http.html">RESTful API</a><span class="om">Alla interaktioner: read, vread, update, delete, history, create, search, batch och transaction.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/search.html">Search</a><span class="om">Parametertyper, modifierare, prefix, chaining och <code>_include</code>.</span></li>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/server_plain/introduction.html">HAPI FHIR Plain Server</a><span class="om">Dokumentationen för den servertyp kursens fasad använder.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/mapping-language.html">FHIR Mapping Language</a> och <a href="https://hl7.org/fhir/R4/mapping-tutorial.html">Mapping Tutorial</a><span class="om">Specifikationen och en stegvis introduktion.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/security.html">Security</a><span class="om">Specifikationens säkerhetsavsnitt med hänvisningar till OAuth, SMART och IHE.</span></li>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/">SMART App Launch</a><span class="om">SMART on FHIR-specifikationen.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= MODUL 6 ================= -->
+<section class="kapitel" id="m6" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">6</div>
+    <div>
+      <p class="eyebrow">Modul 6 · 15.00–15.50</p>
+      <h2>Följsamhet, kravställning och validering</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">En IG är värdelös om ingen kan visa att data och system följer den. Modulen knyter ihop dagen: hur krav
+    uttrycks maskinläsbart, hur en server berättar vad den kan och hur man kontrollerar att data är giltig.</p>
+
+  <h3>Två sorters följsamhet</h3>
+  <p><strong>Instanser</strong> är giltiga eller ogiltiga mot en profil. Det kan kontrolleras automatiskt med en validator.
+    <strong>System</strong> följer en IG om de <em>beter sig</em> som IG:n kräver: stöder rätt interaktioner och
+    sökparametrar, skickar Must Support-element och hanterar fel. Det kräver testfall och testverktyg. Ett system kan
+    skicka helt giltiga resurser och ändå inte följa IG:n.</p>
+
+  <h3>CapabilityStatement</h3>
+  <p>CapabilityStatement beskriver vad en server kan eller vad den ska kunna. Elementet <code>kind</code> avgör vilket:</p>
+  <div class="tabell"><table>
+    <thead><tr><th><code>kind</code></th><th>Beskriver</th><th>Var</th></tr></thead>
+    <tbody>
+      <tr><td><code>instance</code></td><td class="bryt">En driftsatt server</td><td class="bryt"><code>GET [bas]/metadata</code></td></tr>
+      <tr><td><code>capability</code></td><td class="bryt">En produkt, oavsett installation</td><td class="bryt">Leverantörens dokumentation</td></tr>
+      <tr><td><code>requirements</code></td><td class="bryt">Krav på system</td><td class="bryt">I en IG</td></tr>
+    </tbody>
+  </table></div>
+  <p>I ett requirements-CapabilityStatement anger extensionen <code>capabilitystatement-expectation</code> kravnivån
+    <code>SHALL</code>, <code>SHOULD</code> eller <code>MAY</code> för varje interaktion och sökparameter. En server som
+    uppfyller kraven anger det i sitt eget CapabilityStatement med <code>instantiates</code>. En klient kan på så sätt
+    upptäcka vad servern kan innan den anropar den. Det kallas <em>capability discovery</em>.</p>
+  <p class="kodrubrik">capabilities/EducationServerCapabilities.fsh (utdrag)</p>
+  <pre><code>* kind = #requirements
+* rest[0].mode = #server
+* rest[0].resource[0].type = #Patient
+* rest[0].resource[0].supportedProfile = Canonical(EducationPatient)
+* rest[0].resource[0].interaction[0].code = #read
+* rest[0].resource[0].interaction[0].extension[$expectation].valueCode = #SHALL
+* rest[0].resource[0].searchParam[0].name = <span class="s">"identifier"</span>
+* rest[0].resource[0].searchParam[0].type = #token
+* rest[0].resource[0].searchParam[0].extension[$expectation].valueCode = #SHALL</code></pre>
+
+  <h3>Validering</h3>
+  <p>HL7 FHIR Validator är referensvalidatorn. Samma motor finns i IG Publisher, i HAPI FHIR, på validator.fhir.org och
+    bakom operationen <code>$validate</code> på många servrar. Den kontrollerar:</p>
+  <ul>
+    <li>struktur, datatyper och kardinalitet mot basspecifikationen</li>
+    <li>profiler i <code>meta.profile</code> och de profiler du anger, med slicing, fasta värden och referensmål</li>
+    <li>invarianter i FHIRPath, både specifikationens och profilernas</li>
+    <li>koder mot ValueSets och kodsystem, med hjälp av en terminologiserver</li>
+  </ul>
+  <p>Resultatet är en <code>OperationOutcome</code> där varje <code>issue</code> har en allvarlighetsgrad
+    (<code>fatal</code>, <code>error</code>, <code>warning</code>, <code>information</code>), ett meddelande och en
+    plats i resursen (<code>expression</code>). Läs alltid alla fel innan du börjar rätta. Ett felstavat
+    <code>system</code> kan ge följdfel på flera ställen.</p>
+  <p>Validering har gränser. Den kan inte avgöra om ett Must Support-element hanteras korrekt av mottagaren, om
+    verksamhetsregler följs eller om rätt patient har rätt data. Den kontrollerar också bara koder så bra som
+    terminologiservern tillåter. Utan tillgång till SNOMED CT blir det varningar i stället för fel.</p>
+
+  <h3>Kravställa mot en IG</h3>
+  <p>En IG blir ett krav först när kravställningen pekar ut den entydigt och säger hur följsamheten ska verifieras.</p>
+  <ul>
+    <li>Peka ut IG:n med <strong>paket-id och version</strong>, till exempel <code>hl7se.fhir.base#1.1.0</code>, inte bara ett namn eller en länk.</li>
+    <li>Skriv krav med <strong>SKA</strong>, <strong>BÖR</strong> och <strong>KAN</strong> och ange hur varje krav verifieras: granskning, validering, testfall eller testverktyg.</li>
+    <li>Lägg systemkrav i ett CapabilityStatement med <code>kind = requirements</code> i IG:n, så att de blir maskinläsbara och testbara.</li>
+    <li>Kräv att leverantören visar valideringsresultat och ett CapabilityStatement före avtal och vid leverans.</li>
+    <li>Ange vilken terminologiserver och vilka kodverksversioner som gäller vid validering.</li>
+    <li>Bestäm hur nya versioner av IG:n ska hanteras: inom vilken tid och med vilken bakåtkompatibilitet (kapitel <a href="#forvaltning">F</a>).</li>
+  </ul>
+
+  <h3>Testverktyg</h3>
+  <p>För system och API:er finns testplattformar som kör testfall mot en server och jämför med en IG.
+    <strong>Inferno</strong> (öppen källkod, från ONC i USA) används för bland annat SMART och US Core och kan
+    användas med egna testsviter. <strong>Touchstone</strong> (AEGIS) är en kommersiell testplattform som används vid
+    många connectathons. HL7 och IHE arrangerar <strong>connectathons</strong> där leverantörer testar mot varandra.
+    Det är det bästa sättet att hitta tolkningsskillnader innan de når produktion.</p>
+
+  <div class="ovningar">
+    <h4>Övningar i repot</h4>
+    <ul>
+      <li><span class="onr">6.1</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-6-foljsamhet/README.md#demo-61--läs-ett-capabilitystatement-kursledaren-visar-5-min">Läs ett CapabilityStatement</a> (demo), fasaden och <code>hapi.fhir.org/baseR4/metadata</code></span></li>
+      <li><span class="onr">6.2</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-6-foljsamhet/README.md#övning-62--skriv-kraven-som-ett-capabilitystatement-10-min">Skriv kraven som ett CapabilityStatement</a></span></li>
+      <li><span class="onr">6.3</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-6-foljsamhet/README.md#övning-63--validera-instanser-mot-profilen-10-min">Validera instanser mot profilen</a> med arbetsflödet <em>Validera</em> och filerna i <a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/modul-6-foljsamhet/exempel">exempel/</a></span></li>
+      <li><span class="onr">6.4</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-6-foljsamhet/README.md#övning-64--formulera-krav-5-min-i-par">Formulera krav</a>, i par</span></li>
+      <li><span class="onr">Facit</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/modul-6-foljsamhet/facit.md">facit.md</a>, <a href="https://github.com/oskthu2/fhireducation/tree/main/kursmaterial/losningar/modul-6/fsh">losningar/modul-6</a>. Kom ikapp: läge <code>6</code>.</span></li>
+    </ul>
+  </div>
+
+  <div class="fragor">
+    <h4>Kontrollfrågor</h4>
+    <details><summary>En resurs validerar utan fel mot basspecifikationen. Varför kan den ändå vara ogiltig mot din profil?</summary>
+      <div><p>Validatorn kontrollerar bara profiler som anges i <code>meta.profile</code> eller som du uttryckligen begär. Utan profilen kontrolleras inga av dina skärpta kardinaliteter, bindningar eller invarianter.</p></div></details>
+    <details><summary>Vad är skillnaden mellan <code>implementationGuide</code> och <code>instantiates</code> i ett CapabilityStatement?</summary>
+      <div><p><code>implementationGuide</code> säger vilka IG:er servern följer i stort. <code>instantiates</code> pekar på ett bestämt requirements-CapabilityStatement som servern påstår sig uppfylla, med dess SHALL och SHOULD.</p></div></details>
+    <details><summary>Hur verifierar man ett krav på Must Support?</summary>
+      <div><p>Inte med validering ensam. Det krävs testfall: skicka data med alla MS-element ifyllda och kontrollera att mottagaren lagrar och visar dem, och skicka data där de saknas och kontrollera att inget går sönder.</p></div></details>
+  </div>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/capabilitystatement.html">CapabilityStatement</a><span class="om">Resursen i detalj, med <code>kind</code>, <code>instantiates</code> och <code>imports</code>.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/validation.html">Validating Resources</a><span class="om">Vad validering kan och inte kan kontrollera.</span></li>
+      <li><a href="https://confluence.hl7.org/display/FHIR/Using+the+FHIR+Validator">Using the FHIR Validator</a><span class="om">Alla parametrar till <code>validator_cli.jar</code>: IG:er, terminologiserver, profiler och format.</span></li>
+      <li><a href="https://validator.fhir.org/">validator.fhir.org</a><span class="om">Validera i webbläsaren, mot valfria IG-paket.</span></li>
+      <li><a href="https://inferno.healthit.gov/">Inferno</a><span class="om">Testplattform med öppen källkod. Testsviter för SMART och flera IG:er.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/operationoutcome.html">OperationOutcome</a><span class="om">Hur fel och varningar rapporteras.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= EFTER KURSEN ================= -->
+<section class="kapitel" id="efter" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">§</div>
+    <div>
+      <p class="eyebrow">Avslutning · 15.50–16.05</p>
+      <h2>Efter kursen</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Ditt repo är en färdig startpunkt. Samma kedja med SUSHI, IG Publisher och validator kan köras på din
+    egen dator eller fortsätta i GitHub.</p>
+
+  <h3>Ta hem verktygen</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Verktyg</th><th>Installation</th></tr></thead>
+    <tbody>
+      <tr><td>VS Code med FSH-tillägget</td><td class="bryt">Sök efter <em>FHIR Shorthand</em> bland tilläggen</td></tr>
+      <tr><td>Node.js och SUSHI</td><td class="bryt"><code>npm install -g fsh-sushi</code></td></tr>
+      <tr><td>Java 17 eller senare</td><td class="bryt">För IG Publisher och validatorn</td></tr>
+      <tr><td>Ruby och Jekyll</td><td class="bryt">För IG Publishers webbplatsbygge</td></tr>
+      <tr><td>IG Publisher och validator</td><td class="bryt">Hämtas automatiskt av skripten i <code>scripts/</code></td></tr>
+    </tbody>
+  </table></div>
+  <pre><code>git clone https://github.com/&lt;ditt-konto&gt;/&lt;repo&gt;.git
+cd &lt;repo&gt;
+./scripts/build-ig.sh --sushi-only   <span class="c"># snabb kontroll av FSH</span>
+./scripts/build-ig.sh                <span class="c"># hela IG:n till test-ig/output/</span>
+./scripts/validate.sh                <span class="c"># validera filerna i validering/</span></code></pre>
+  <p>Kan du inte installera Java, Ruby och Node fungerar Docker-spåret eller GitHub Codespaces. Allt beskrivs i
+    <a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/avslutning/README.md">avslutning/README.md</a>.</p>
+
+  <h3>Starta en egen IG</h3>
+  <ol>
+    <li>Kopiera <code>test-ig</code> till en ny mapp och ändra <code>id</code>, <code>canonical</code>, <code>name</code> och <code>title</code> i <code>sushi-config.yaml</code>.</li>
+    <li>Lägg till beroenden, till exempel <code>hl7se.fhir.base</code>, och profilera på dem.</li>
+    <li>Skriv sidor i <code>input/pagecontent/</code>: syfte, användningsfall, Must Support-definition och kravnivåer.</li>
+    <li>Ska IG:n förvaltas på riktigt: utgå från en mall med versionshantering, releaser och publicering, som Ineras mall-repo för IG:er.</li>
+  </ol>
+
+  <h3>Fortsätt lära</h3>
+  <p>Del II i den här boken fördjupar det som kursdagen bara snuddade vid. Frågor ställs bäst på
+    <a href="https://chat.fhir.org/">chat.fhir.org</a>, där HL7:s experter svarar. Kanalerna <code>#shorthand</code>,
+    <code>#IG creation</code>, <code>#hapi</code>, <code>#smart</code> och <code>#Sweden</code> är bra att börja med.</p>
+
+  <div class="ovningar">
+    <h4>I repot</h4>
+    <ul>
+      <li><span class="onr">Guide</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/kursmaterial/avslutning/README.md">Ta hem miljön</a>: lokal installation, klona och bygga, starta en egen IG</span></li>
+      <li><span class="onr">Spår</span><span><a href="https://github.com/oskthu2/fhireducation/blob/main/README.md">README</a>: GitHub, Codespaces, lokalt utan Docker och med Docker</span></li>
+    </ul>
+  </div>
+</section>
+
+<h2 class="delrubrik">Del II · Fördjupning<span>Fristående kapitel för den som vill gå vidare. Läs dem i valfri ordning.</span></h2>
+
+<!-- ================= A REST ================= -->
+<section class="kapitel" id="rest" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">A</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 5</p>
+      <h2>REST-API:t på djupet</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">REST är det vanligaste sättet att utbyta FHIR, men inte det enda. Det här kapitlet går igenom
+    skrivning, versioner, villkorliga anrop, avancerad sökning, transaktioner och operationer.</p>
+
+  <h3>Fyra sätt att utbyta FHIR</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Paradigm</th><th>Kännetecken</th><th>Exempel</th></tr></thead>
+    <tbody>
+      <tr><td>REST</td><td class="bryt">Klienten läser och skriver resurser på en server</td><td class="bryt">Appar, integrationer, fasader</td></tr>
+      <tr><td>Dokument</td><td class="bryt">En <code>Bundle</code> av typen <code>document</code> med en <code>Composition</code> först. Oföränderlig och kan signeras</td><td class="bryt">Patientöversikt (IPS), epikris</td></tr>
+      <tr><td>Meddelanden</td><td class="bryt">En <code>Bundle</code> av typen <code>message</code> med en <code>MessageHeader</code>. Händelsestyrt, liknar HL7 v2</td><td class="bryt">Remisser, notifieringar</td></tr>
+      <tr><td>Tjänster</td><td class="bryt">Operationer och andra mönster ovanpå resurserna</td><td class="bryt"><code>$validate</code>, CDS Hooks</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Interaktionerna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Interaktion</th><th>HTTP</th><th>Svar</th></tr></thead>
+    <tbody>
+      <tr><td>read</td><td><code>GET [bas]/Patient/123</code></td><td class="bryt">200, 404 eller 410 (raderad)</td></tr>
+      <tr><td>vread</td><td><code>GET [bas]/Patient/123/_history/3</code></td><td class="bryt">En viss version</td></tr>
+      <tr><td>create</td><td><code>POST [bas]/Patient</code></td><td class="bryt">201 och <code>Location</code> med nytt id och version</td></tr>
+      <tr><td>update</td><td><code>PUT [bas]/Patient/123</code></td><td class="bryt">200, eller 201 om servern tillåter att klienten väljer id</td></tr>
+      <tr><td>patch</td><td><code>PATCH [bas]/Patient/123</code></td><td class="bryt">JSON Patch, XML Patch eller FHIRPath Patch</td></tr>
+      <tr><td>delete</td><td><code>DELETE [bas]/Patient/123</code></td><td class="bryt">200 eller 204</td></tr>
+      <tr><td>search</td><td><code>GET [bas]/Patient?…</code> eller <code>POST [bas]/Patient/_search</code></td><td class="bryt">Bundle <code>searchset</code></td></tr>
+      <tr><td>history</td><td><code>GET [bas]/Patient/123/_history</code></td><td class="bryt">Bundle <code>history</code></td></tr>
+      <tr><td>batch, transaction</td><td><code>POST [bas]</code> med en Bundle</td><td class="bryt">Bundle <code>batch-response</code> eller <code>transaction-response</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Fel returneras med en HTTP-statuskod och helst en <code>OperationOutcome</code>: 400 för felaktiga anrop, 401 och
+    403 för behörighet, 404 när något saknas, 409 och 412 vid versionskonflikter och 422 när en resurs inte klarar
+    serverns validering.</p>
+  <p>Två huvuden är bra att känna till. <code>Accept: application/fhir+json</code> väljer format, och
+    <code>Prefer: return=representation</code>, <code>minimal</code> eller <code>OperationOutcome</code> styr vad servern
+    returnerar efter en skrivning.</p>
+
+  <h3>Versioner och samtidighet</h3>
+  <p>Varje ändring ger en ny version i <code>meta.versionId</code>. Servern returnerar den även som <code>ETag: W/"3"</code>.
+    En klient som vill undvika att skriva över någon annans ändring skickar <code>If-Match: W/"3"</code> vid uppdatering.
+    Har resursen ändrats sedan dess svarar servern 412 och klienten får läsa om. Det kallas optimistisk låsning.</p>
+
+  <h3>Villkorliga anrop</h3>
+  <p>Villkorliga anrop löser ett vanligt integrationsproblem: klienten vet personnumret men inte serverns id.</p>
+  <ul>
+    <li><strong>Villkorlig create</strong>: <code>POST [bas]/Patient</code> med <code>If-None-Exist: identifier=…|191212121212</code> skapar patienten bara om den inte redan finns.</li>
+    <li><strong>Villkorlig update</strong>: <code>PUT [bas]/Patient?identifier=…|191212121212</code> uppdaterar träffen eller skapar resursen om ingen finns.</li>
+    <li><strong>Villkorlig delete</strong> fungerar på samma sätt.</li>
+  </ul>
+  <p>Ger villkoret flera träffar svarar servern 412. Det skyddar mot att fel resurs ändras.</p>
+
+  <h3>Sökning</h3>
+  <p>Varje sökparameter har en typ, och typen avgör syntaxen:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Typ</th><th>Exempel</th></tr></thead>
+    <tbody>
+      <tr><td><code>token</code></td><td class="bryt"><code>identifier=http://electronichealth.se/identifier/personnummer|191212121212</code>, <code>gender=female</code>, <code>code=http://snomed.info/sct|38341003</code></td></tr>
+      <tr><td><code>string</code></td><td class="bryt"><code>family=tolv</code> (börjar med, okänsligt för skiftläge), <code>family:exact=Tolvansson</code>, <code>family:contains=van</code></td></tr>
+      <tr><td><code>date</code></td><td class="bryt"><code>date=ge2026-01-01&amp;date=lt2026-02-01</code>. Prefixen är <code>eq</code>, <code>ne</code>, <code>gt</code>, <code>lt</code>, <code>ge</code>, <code>le</code>, <code>sa</code>, <code>eb</code> och <code>ap</code></td></tr>
+      <tr><td><code>reference</code></td><td class="bryt"><code>patient=123</code>, <code>subject=Patient/123</code>, <code>subject:identifier=…|191212121212</code></td></tr>
+      <tr><td><code>quantity</code>, <code>number</code></td><td class="bryt"><code>value-quantity=gt5.4|http://unitsofmeasure.org|mmol/L</code></td></tr>
+      <tr><td><code>uri</code>, <code>composite</code></td><td class="bryt"><code>url=http://…</code>, <code>code-value-quantity=…$gt5</code></td></tr>
+    </tbody>
+  </table></div>
+  <p><strong>Modifierare</strong> ändrar hur en parameter tolkas: <code>:missing=true</code> (elementet saknas),
+    <code>:not</code>, <code>:text</code>, <code>:in</code> och <code>:not-in</code> (kod i ett ValueSet), och
+    <code>:above</code> och <code>:below</code> (hierarkier).</p>
+  <p><strong>Kedjning</strong> söker via referenser i ett steg. <code>Encounter?subject:Patient.identifier=…|191212121212</code>
+    ger vårdkontakter för patienten med ett visst personnummer. <strong>Omvänd kedjning</strong> med <code>_has</code> går
+    åt andra hållet: <code>Patient?_has:Encounter:subject:status=in-progress</code> ger patienter med en pågående
+    vårdkontakt.</p>
+  <p><strong>Resultatparametrar</strong>: <code>_include</code> och <code>_revinclude</code> tar med relaterade resurser,
+    <code>_sort</code> sorterar, <code>_count</code> anger sidstorlek, <code>_elements</code> och <code>_summary</code>
+    begränsar innehållet och <code>_total</code> ber om antal träffar. Nästa sida hämtas med länken
+    <code>link[relation = next]</code> i svaret. Bygg aldrig sidlänkar själv.</p>
+  <p>Vilka parametrar en server stöder framgår av dess CapabilityStatement. Egna parametrar definieras med resursen
+    <code>SearchParameter</code>, vars <code>expression</code> är ett FHIRPath-uttryck.</p>
+
+  <h3>Batch och transaktioner</h3>
+  <p>En <code>batch</code> är flera oberoende anrop i en Bundle. En <code>transaction</code> genomförs helt eller inte alls.
+    I en transaktion kan nya resurser referera till varandra med tillfälliga id:n i <code>fullUrl</code>, som servern
+    ersätter med riktiga:</p>
+  <pre><code>{ <span class="k">"resourceType"</span>: <span class="s">"Bundle"</span>, <span class="k">"type"</span>: <span class="s">"transaction"</span>, <span class="k">"entry"</span>: [
+  { <span class="k">"fullUrl"</span>: <span class="s">"urn:uuid:6f1c…"</span>,
+    <span class="k">"resource"</span>: { <span class="k">"resourceType"</span>: <span class="s">"Patient"</span>, … },
+    <span class="k">"request"</span>: { <span class="k">"method"</span>: <span class="s">"PUT"</span>, <span class="k">"url"</span>: <span class="s">"Patient?identifier=…|191212121212"</span> } },
+  { <span class="k">"resource"</span>: { <span class="k">"resourceType"</span>: <span class="s">"Encounter"</span>,
+      <span class="k">"subject"</span>: { <span class="k">"reference"</span>: <span class="s">"urn:uuid:6f1c…"</span> }, … },
+    <span class="k">"request"</span>: { <span class="k">"method"</span>: <span class="s">"POST"</span>, <span class="k">"url"</span>: <span class="s">"Encounter"</span> } }
+] }</code></pre>
+
+  <h3>Operationer</h3>
+  <p>Det som inte passar som ren läsning eller skrivning görs med operationer. De känns igen på <code>$</code> och
+    definieras med <code>OperationDefinition</code>.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Operation</th><th>Gör</th></tr></thead>
+    <tbody>
+      <tr><td><code>$validate</code></td><td class="bryt">Validerar en resurs, eventuellt mot en angiven profil</td></tr>
+      <tr><td><code>Patient/123/$everything</code></td><td class="bryt">Allt servern har om en patient</td></tr>
+      <tr><td><code>$expand</code>, <code>$validate-code</code>, <code>$lookup</code>, <code>$translate</code></td><td class="bryt">Terminologitjänster (kapitel <a href="#terminologi">E</a>)</td></tr>
+      <tr><td><code>Patient/$match</code></td><td class="bryt">Sannolikhetsbaserad patientmatchning, används av IHE PDQm</td></tr>
+      <tr><td><code>$export</code></td><td class="bryt">Bulk-export av stora datamängder (kapitel <a href="#mer">H</a>)</td></tr>
+      <tr><td><code>StructureMap/$transform</code></td><td class="bryt">Kör en FML-mappning (kapitel <a href="#fml">D</a>)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Compartments</h3>
+  <p>Ett <em>compartment</em> är en grupp resurser som hör till samma patient, utövare eller vårdkontakt.
+    Patient-compartment definierar vilka referenser som gör att en Observation, en Encounter eller en MedicationRequest
+    räknas som patientens. Det används för <code>Patient/123/Encounter</code>-sökningar, för <code>$everything</code>
+    och för att avgöra vad SMART-scopet <code>patient/*.rs</code> ger tillgång till.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/http.html">RESTful API</a><span class="om">Interaktioner, statuskoder, villkorliga anrop och versionshantering.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/search.html">Search</a><span class="om">All söksyntax i detalj.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/bundle.html">Bundle</a> och <a href="https://hl7.org/fhir/R4/operations.html">Operations</a><span class="om">Bundle-typer, transaktionsregler och de fördefinierade operationerna.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/compartmentdefinition-patient.html">Patient compartment</a><span class="om">Vilka resurser som räknas som patientens.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/exchanging.html">Approaches to Exchanging FHIR Data</a><span class="om">När REST, dokument, meddelanden eller tjänster passar.</span></li>
+      <li><a href="https://hapi.fhir.org/">HAPI:s publika testserver</a><span class="om">Prova alla anrop i det här kapitlet. Lägg aldrig in riktiga personuppgifter.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= B HAPI ================= -->
+<section class="kapitel" id="hapi" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">B</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 5</p>
+      <h2>HAPI FHIR</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">HAPI FHIR är den mest använda FHIR-implementationen i Java. Den är öppen källkod under
+    Apache 2.0-licensen och används både som bibliotek i egna system och som färdig server.</p>
+
+  <h3>Byggblocken</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Modul</th><th>Används till</th></tr></thead>
+    <tbody>
+      <tr><td><code>FhirContext</code> och parsers</td><td class="bryt">Läsa och skriva JSON och XML. Grunden i allt annat</td></tr>
+      <tr><td>Strukturer per version</td><td class="bryt">Java-klasser för alla resurser: <code>hapi-fhir-structures-r4</code>, <code>-r4b</code>, <code>-r5</code></td></tr>
+      <tr><td>Klient</td><td class="bryt">Anropa FHIR-servrar med ett flytande API (<em>generic client</em>) eller med annoterade gränssnitt</td></tr>
+      <tr><td>Plain Server</td><td class="bryt">Bygg ett eget FHIR-API med <em>resource providers</em>. Du står för lagring eller källsystem. Kursens fasad</td></tr>
+      <tr><td>JPA Server</td><td class="bryt">Färdig server med lagring i relationsdatabas, alla sökparametrar, historik, subscriptions och bulk-export</td></tr>
+      <tr><td>Validering</td><td class="bryt">Inbyggd HL7-validator med stöd för IG-paket och externa terminologiservrar</td></tr>
+      <tr><td>CLI</td><td class="bryt"><code>hapi-fhir-cli</code> för att bland annat ladda upp terminologi och starta en testserver</td></tr>
+    </tbody>
+  </table></div>
+  <p><code>FhirContext</code> är dyr att skapa eftersom den läser in alla resursdefinitioner. Skapa en per FHIR-version och
+    återanvänd den i hela applikationen.</p>
+
+  <h3>Klienten</h3>
+  <pre><code>FhirContext ctx = FhirContext.forR4();
+IGenericClient klient = ctx.newRestfulGenericClient(<span class="s">"https://hapi.fhir.org/baseR4"</span>);
+
+Bundle svar = klient.search()
+    .forResource(Patient.class)
+    .where(Patient.IDENTIFIER.exactly()
+        .systemAndCode(<span class="s">"http://electronichealth.se/identifier/personnummer"</span>, <span class="s">"191212121212"</span>))
+    .returnBundle(Bundle.class)
+    .execute();</code></pre>
+  <p>Klienten hanterar sidindelning (<code>loadPage().next(svar)</code>), transaktioner, operationer och interceptorer
+    för till exempel bearer-tokens och loggning.</p>
+
+  <h3>Plain Server: kursens fasad</h3>
+  <p>En resource provider är en klass med annoterade metoder. Varje metod blir en interaktion i API:t och syns
+    automatiskt i CapabilityStatement:</p>
+  <p class="kodrubrik">hapi-fasad/…/provider/PatientProvider.java (förkortad)</p>
+  <pre><code><span class="k">@Read</span>
+<span class="k">public</span> Patient read(<span class="k">@IdParam</span> IdType id) {
+  <span class="k">return</span> journalsystem.hamtaPatient(id.getIdPart())
+      .map(<span class="k">this</span>::tillFhir)
+      .orElseThrow(() -&gt; <span class="k">new</span> ResourceNotFoundException(id));
+}
+
+<span class="k">@Search</span>
+<span class="k">public</span> List&lt;Patient&gt; search(<span class="k">@OptionalParam</span>(name = Patient.SP_IDENTIFIER) TokenParam identifier) {
+  …
+}</code></pre>
+  <p>Fasaden visar en avvägning som ofta dyker upp. Patientens logiska id är här personnumret. Det är enkelt, men gör att
+    personnumret syns i alla URL:er och loggar. I en riktig lösning används oftast ett tekniskt id.</p>
+
+  <h3>Interceptorer</h3>
+  <p>Interceptorer kopplar in egen logik vid bestämda punkter (<em>pointcuts</em>) i anropsflödet, utan att ändra
+    providers. HAPI har färdiga interceptorer för det mesta:</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Interceptor</th><th>Gör</th></tr></thead>
+    <tbody>
+      <tr><td><code>AuthorizationInterceptor</code></td><td class="bryt">Regler för vem som får göra vad. Kursens <code>DemoAuthorizationInterceptor</code> bygger på den</td></tr>
+      <tr><td><code>SearchNarrowingInterceptor</code></td><td class="bryt">Begränsar sökningar till de patienter en token gäller</td></tr>
+      <tr><td><code>ConsentInterceptor</code></td><td class="bryt">Filtrerar eller maskerar data i svaret, till exempel vid spärrar</td></tr>
+      <tr><td><code>RequestValidatingInterceptor</code></td><td class="bryt">Validerar inkommande resurser mot profiler</td></tr>
+      <tr><td><code>LoggingInterceptor</code></td><td class="bryt">Åtkomstloggning</td></tr>
+      <tr><td><code>ResponseHighlighterInterceptor</code></td><td class="bryt">Visar svar som läsbar HTML när de öppnas i en webbläsare</td></tr>
+      <tr><td><code>CorsInterceptor</code>, <code>OpenApiInterceptor</code></td><td class="bryt">CORS för webbappar och en OpenAPI-beskrivning av API:t</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>JPA Server och starter-projektet</h3>
+  <p>Behöver du en server med lagring är <strong>hapi-fhir-jpaserver-starter</strong> den snabbaste vägen. Den finns som
+    Docker-avbild och konfigureras i <code>application.yaml</code>: databas, FHIR-version, IG-paket som ska installeras vid
+    start, validering, subscriptions, bulk-export och partitionering. Den passar för test, utbildning och utveckling. I
+    produktion behövs också autentisering, behörighet, loggning, säkerhetskopiering och prestandatester, eftersom
+    startern levereras utan säkerhet påslagen.</p>
+
+  <h3>Validering i HAPI</h3>
+  <p>HAPI använder samma validator som IG Publisher. Valideringen byggs av en kedja av <em>validation support</em>-moduler:
+    basspecifikationen, IG-paket du läser in (<code>NpmPackageValidationSupport</code>), en extern terminologiserver
+    (<code>RemoteTerminologyServiceValidationSupport</code>) och cache. Det är samma kedja som kursens FML-motor använder för
+    att hitta strukturdefinitioner.</p>
+
+  <h3>Andra implementationer</h3>
+  <p>HAPI är inte ensamt. Firely SDK och Firely Server finns för .NET. Microsoft FHIR Server är öppen källkod och ligger
+    bakom Azure Health Data Services. Google Cloud och AWS har egna FHIR-tjänster. Bland nyare alternativ finns
+    Medplum (TypeScript), Aidbox och Blaze (inriktad på analys). Bibliotek finns för de flesta språk, till exempel
+    <code>fhirclient.js</code> för SMART-appar i JavaScript och <code>fhir.resources</code> för Python.</p>
+  <p>Vid val av plattform: kontrollera vilka FHIR-versioner, sökparametrar och operationer som stöds, hur validering och
+    terminologi hanteras, hur säkerhet och loggning byggs in och hur uppgraderingar sköts.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/">HAPI FHIR-dokumentationen</a><span class="om">Allt om modulerna, med kodexempel.</span></li>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/client/generic_client.html">Generic Client</a><span class="om">Klientens API för sökning, transaktioner och operationer.</span></li>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/interceptors/interceptors.html">Interceptors</a><span class="om">Pointcuts och färdiga interceptorer.</span></li>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/security/authorization_interceptor.html">AuthorizationInterceptor</a><span class="om">Regelbaserad behörighet, grunden för kursens säkerhetsexempel.</span></li>
+      <li><a href="https://github.com/hapifhir/hapi-fhir-jpaserver-starter">hapi-fhir-jpaserver-starter</a><span class="om">En komplett server att köra lokalt med Docker.</span></li>
+      <li><a href="https://hapifhir.io/hapi-fhir/docs/validation/introduction.html">Validation</a><span class="om">Instansvalidering, validation support-kedjan och terminologi.</span></li>
+      <li><a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/README.md">Kursens fasad</a><span class="om">Kör den i Codespaces och följ ett anrop genom koden.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= C SMART ================= -->
+<section class="kapitel" id="smart" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">C</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 5</p>
+      <h2>SMART on FHIR</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">SMART on FHIR är HL7:s standard för hur appar och system får behörighet till ett FHIR-API. Den bygger
+    på OAuth 2.0 och OpenID Connect och lägger till det vården behöver: patient- och användarkontext, start från
+    journalen och scopes uttryckta i FHIR-resurser.</p>
+
+  <h3>Tre användningsfall</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Fall</th><th>Flöde</th><th>Exempel</th></tr></thead>
+    <tbody>
+      <tr><td>EHR launch</td><td class="bryt">Journalen startar appen med en <code>launch</code>-parameter. Appen får den aktuella patienten och användaren som kontext</td><td class="bryt">Beslutsstöd eller visualisering inuti journalen</td></tr>
+      <tr><td>Standalone launch</td><td class="bryt">Appen startas fristående och ber om kontext, till exempel med scopet <code>launch/patient</code></td><td class="bryt">Patientapp, fristående verktyg</td></tr>
+      <tr><td>Backend Services</td><td class="bryt">System till system utan användare. Klienten autentiserar sig med en signerad JWT</td><td class="bryt">Integrationer, bulk-export, fasader</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Discovery</h3>
+  <p>En klient behöver inte konfigureras med auktorisationsserverns adresser. De publiceras på en välkänd adress
+    relativt FHIR-basen:</p>
+  <p class="kodrubrik">GET [bas]/.well-known/smart-configuration (utdrag)</p>
+  <pre><code>{
+  <span class="k">"authorization_endpoint"</span>: <span class="s">"https://auth.example.org/authorize"</span>,
+  <span class="k">"token_endpoint"</span>: <span class="s">"https://auth.example.org/token"</span>,
+  <span class="k">"code_challenge_methods_supported"</span>: [<span class="s">"S256"</span>],
+  <span class="k">"scopes_supported"</span>: [<span class="s">"openid"</span>, <span class="s">"fhirUser"</span>, <span class="s">"launch"</span>, <span class="s">"launch/patient"</span>, <span class="s">"patient/*.rs"</span>],
+  <span class="k">"capabilities"</span>: [<span class="s">"launch-ehr"</span>, <span class="s">"launch-standalone"</span>, <span class="s">"client-public"</span>,
+                   <span class="s">"client-confidential-asymmetric"</span>, <span class="s">"context-ehr-patient"</span>,
+                   <span class="s">"permission-v2"</span>, <span class="s">"sso-openid-connect"</span>]
+}</code></pre>
+
+  <h3>App Launch steg för steg</h3>
+  <ol>
+    <li>Appen läser <code>.well-known/smart-configuration</code>.</li>
+    <li>Appen skickar användaren till <code>authorization_endpoint</code> med <code>client_id</code>, önskade
+      <code>scope</code>, <code>redirect_uri</code>, <code>state</code>, <code>aud</code> (FHIR-basen) och en
+      PKCE-utmaning. Vid EHR launch skickas även <code>launch</code>.</li>
+    <li>Användaren loggar in och godkänner. Auktorisationsservern skickar tillbaka en kod.</li>
+    <li>Appen växlar koden mot en token på <code>token_endpoint</code>.</li>
+    <li>Svaret innehåller <code>access_token</code>, beviljade <code>scope</code>, giltighetstid och kontext som
+      <code>patient</code> och <code>encounter</code>, och vid OpenID Connect en <code>id_token</code> med
+      <code>fhirUser</code>.</li>
+    <li>Appen anropar FHIR-API:t med <code>Authorization: Bearer …</code>.</li>
+  </ol>
+  <p>PKCE med <code>S256</code> krävs i SMART v2. Det skyddar mot att en avlyssnad kod används av någon annan, även för
+    appar som inte kan hålla en hemlighet.</p>
+
+  <h3>Scopes</h3>
+  <p>Ett scope säger vilken sorts data, i vilken kontext och med vilka rättigheter:</p>
+  <pre><code>patient/Observation.rs     <span class="c"># läsa och söka observationer för patienten i kontexten</span>
+user/Encounter.cruds       <span class="c"># allt användaren själv har behörighet till</span>
+system/Patient.rs          <span class="c"># system till system (Backend Services)</span>
+patient/Observation.rs?category=http://terminology.hl7.org/CodeSystem/observation-category|laboratory</code></pre>
+  <p>Bokstäverna i v2 betyder <strong>c</strong>reate, <strong>r</strong>ead, <strong>u</strong>pdate,
+    <strong>d</strong>elete och <strong>s</strong>earch. SMART v1 använde <code>.read</code> och <code>.write</code>, som
+    fortfarande förekommer. Det sista exemplet är ett <em>granulärt</em> scope som begränsar till en kategori med
+    sökparametrar. Till det kommer kontext-scopes: <code>launch</code>, <code>launch/patient</code>,
+    <code>openid</code>, <code>fhirUser</code> och <code>offline_access</code> för refresh tokens.</p>
+  <p>Auktorisationsservern kan bevilja färre scopes än appen bad om. Appen måste läsa vad den faktiskt fick.</p>
+
+  <h3>Klienttyper och Backend Services</h3>
+  <p><strong>Publika klienter</strong>, som webbappar i webbläsaren och mobilappar, kan inte hålla en hemlighet och
+    förlitar sig på PKCE. <strong>Konfidentiella klienter</strong> kan autentisera sig. SMART v2 rekommenderar
+    <em>asymmetrisk</em> autentisering: klienten signerar en kortlivad JWT med sin privata nyckel, och servern kontrollerar
+    den mot klientens publicerade publika nycklar (JWKS).</p>
+  <p>Backend Services använder samma mekanism med OAuth-flödet <code>client_credentials</code>:</p>
+  <pre><code>POST /token
+grant_type=client_credentials
+&amp;scope=system/Encounter.rs
+&amp;client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+&amp;client_assertion=eyJhbGciOiJSUzM4NCIs…   <span class="c"># signerad JWT</span></code></pre>
+
+  <h3>Resursservern och tokens</h3>
+  <p>FHIR-servern behöver kontrollera varje token: signatur, utfärdare, giltighetstid och målgrupp, eller fråga
+    auktorisationsservern med <em>token introspection</em>. Därefter översätts scopes till regler, som i kursens
+    <code>DemoAuthorizationInterceptor</code>. Den saknar just det viktigaste: tokens som är utfärdade och signerade av en
+    riktig auktorisationsserver.</p>
+
+  <h3>SMART i svensk vård</h3>
+  <p>SMART beskriver mekanismen men inte vem som får se vad. I svensk vård styrs behörighet också av patientdatalagen:
+    vårdrelation, medarbetaruppdrag (i HSA), spärrar, samtycke och sammanhållen journalföring. Identiteter för personal
+    bygger ofta på SITHS. En SMART-lösning måste därför kopplas till de nationella tjänsterna för identitet och
+    behörighet. Specifikationen ger ramen, men regelverket och infrastrukturen står för innehållet.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/">SMART App Launch</a><span class="om">Specifikationen, version 2.</span></li>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/app-launch.html">App Launch: Launch and Authorization</a><span class="om">Hela flödet med exempel på anrop och svar.</span></li>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/scopes-and-launch-context.html">Scopes and Launch Context</a><span class="om">All scope-syntax, inklusive granulära scopes.</span></li>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/backend-services.html">Backend Services</a><span class="om">System till system med signerade JWT.</span></li>
+      <li><a href="https://hl7.org/fhir/smart-app-launch/conformance.html">Conformance</a><span class="om"><code>.well-known/smart-configuration</code> och alla capabilities.</span></li>
+      <li><a href="https://launch.smarthealthit.org/">SMART App Launcher</a><span class="om">Simulera en journal och starta din egen app mot testdata.</span></li>
+      <li><a href="https://docs.smarthealthit.org/">SMART Health IT</a><span class="om">Bibliotek, exempelappar och handledningar.</span></li>
+      <li><a href="https://www.rfc-editor.org/rfc/rfc6749">OAuth 2.0 (RFC 6749)</a> och <a href="https://www.rfc-editor.org/rfc/rfc7636">PKCE (RFC 7636)</a><span class="om">Grundstandarderna SMART bygger på.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= D FML ================= -->
+<section class="kapitel" id="fml" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">D</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 5</p>
+      <h2>FHIR Mapping Language och StructureMap</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">FML beskriver hur data i en struktur översätts till en annan, som text. Mappningen kompileras till
+    resursen <code>StructureMap</code> och kan publiceras i en IG, versionshanteras och köras av en FML-motor.</p>
+
+  <h3>Delarna i en mappning</h3>
+  <pre><code><span class="k">map</span> <span class="s">"http://example.org/fhir/education/StructureMap/JournalPatientTillFhir"</span> = <span class="s">"JournalPatientTillFhir"</span>
+
+<span class="k">conceptmap</span> <span class="s">"kon"</span> { … }                                   <span class="c">// inbäddad kodöversättning</span>
+
+<span class="k">uses</span> <span class="s">"…/StructureDefinition/JournalPatient"</span> <span class="k">alias</span> JournalPatient <span class="k">as source</span>
+<span class="k">uses</span> <span class="s">"http://hl7.org/fhir/StructureDefinition/Patient"</span> <span class="k">alias</span> Patient <span class="k">as target</span>
+
+<span class="k">group</span> JournalPatientTillFhir(<span class="k">source</span> src : JournalPatient, <span class="k">target</span> tgt : Patient) {
+  <span class="c">// regler</span>
+}</code></pre>
+  <ul>
+    <li><code>map</code> ger mappningen en canonical URL och ett namn.</li>
+    <li><code>uses</code> pekar ut strukturerna. Utöver <code>source</code> och <code>target</code> finns
+      <code>queried</code> (data som slås upp) och <code>produced</code> (resurser som skapas vid sidan om).</li>
+    <li><code>imports</code> tar in grupper från andra mappningar. Så kan stora mappningar delas upp.</li>
+    <li><code>group</code> är en funktion med in- och utdata. En grupp kan anropa andra grupper och ärva med <code>extends</code>.</li>
+  </ul>
+
+  <h3>Regler</h3>
+  <p>En regel har formen <em>källa</em> <code>-&gt;</code> <em>mål</em> <em>beroenden</em> <code>"namn";</code>.</p>
+  <pre><code><span class="c">// Kopiera ett värde</span>
+src.fodelsedatum <span class="k">as</span> fd -&gt; tgt.birthDate = fd <span class="s">"fodelsedatum"</span>;
+
+<span class="c">// Skapa ett element och sätt flera värden</span>
+src.telefon <span class="k">as</span> tel -&gt; tgt.telecom <span class="k">as</span> t, t.system = <span class="s">'phone'</span>, t.value = tel <span class="s">"telefon"</span>;
+
+<span class="c">// Inre regler i samma mål</span>
+src -&gt; tgt.name <span class="k">as</span> namn, namn.use = <span class="s">'official'</span> <span class="k">then</span> {
+  src.efternamn <span class="k">as</span> e -&gt; namn.family = e <span class="s">"efternamn"</span>;
+} <span class="s">"namn"</span>;
+
+<span class="c">// Villkor i FHIRPath, och ett anrop till en annan grupp</span>
+src.besok <span class="k">as</span> b <span class="k">where</span> (status = <span class="s">'AVSL'</span>) -&gt; tgt.entry <span class="k">as</span> e <span class="k">then</span> BesokTillEntry(b, e) <span class="s">"avslutade"</span>;</code></pre>
+  <p>Källan kan också ha typ och kardinalitet, ett standardvärde (<code>default</code>), ett listläge
+    (<code>first</code>, <code>last</code>, <code>only_one</code> …), ett villkor (<code>where</code>), en kontroll som ger
+    fel om den inte uppfylls (<code>check</code>) och loggning (<code>log</code>). En regel utan matchande källa gör
+    ingenting. Därför skapar telefonregeln inget <code>telecom</code> för en patient utan telefonnummer.</p>
+
+  <h3>Transformer</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Transform</th><th>Gör</th></tr></thead>
+    <tbody>
+      <tr><td><code>copy</code> (eller bara <code>= v</code>)</td><td class="bryt">Kopierar ett värde</td></tr>
+      <tr><td><code>create('Typ')</code></td><td class="bryt">Skapar ett nytt objekt av en viss typ</td></tr>
+      <tr><td><code>translate(v, map, 'code')</code></td><td class="bryt">Översätter en kod med en ConceptMap. Utdata kan vara <code>code</code>, <code>coding</code> eller <code>CodeableConcept</code></td></tr>
+      <tr><td><code>append(a, b)</code>, <code>truncate(v, n)</code></td><td class="bryt">Strängar. Kursen bygger <code>Patient/…</code>-referenser med <code>append</code></td></tr>
+      <tr><td><code>cast</code>, <code>dateOp</code></td><td class="bryt">Typomvandling och datumberäkning</td></tr>
+      <tr><td><code>evaluate(v, uttryck)</code></td><td class="bryt">Kör ett FHIRPath-uttryck</td></tr>
+      <tr><td><code>uuid()</code>, <code>reference(v)</code></td><td class="bryt">Nya id:n och referenser till skapade resurser</td></tr>
+      <tr><td><code>c</code>, <code>cc</code>, <code>qty</code>, <code>id</code>, <code>cp</code></td><td class="bryt">Bygger Coding, CodeableConcept, Quantity, Identifier och ContactPoint</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Logiska modeller för källan</h3>
+  <p>En FML-motor måste känna till strukturen den läser. Källan beskrivs med en <strong>logisk modell</strong>, en
+    StructureDefinition med <code>kind = logical</code>. Den kan skrivas i FSH:</p>
+  <pre><code><span class="k">Logical:</span> JournalPatient
+<span class="k">Id:</span> JournalPatient
+<span class="k">Title:</span> <span class="s">"Journalsystemets patient"</span>
+* personnummer 1..1 string <span class="s">"Personnummer"</span>
+* fornamn 0..1 string <span class="s">"Förnamn"</span>
+* kon 0..1 string <span class="s">"Kön: M (man) eller K (kvinna)"</span>
+* telefon 0..1 string <span class="s">"Telefonnummer"</span></code></pre>
+  <p>Den logiska modellen är också dokumentation: den beskriver källsystemets data för informatiker och kan publiceras i
+    en IG bredvid mappningen.</p>
+
+  <h3>Motorer och verktyg</h3>
+  <ul>
+    <li><strong>HL7:s Java-bibliotek</strong> (<code>org.hl7.fhir.core</code>) innehåller referensmotorn. Kursens fasad
+      använder den. Den finns också i FHIR Validator, som kan köra en mappning från kommandoraden.</li>
+    <li><strong>Matchbox</strong> är en server byggd på HAPI som kör mappningar med operationen
+      <code>StructureMap/$transform</code> och kan validera resultatet direkt.</li>
+    <li><strong>IG Publisher</strong> kan publicera mappningar och logiska modeller som läsbara sidor i en IG.</li>
+    <li>Stödet i andra motorer varierar. Kontrollera vilken FHIR-version och vilka transformer de stöder.</li>
+  </ul>
+  <p>Ett par saker är bra att veta från kursens fasad. R4-tolken kräver att <code>conceptmap</code> står före
+    <code>uses</code>, och koder med bindestreck måste citeras (<code>t:"in-progress"</code>). FML har utvecklats mellan
+    R4 och R5, så exempel från nyare dokumentation fungerar inte alltid i en R4-motor.</p>
+
+  <h3>Användningsområden och alternativ</h3>
+  <p>FML används för fasader som kursens, för konvertering från CDA och HL7 v2, för konvertering mellan FHIR-versioner och
+    för att skapa resurser ur ifyllda formulär (<em>StructureMap-based extraction</em> i SDC). Alternativ är vanlig kod,
+    mallar som Liquid (Microsofts FHIR Converter), Googles Whistle och mappningsverktyg i integrationsplattformar.
+    FML passar bäst när mappningen ska kunna granskas av fler än utvecklare och när den ska publiceras som en del av en
+    specifikation.</p>
+
+  <h3>Testa mappningar</h3>
+  <p>Behandla en mappning som kod. Ha exempel på källdata och förväntat resultat, kör dem automatiskt och validera
+    resultatet mot profilen. Kursens <code>FmlMotorTest</code> gör det. Lägg kodöversättningar som behöver förvaltas
+    separat i fristående ConceptMap-resurser i stället för inbäddade, så att terminologiförvaltningen kan äga dem.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/mapping-language.html">FHIR Mapping Language (R4)</a><span class="om">Specifikationen, med grammatik och alla transformer.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/mapping-tutorial.html">Mapping Language Tutorial</a><span class="om">Stegvis genomgång från enkla till avancerade mappningar.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/structuremap.html">StructureMap</a><span class="om">Resursen som FML kompileras till.</span></li>
+      <li><a href="https://github.com/ahdis/matchbox">Matchbox</a><span class="om">Server för mappning och validering, med dokumentation och exempel.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/sdc/extraction.html">SDC: Form Data Extraction</a><span class="om">Hur ifyllda formulär blir resurser, bland annat med StructureMap.</span></li>
+      <li><a href="https://github.com/oskthu2/fhireducation/blob/main/hapi-fasad/src/main/resources/fml/README.md">Kursens mappningar</a><span class="om"><code>patient.map</code>, <code>besok.map</code> och de logiska modellerna.</span></li>
+      <li><a href="https://chat.fhir.org/">chat.fhir.org</a><span class="om">Frågor om FML ställs i kanalen <code>#mapping-framework</code>.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= E TERMINOLOGI ================= -->
+<section class="kapitel" id="terminologi" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">E</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 1–3</p>
+      <h2>Terminologi och terminologitjänster</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">Strukturen i en resurs är bara halva interoperabiliteten. Den andra halvan är att koderna betyder
+    samma sak hos avsändare och mottagare. FHIR har fyra resurser och en uppsättning operationer för det.</p>
+
+  <h3>De fyra terminologiresurserna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Resurs</th><th>Beskriver</th></tr></thead>
+    <tbody>
+      <tr><td><code>CodeSystem</code></td><td class="bryt">Ett kodsystem med begrepp, beteckningar och hierarki. Stora externa kodsystem som SNOMED CT representeras ofta bara med metadata (<code>content = not-present</code>) och hanteras av en terminologiserver</td></tr>
+      <tr><td><code>ValueSet</code></td><td class="bryt">Ett urval koder för ett visst syfte, hämtade från ett eller flera kodsystem</td></tr>
+      <tr><td><code>ConceptMap</code></td><td class="bryt">Översättningar mellan kodsystem med angiven ekvivalens: <code>equivalent</code>, <code>wider</code>, <code>narrower</code> …</td></tr>
+      <tr><td><code>NamingSystem</code></td><td class="bryt">Registrerar identiteter för kodsystem och identifierarsystem, till exempel både URI och OID</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Definition och expansion</h3>
+  <p>Ett ValueSet har två former. <strong>Definitionen</strong> (<code>compose</code>) består av regler: ta med de här
+    koderna, alla koder i det här kodsystemet, eller alla undertyper till ett begrepp. <strong>Expansionen</strong> är den
+    beräknade listan vid en viss tidpunkt och med vissa kodsystemsversioner. Samma definition kan ge olika expansioner när
+    kodsystemet uppdateras.</p>
+  <pre><code><span class="k">ValueSet:</span> AstmaDiagnoserVS
+* include codes from system http://snomed.info/sct
+    where concept is-a #195967001 <span class="s">"Asthma"</span></code></pre>
+  <p>För SNOMED CT kan reglerna även skrivas i ECL (Expression Constraint Language), som kan uttrycka mer än
+    <code>is-a</code>, till exempel begrepp med en viss fyndplats.</p>
+
+  <h3>Operationerna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Operation</th><th>Fråga den besvarar</th></tr></thead>
+    <tbody>
+      <tr><td><code>ValueSet/$expand</code></td><td class="bryt">Vilka koder ingår? Med <code>filter=ast</code> blir den sökfunktion bakom en rullista</td></tr>
+      <tr><td><code>$validate-code</code></td><td class="bryt">Finns koden i ValueSet:et eller kodsystemet, och stämmer display-texten?</td></tr>
+      <tr><td><code>CodeSystem/$lookup</code></td><td class="bryt">Vad betyder koden? Beteckningar, egenskaper, föräldrar</td></tr>
+      <tr><td><code>CodeSystem/$subsumes</code></td><td class="bryt">Är begrepp A en undertyp till begrepp B?</td></tr>
+      <tr><td><code>ConceptMap/$translate</code></td><td class="bryt">Vilken kod motsvarar den här i ett annat kodsystem?</td></tr>
+    </tbody>
+  </table></div>
+  <p>Det är dessa operationer validatorn anropar när den kontrollerar bindningar. Vilken terminologiserver som används
+    påverkar därför valideringsresultatet direkt.</p>
+
+  <h3>Kodsystem du möter</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Kodsystem</th><th>Används till</th><th>URI i FHIR</th></tr></thead>
+    <tbody>
+      <tr><td>SNOMED CT</td><td class="bryt">Klinisk terminologi: fynd, diagnoser, åtgärder, anatomi</td><td><code>http://snomed.info/sct</code></td></tr>
+      <tr><td>ICD-10 och ICD-10-SE</td><td class="bryt">Klassifikation av diagnoser för statistik och ersättning</td><td><code>http://hl7.org/fhir/sid/icd-10</code> för WHO-versionen</td></tr>
+      <tr><td>KVÅ</td><td class="bryt">Klassifikation av vårdåtgärder</td><td>Nationellt definierad</td></tr>
+      <tr><td>ATC</td><td class="bryt">Läkemedelsgrupper</td><td><code>http://www.whocc.no/atc</code></td></tr>
+      <tr><td>NPU och LOINC</td><td class="bryt">Laboratorieanalyser. NPU är vanligt i Norden, LOINC internationellt</td><td><code>http://loinc.org</code> för LOINC</td></tr>
+      <tr><td>UCUM</td><td class="bryt">Måttenheter i <code>Quantity</code></td><td><code>http://unitsofmeasure.org</code></td></tr>
+    </tbody>
+  </table></div>
+  <p>Socialstyrelsen förvaltar SNOMED CT i Sverige, liksom ICD-10-SE och KVÅ. Sverige är medlem i SNOMED International,
+    så SNOMED CT kan användas utan licensavgift i Sverige, men licensvillkoren gäller fortfarande. Den svenska utgåvan har
+    svenska beteckningar och nationella tillägg. När version spelar roll anges den med utgåvans modul-id i
+    <code>Coding.version</code>.</p>
+
+  <h3>Terminologiservrar</h3>
+  <p><strong>tx.fhir.org</strong> är HL7:s server för IG Publisher och validatorn. Den är avsedd för utveckling och test, inte
+    för produktion. <strong>Ontoserver</strong> (CSIRO) används som nationell terminologiserver i flera länder.
+    <strong>Snowstorm</strong> från SNOMED International är inriktad på SNOMED CT och har ett FHIR-API. HAPI JPA Server
+    har grundläggande terminologistöd. För validering i produktion bör du använda den server som har de nationella
+    kodsystemen och ValueSets, och ange den i kravställningen.</p>
+
+  <h3>Råd vid bindning</h3>
+  <ul>
+    <li>Återanvänd nationella och internationella ValueSets när de finns. Varje egen lista är en lista att förvalta.</li>
+    <li>Välj styrka efter vad mottagaren behöver. <code>required</code> på en lista som kan växa gör att varje ny kod kräver en ny version av IG:n.</li>
+    <li>Skicka gärna både kod och <code>text</code>. Texten behåller det användaren faktiskt valde eller skrev.</li>
+    <li>Översätt med ConceptMap och skicka gärna både källkoden och den översatta koden i samma CodeableConcept.</li>
+    <li>Tänk på display: validatorn kan klaga om display inte stämmer med kodsystemet, på det språk servern känner till.</li>
+  </ul>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/terminology-module.html">Terminology Module</a><span class="om">Översikt över terminologi i FHIR.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/terminology-service.html">Terminology Service</a><span class="om">Operationerna och hur en terminologiserver ska bete sig.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/valueset.html">ValueSet</a>, <a href="https://hl7.org/fhir/R4/codesystem.html">CodeSystem</a> och <a href="https://hl7.org/fhir/R4/conceptmap.html">ConceptMap</a><span class="om">Resurserna i detalj.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/snomedct.html">Using SNOMED CT with HL7 FHIR</a><span class="om">URI:er, versioner, ECL och implicita ValueSets.</span></li>
+      <li><a href="https://terminology.hl7.org/">HL7 Terminology (THO)</a><span class="om">HL7:s egna kodsystem och ValueSets, till exempel v3-ActCode som kursen använder.</span></li>
+      <li><a href="https://www.socialstyrelsen.se/">Socialstyrelsen</a><span class="om">Svensk förvaltning av SNOMED CT, ICD-10-SE, KVÅ och nationell informationsstruktur.</span></li>
+      <li><a href="https://tx.fhir.org/">tx.fhir.org</a><span class="om">Prova operationerna direkt i webbläsaren.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= F FÖRVALTNING ================= -->
+<section class="kapitel" id="forvaltning" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">F</div>
+    <div>
+      <p class="eyebrow">Fördjupning · fortsättning på modul 2 och 6</p>
+      <h2>IG-förvaltning, paket och versioner</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">En IG lever längre än projektet som skrev den. Den här delen handlar om hur FHIR och IG:er versioneras,
+    hur ändringar påverkar dem som implementerat, och vad som krävs för att förvalta en IG över tid.</p>
+
+  <h3>FHIR-versionerna</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Version</th><th>År</th><th>Kommentar</th></tr></thead>
+    <tbody>
+      <tr><td>R4 (4.0.1)</td><td>2019</td><td class="bryt">Första versionen med normativa delar, bland annat Patient och datatyperna. Mest använd i dag, och den kursen bygger på</td></tr>
+      <tr><td>R4B (4.3.0)</td><td>2022</td><td class="bryt">Mindre uppdatering av främst läkemedels- och evidensresurser</td></tr>
+      <tr><td>R5 (5.0.0)</td><td>2023</td><td class="bryt">Bland annat ämnesbaserade subscriptions och förändringar i flera resurser</td></tr>
+      <tr><td>R6</td><td>under arbete</td><td class="bryt">Siktar på att göra betydligt fler resurser normativa</td></tr>
+    </tbody>
+  </table></div>
+  <p>De flesta nationella och europeiska IG:er bygger fortfarande på R4. Behöver en R4-IG något som finns först i R5 finns
+    <em>cross-version extensions</em> som uttrycker R5-element i R4.</p>
+
+  <h3>IG:ns version och paket</h3>
+  <p>En IG har ett paket-id och en version enligt semantisk versionering: <code>major.minor.patch</code>. Paketet laddas upp
+    till FHIR:s paketregister. Därifrån hämtar SUSHI, IG Publisher, validatorn och servrar det som beroende.</p>
+  <ul>
+    <li>Ange beroenden med exakt version. <code>hl7se.fhir.base: 1.1.0</code>, inte "senaste".</li>
+    <li>En canonical URL är stabil över versioner. Versionen anges med <code>|</code> när det behövs:
+      <code>…/StructureDefinition/SEBasePatient|1.1.0</code>.</li>
+    <li>HL7:s IG:er byggs kontinuerligt på <a href="https://build.fhir.org/ig/">build.fhir.org</a> vid varje incheckning
+      och publiceras formellt på hl7.org med en historiksida över alla versioner. Kursens repo fungerar på samma sätt i
+      liten skala.</li>
+  </ul>
+
+  <h3>Vad som bryter för implementatörer</h3>
+  <div class="tabell"><table>
+    <thead><tr><th>Ändring</th><th>Påverkar</th></tr></thead>
+    <tbody>
+      <tr><td class="bryt">Kardinalitet <code>0..1</code> till <code>1..1</code></td><td class="bryt">Avsändare som inte skickar elementet blir ogiltiga</td></tr>
+      <tr><td class="bryt">Ny kod i en <code>required</code>-bindning</td><td class="bryt">Mottagare som inte känner till koden</td></tr>
+      <tr><td class="bryt">Borttagen kod eller snävare ValueSet</td><td class="bryt">Avsändare som använde koden</td></tr>
+      <tr><td class="bryt">Nytt Must Support-element</td><td class="bryt">Både avsändare och mottagare får nya skyldigheter</td></tr>
+      <tr><td class="bryt">Ny invariant med <code>error</code></td><td class="bryt">Data som tidigare var giltig kan bli ogiltig</td></tr>
+      <tr><td class="bryt">Ny valfri extension eller nytt exempel</td><td class="bryt">Normalt ingen</td></tr>
+    </tbody>
+  </table></div>
+  <p>Bryt aldrig bakåtkompatibiliteten i en patch-version. Samla brytande ändringar i nya major-versioner, och
+    beskriv dem i versionsnyheter med migreringsråd.</p>
+
+  <h3>God förvaltning</h3>
+  <ul>
+    <li><strong>Ärendehantering</strong>: synpunkter och ändringsförslag registreras och besvaras öppet, som i HL7:s Jira.</li>
+    <li><strong>Kvalitet</strong>: noll fel i <code>qa.html</code>, motiverade undantag för varningar och minst ett exempel per profil.</li>
+    <li><strong>Automatiskt bygge</strong> vid varje ändring, och tester av exempel som ska fallera.</li>
+    <li><strong>Granskning</strong> av ändringar innan de slås ihop, med både informatiker och utvecklare.</li>
+    <li><strong>Remiss</strong> (<em>ballot</em>) av större versioner innan de fastställs.</li>
+    <li><strong>Livscykel</strong>: status <code>draft</code>, <code>active</code> och <code>retired</code> på IG:n och på enskilda resurser.</li>
+  </ul>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/versions.html">Managing Multiple FHIR Versions</a><span class="om">Versionspolicy, normativa delar och kompatibilitet.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/versioning.html">Versioning</a><span class="om">Hur canonical URL:er och versioner refereras.</span></li>
+      <li><a href="https://registry.fhir.org/">FHIR Package Registry</a><span class="om">Sök paket och versioner.</span></li>
+      <li><a href="https://build.fhir.org/ig/">build.fhir.org/ig</a><span class="om">Kontinuerliga byggen av IG:er under arbete.</span></li>
+      <li><a href="https://confluence.hl7.org/display/FHIR/IG+Publisher+Documentation">IG Publisher Documentation</a><span class="om">Allt om IG Publisher, mallar och parametrar.</span></li>
+      <li><a href="https://hl7.se/">HL7 Sverige</a><span class="om">Svenska basprofiler, arbetsgrupper och förvaltning.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= G IHE ================= -->
+<section class="kapitel" id="ihe" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">G</div>
+    <div>
+      <p class="eyebrow">Fördjupning · sammanhanget</p>
+      <h2>IHE, Sverige och Europa</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">FHIR används sällan ensamt. IHE-profiler beskriver hur FHIR används i vanliga integrationsscenarier,
+    och svenska och europeiska initiativ avgör vilka profiler och kodverk som gäller här.</p>
+
+  <h3>IHE-profiler över FHIR</h3>
+  <p>IHE (Integrating the Healthcare Enterprise) skriver <em>integrationsprofiler</em> som beskriver aktörer, transaktioner
+    och krav för ett visst problem, ovanpå standarder som FHIR. Profilerna testas på IHE:s connectathons.</p>
+  <div class="tabell"><table>
+    <thead><tr><th>Profil</th><th>Löser</th><th>FHIR-resurser</th></tr></thead>
+    <tbody>
+      <tr><td>PDQm</td><td class="bryt">Sök patient på demografi</td><td class="bryt"><code>Patient</code>, <code>$match</code></td></tr>
+      <tr><td>PIXm</td><td class="bryt">Koppla ihop en patients identiteter i olika system</td><td class="bryt"><code>Patient</code>, <code>$ihe-pix</code></td></tr>
+      <tr><td>PMIR</td><td class="bryt">Gemensamt patientregister med uppdateringar</td><td class="bryt"><code>Patient</code>, meddelanden</td></tr>
+      <tr><td>MHD</td><td class="bryt">Dela dokument, även som FHIR-gränssnitt mot XDS</td><td class="bryt"><code>DocumentReference</code>, <code>List</code></td></tr>
+      <tr><td>mCSD</td><td class="bryt">Katalog över vårdgivare, enheter och personal</td><td class="bryt"><code>Organization</code>, <code>Location</code>, <code>PractitionerRole</code></td></tr>
+      <tr><td>IUA</td><td class="bryt">OAuth-tokens i vårdintegrationer</td><td class="bryt">Kompletterar SMART</td></tr>
+      <tr><td>BALP</td><td class="bryt">Åtkomstloggning enligt gemensamma mönster</td><td class="bryt"><code>AuditEvent</code></td></tr>
+      <tr><td>SVCM</td><td class="bryt">Dela kodverk och ValueSets</td><td class="bryt"><code>CodeSystem</code>, <code>ValueSet</code></td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Sverige</h3>
+  <ul>
+    <li><strong>HL7 Sverige</strong> förvaltar de svenska basprofilerna och samlar arbetsgrupper för svenska behov.</li>
+    <li><strong>Inera</strong> driver nationella e-tjänster och infrastruktur, bland annat HSA-katalogen och
+      tjänsteplattformen. Mycket nationellt informationsutbyte bygger i dag på tjänstekontrakt enligt RIV Tekniska
+      Anvisningar, och FHIR införs successivt. Ineras mall för IG:er är förebilden för kursens repo.</li>
+    <li><strong>Socialstyrelsen</strong> förvaltar terminologi och nationell informationsstruktur (kapitel <a href="#terminologi">E</a>).</li>
+    <li><strong>E-hälsomyndigheten</strong> ansvarar bland annat för e-recept och nationell kontaktpunkt för gränsöverskridande utbyte inom EU.</li>
+  </ul>
+  <p>Identifierare som återkommer: personnummer, samordningsnummer, nationella och lokala reservnummer, och HSA-id för
+    enheter och personal. HL7 Sveriges basprofiler definierar hur de uttrycks i FHIR.</p>
+
+  <h3>Europa</h3>
+  <p>EU:s förordning om ett europeiskt hälsodataområde (EHDS) trädde i kraft 2025. Den ställer krav på att journalsystem
+    ska kunna utbyta prioriterade informationsmängder i ett gemensamt europeiskt format: patientöversikter, e-recept,
+    laboratorieresultat, medicinska bilder och utskrivningsunderlag. Kraven införs stegvis under åren kring
+    2029–2031.</p>
+  <p>Specifikationerna tas fram i det gemensamma EU-projektet Xt-EHR och bygger i stor utsträckning på FHIR och HL7 Europes
+    IG:er, med International Patient Summary som grund för patientöversikten. Den som arbetar med svenska
+    specifikationer bör följa HL7 Europes IG:er för Base, Laboratory, Hospital Discharge Report och Imaging.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://profiles.ihe.net/">IHE Profiles</a><span class="om">Alla IHE-profiler, med FHIR IG:er för ITI-domänen.</span></li>
+      <li><a href="https://profiles.ihe.net/ITI/PDQm/">PDQm</a>, <a href="https://profiles.ihe.net/ITI/MHD/">MHD</a>, <a href="https://profiles.ihe.net/ITI/mCSD/">mCSD</a> och <a href="https://profiles.ihe.net/ITI/BALP/">BALP</a><span class="om">De profiler som oftast nämns i svenska sammanhang.</span></li>
+      <li><a href="https://hl7.se/fhir/ig/base/">HL7 Sveriges basprofiler</a><span class="om">Svenska identifierare, namn och säkerhetsmärkning i FHIR.</span></li>
+      <li><a href="https://www.inera.se/">Inera</a><span class="om">Nationella tjänster och infrastruktur.</span></li>
+      <li><a href="https://hl7.eu/fhir/">HL7 Europe</a><span class="om">Europeiska IG:er som ligger till grund för EHDS-formatet.</span></li>
+      <li><a href="https://www.xt-ehr.eu/">Xt-EHR</a><span class="om">EU:s gemensamma projekt för EHDS-specifikationerna.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/ips/">International Patient Summary</a><span class="om">Grunden för den europeiska patientöversikten.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= H MER ================= -->
+<section class="kapitel" id="mer" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">H</div>
+    <div>
+      <p class="eyebrow">Fördjupning · utblick</p>
+      <h2>Mer i FHIR-världen</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <p class="ingress-kap">FHIR har vuxit långt utöver läsning och skrivning av enskilda resurser. Här är de områden som oftast
+    dyker upp i projekt och upphandlingar.</p>
+
+  <h3>Bulk Data</h3>
+  <p>För att hämta stora mängder data, till exempel alla patienter i en population för analys eller migrering, finns
+    operationen <code>$export</code>. Klienten startar exporten, servern arbetar asynkront, och klienten frågar efter status
+    tills filerna är klara. Resultatet är NDJSON, en resurs per rad, en fil per resurstyp. Exporten skyddas med SMART
+    Backend Services.</p>
+  <pre><code>GET [bas]/Group/diabetes-2026/$export?_type=Patient,Observation
+Prefer: respond-async
+<span class="c">→ 202 Accepted, Content-Location: [bas]/bulkstatus/abc123</span></code></pre>
+
+  <h3>Subscriptions</h3>
+  <p>I stället för att fråga en server om och om igen kan en klient prenumerera på händelser. R5 införde
+    <em>ämnesbaserade</em> subscriptions, där servern publicerar ämnen (<code>SubscriptionTopic</code>) som klienter kan
+    prenumerera på. Det finns en IG som för över modellen till R4.</p>
+
+  <h3>CDS Hooks</h3>
+  <p>CDS Hooks kopplar in beslutsstöd i journalen. Journalen anropar en extern tjänst vid bestämda tillfällen
+    (<em>hooks</em>), till exempel när en patientjournal öppnas eller en ordination ska signeras. Tjänsten svarar med
+    <em>kort</em>: information, förslag eller länkar till SMART-appar. FHIR-data skickas med i förväg
+    (<em>prefetch</em>) eller hämtas med en token.</p>
+
+  <h3>SQL on FHIR</h3>
+  <p>Analysverktyg vill ha tabeller, inte nästlade resurser. SQL on FHIR beskriver tabellvyer med resursen
+    <code>ViewDefinition</code>, där varje kolumn är ett FHIRPath-uttryck. Samma vy kan köras av olika motorer och ge
+    samma tabell, oavsett om data ligger i en FHIR-server, i NDJSON från en bulk-export eller i en datasjö.</p>
+
+  <h3>Formulär (SDC)</h3>
+  <p>Structured Data Capture bygger formulär på <code>Questionnaire</code> och svar på <code>QuestionnaireResponse</code>.
+    Formulär kan förifyllas med data från journalen, ha villkor och beräkningar i FHIRPath och omvandlas till resurser när de
+    skickas in, bland annat med FML (kapitel <a href="#fml">D</a>).</p>
+
+  <h3>Kliniska regler och kvalitetsmått</h3>
+  <p>FHIR:s Clinical Reasoning-modul och språket CQL används för att beskriva beslutsstöd, vårdriktlinjer
+    (<code>PlanDefinition</code>) och kvalitetsmått (<code>Measure</code>) så att de kan köras mot FHIR-data.</p>
+
+  <h3>Testdata</h3>
+  <p>Realistiska testdata behövs för utveckling, test och utbildning. <strong>Synthea</strong> genererar syntetiska patienter
+    med hela vårdhistorier i FHIR-format. Använd aldrig riktiga personuppgifter i testmiljöer, och kom ihåg att publika
+    testservrar som hapi.fhir.org är öppna för alla.</p>
+
+  <div class="vidare">
+    <h4>Läs vidare</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/uv/bulkdata/">Bulk Data Access</a><span class="om"><code>$export</code>, statusflödet och NDJSON.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/subscriptions-backport/">Subscriptions R5 Backport</a><span class="om">Ämnesbaserade subscriptions i R4.</span></li>
+      <li><a href="https://cds-hooks.hl7.org/">CDS Hooks</a><span class="om">Specifikationen, hooks och kort.</span></li>
+      <li><a href="https://sql-on-fhir.org/">SQL on FHIR</a><span class="om">ViewDefinition och implementationer.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/sdc/">Structured Data Capture</a><span class="om">Formulär, förifyllnad och extraktion.</span></li>
+      <li><a href="https://hl7.org/fhir/R4/clinicalreasoning-module.html">Clinical Reasoning</a><span class="om">Beslutsstöd och kvalitetsmått.</span></li>
+      <li><a href="https://synthetichealth.github.io/synthea/">Synthea</a><span class="om">Syntetiska patienter i FHIR-format.</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= I ORDLISTA ================= -->
+<section class="kapitel" id="ordlista" data-kapitel>
+  <div class="kap-huvud">
+    <div class="kap-nr" aria-hidden="true">I</div>
+    <div>
+      <p class="eyebrow">Referens</p>
+      <h2>Ordlista och länkar</h2>
+    </div>
+    <div class="verktyg"><button class="las-knapp" type="button" aria-pressed="false">Markera som läst</button></div>
+  </div>
+
+  <h3>Ordlista</h3>
+  <dl class="ordlista">
+    <dt>Bindning</dt><dd>Koppling mellan ett kodat element och ett ValueSet, med styrkan <code>required</code>, <code>extensible</code>, <code>preferred</code> eller <code>example</code>.</dd>
+    <dt>Bundle</dt><dd>En samling resurser: sökresultat, transaktion, dokument, meddelande eller historik.</dd>
+    <dt>Canonical URL</dt><dd>Global identitet för en konformitetsresurs, till exempel en profil eller ett ValueSet.</dd>
+    <dt>CapabilityStatement</dt><dd>Beskriver vad en server kan (<code>instance</code>), vad en produkt kan (<code>capability</code>) eller vad som krävs (<code>requirements</code>).</dd>
+    <dt>Compartment</dt><dd>Grupp av resurser som hör till samma patient, utövare eller vårdkontakt.</dd>
+    <dt>Differential</dt><dd>Det en profil ändrar jämfört med sin bas.</dd>
+    <dt>Diskriminator</dt><dd>Det validatorn använder för att avgöra vilken slice ett element hör till.</dd>
+    <dt>Extension</dt><dd>Standardiserat tillägg till en resurs eller datatyp, identifierat med en URL.</dd>
+    <dt>Fasad</dt><dd>FHIR-API ovanpå ett befintligt system, som översätter data vid varje anrop.</dd>
+    <dt>FHIRPath</dt><dd>Frågespråk för att navigera i resurser. Används i invarianter, sökparametrar och mappningar.</dd>
+    <dt>FML</dt><dd>FHIR Mapping Language. Textspråk för mappningar som kompileras till StructureMap.</dd>
+    <dt>FSH</dt><dd>FHIR Shorthand. Textspråk för profiler, terminologi och exempel. Kompileras med SUSHI.</dd>
+    <dt>IG</dt><dd>Implementation Guide. Profiler, terminologi, exempel och text, publicerat som webbplats och paket.</dd>
+    <dt>Invariant</dt><dd>Regel i FHIRPath som en instans måste uppfylla.</dd>
+    <dt>Logisk modell</dt><dd>StructureDefinition med <code>kind = logical</code>. Beskriver data som inte är FHIR, till exempel ett källsystem.</dd>
+    <dt>Must Support</dt><dd>Markering av element som system måste kunna hantera. Betydelsen definieras i varje IG.</dd>
+    <dt>OperationOutcome</dt><dd>Resurs med fel, varningar och information, till exempel från validering.</dd>
+    <dt>Paket</dt><dd>En IG:s konformitetsresurser i npm-format, identifierat med id och version.</dd>
+    <dt>Profil</dt><dd>StructureDefinition som begränsar en resurs eller datatyp för ett visst sammanhang.</dd>
+    <dt>Scope</dt><dd>Det en OAuth-token ger rätt till, till exempel <code>patient/Observation.rs</code>.</dd>
+    <dt>Slicing</dt><dd>Uppdelning av ett upprepande element i namngivna delar med egna regler.</dd>
+    <dt>SMART on FHIR</dt><dd>Standard för behörighet och appstart mot FHIR-API:er, byggd på OAuth 2.0 och OpenID Connect.</dd>
+    <dt>Snapshot</dt><dd>Den fullständiga strukturen i en profil: bas plus ändringar.</dd>
+    <dt>StructureMap</dt><dd>Resurs som beskriver en mappning mellan strukturer. Skrivs oftast i FML.</dd>
+    <dt>Terminologiserver</dt><dd>Server som besvarar frågor om kodsystem och ValueSets med operationer som <code>$expand</code> och <code>$validate-code</code>.</dd>
+    <dt>ValueSet</dt><dd>Urval koder från ett eller flera kodsystem, för ett visst syfte.</dd>
+  </dl>
+
+  <h3>Länksamling</h3>
+  <div class="vidare">
+    <h4>Specifikationer</h4>
+    <ul>
+      <li><a href="https://hl7.org/fhir/R4/">FHIR R4</a> · <a href="https://hl7.org/fhir/R5/">FHIR R5</a> · <a href="https://build.fhir.org/">Aktuellt bygge</a><span class="om">Specifikationen i den version kursen använder, nästa version och arbetsversionen.</span></li>
+      <li><a href="https://hl7.org/fhir/uv/shorthand/">FHIR Shorthand</a> · <a href="https://hl7.org/fhirpath/">FHIRPath</a> · <a href="https://hl7.org/fhir/smart-app-launch/">SMART App Launch</a><span class="om">Språken och säkerhetsstandarden från kursen.</span></li>
+    </ul>
+  </div>
+  <div class="vidare">
+    <h4>Verktyg</h4>
+    <ul>
+      <li><a href="https://fshschool.org/FSHOnline/">FSH Online</a> · <a href="https://fhirpath-lab.com/">FHIRPath Lab</a> · <a href="https://validator.fhir.org/">validator.fhir.org</a><span class="om">Prova i webbläsaren utan installation.</span></li>
+      <li><a href="https://hapifhir.io/">HAPI FHIR</a> · <a href="https://hapi.fhir.org/">HAPI testserver</a> · <a href="https://launch.smarthealthit.org/">SMART App Launcher</a><span class="om">Bibliotek, server och testmiljöer.</span></li>
+    </ul>
+  </div>
+  <div class="vidare">
+    <h4>Gemenskap och lärande</h4>
+    <ul>
+      <li><a href="https://chat.fhir.org/">chat.fhir.org</a><span class="om">FHIR-gemenskapens chatt. Sök innan du frågar: de flesta frågor har redan ställts.</span></li>
+      <li><a href="https://fshschool.org/">FSH School</a><span class="om">Kurser och handledningar i FSH och SUSHI.</span></li>
+      <li><a href="https://confluence.hl7.org/">HL7 Confluence</a><span class="om">Dokumentation om verktyg, connectathons och HL7:s arbetsprocesser.</span></li>
+      <li><a href="https://hl7.se/">HL7 Sverige</a><span class="om">Svenska arbetsgrupper, evenemang och basprofiler.</span></li>
+    </ul>
+  </div>
+</section>
+</main>
+</div>
+
+<footer class="slut">
+  <div class="wrap">
+    <span>Kursbok till endagskursen FHIR i praktiken · FHIR R4 (4.0.1)</span>
+    <span><a href="https://github.com/oskthu2/fhireducation/blob/main/README.md">Kursens repo</a> · <a href="#om">Till början</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // På GitHub Pages pekas länkarna om till deltagarens eget repo och egen IG.
+  var MALL_REPO = "https://github.com/oskthu2/fhireducation";
+  var MALL_PAGES = "https://oskthu2.github.io/fhireducation/";
+  var host = location.hostname;
+  var delar = location.pathname.split("/").filter(Boolean);
+  if (/\.github\.io$/.test(host) && delar.length > 0) {
+    var konto = host.split(".")[0];
+    var repo = delar[0];
+    var egetRepo = "https://github.com/" + konto + "/" + repo;
+    var egnaPages = "https://" + host + "/" + repo + "/";
+    document.querySelectorAll("a[href]").forEach(function (a) {
+      var h = a.getAttribute("href");
+      if (h.indexOf(MALL_REPO) === 0) a.setAttribute("href", egetRepo + h.slice(MALL_REPO.length));
+      else if (h.indexOf(MALL_PAGES) === 0) a.setAttribute("href", egnaPages + h.slice(MALL_PAGES.length));
+    });
+  }
+
+  // Innehållsförteckningen: öppen på stor skärm, hopfälld på mobil.
+  var toc = document.getElementById("toc-details");
+  var smal = window.matchMedia("(max-width: 960px)");
+  function anpassa() { toc.open = !smal.matches; }
+  anpassa();
+  if (smal.addEventListener) smal.addEventListener("change", anpassa);
+  toc.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () { if (smal.matches) toc.open = false; });
+  });
+
+  // Markera aktuellt kapitel i innehållsförteckningen.
+  var lankar = {};
+  toc.querySelectorAll('a[href^="#"]').forEach(function (a) { lankar[a.getAttribute("href").slice(1)] = a; });
+  var kapitel = Array.prototype.slice.call(document.querySelectorAll("[data-kapitel]"));
+  if ("IntersectionObserver" in window) {
+    var synliga = {};
+    var obs = new IntersectionObserver(function (poster) {
+      poster.forEach(function (p) { synliga[p.target.id] = p.isIntersecting; });
+      var aktiv = kapitel.find(function (k) { return synliga[k.id]; });
+      Object.keys(lankar).forEach(function (id) { lankar[id].removeAttribute("aria-current"); });
+      if (aktiv && lankar[aktiv.id]) lankar[aktiv.id].setAttribute("aria-current", "true");
+    }, { rootMargin: "-10% 0px -70% 0px" });
+    kapitel.forEach(function (k) { obs.observe(k); });
+  }
+
+  // "Markera som läst" sparas bara i din webbläsare.
+  var NYCKEL = "kursbok-last";
+  var last = {};
+  try { last = JSON.parse(localStorage.getItem(NYCKEL) || "{}") || {}; } catch (e) { last = {}; }
+  var framsteg = document.getElementById("framsteg");
+  function rita() {
+    var antal = 0;
+    kapitel.forEach(function (k) {
+      var ar = !!last[k.id];
+      if (ar) antal++;
+      var knapp = k.querySelector(".las-knapp");
+      if (knapp) {
+        knapp.setAttribute("aria-pressed", ar ? "true" : "false");
+        knapp.textContent = ar ? "✓ Läst" : "Markera som läst";
+      }
+      if (lankar[k.id]) lankar[k.id].classList.toggle("ar-last", ar);
+    });
+    framsteg.textContent = antal ? antal + " av " + kapitel.length + " kapitel lästa" : "";
+  }
+  kapitel.forEach(function (k) {
+    var knapp = k.querySelector(".las-knapp");
+    if (!knapp) return;
+    knapp.addEventListener("click", function () {
+      if (last[k.id]) delete last[k.id]; else last[k.id] = true;
+      try { localStorage.setItem(NYCKEL, JSON.stringify(last)); } catch (e) {}
+      rita();
+    });
+  });
+  rita();
+})();
+</script>
+</body>
+</html>

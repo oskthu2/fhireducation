@@ -6,6 +6,7 @@
 # Publicering (samma upplägg som Ineras IG-mall, via grenen gh-pages):
 #   huvudgrenen (main) -> https://<konto>.github.io/<repo>/
 #   facit-IG:n         -> https://<konto>.github.io/<repo>/facit/  (lösningen efter modul 6)
+#   kursboken          -> https://<konto>.github.io/<repo>/kursbok/ (kopieras från kursbok/)
 #   övriga grenar      -> publiceras inte, men den byggda IG:n kan laddas ner som artefakt.
 #
 # Facit-IG:n byggs bara när den saknas på GitHub Pages, när lösningen har ändrats eller vid manuell körning,
@@ -19,6 +20,7 @@ on:
       - '.env.fhir'
       - 'scripts/build-ig.sh'
       - 'kursmaterial/losningar/modul-6/**'
+      - 'kursbok/**'
       - '.github/workflows/build-ig.yml'
   workflow_dispatch:
 
@@ -93,6 +95,9 @@ jobs:
       - name: Kör IG Publisher (FHIR -> webbplats)
         run: ./scripts/build-ig.sh "$IG_FOLDER" --publisher-only
 
+      - name: Lägg till kursboken
+        run: cp -r kursbok "$IG_FOLDER/output/kursbok"
+
       - name: Ladda upp byggd IG som artefakt
         uses: actions/upload-artifact@v4
         with:
@@ -125,6 +130,7 @@ jobs:
                 echo "- 🌐 Publicerad IG: ${PAGES_URL} (det kan ta en minut innan sidan uppdateras)"
                 echo "- 🔎 Kvalitetsrapport (alla fel och varningar): ${PAGES_URL}qa.html"
                 echo "- ✅ Facit-IG (lösningen efter modul 6): ${PAGES_URL}facit/"
+                echo "- 📖 Kursbok: ${PAGES_URL}kursbok/"
               else
                 echo "- ℹ️ Grenen **${GITHUB_REF_NAME}** publiceras inte på GitHub Pages – bara huvudgrenen gör det."
               fi

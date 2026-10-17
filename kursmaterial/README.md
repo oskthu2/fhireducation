@@ -18,6 +18,9 @@ Den används i övning 2.1 och 4.0 för att läsa en profil i IG Publishers vyer
 
 Presentationen finns i [`presentation/FHIR-utbildning.pptx`](../presentation/README.md).
 
+**Kursbok:** fördjupande texter till varje modul, kontrollfrågor och länkar för egna studier finns i
+[`kursbok/`](../kursbok/README.md), publicerad på `https://<konto>.github.io/<repo>/kursbok/`.
+
 ## Förslag på schema
 
 | Tid | Innehåll |
