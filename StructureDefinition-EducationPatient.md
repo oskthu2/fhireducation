@@ -1,4 +1,4 @@
-# Education Patient - FHIR-utbildning – Kurs-IG v0.1.0
+# Education Patient - Oskars test-IG v0.1.0
 
 * [**Table of Contents**](toc.md)
 * [**Artifacts Summary**](artifacts.md)
@@ -9,7 +9,7 @@
 | | |
 | :--- | :--- |
 | *Official URL*:http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient | *Version*:0.1.0 |
-| Draft as of 2026-10-17 | *Computable Name*:EducationPatient |
+| Draft as of 2026-11-02 | *Computable Name*:EducationPatient |
 
  
 Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen. 
@@ -41,7 +41,7 @@ Other representations of profile: [CSV](StructureDefinition-EducationPatient.csv
   "name" : "EducationPatient",
   "title" : "Education Patient",
   "status" : "draft",
-  "date" : "2026-10-17T12:59:36+00:00",
+  "date" : "2026-11-02T08:15:40+00:00",
   "publisher" : "FHIR-utbildning",
   "description" : "Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen.",
   "jurisdiction" : [{

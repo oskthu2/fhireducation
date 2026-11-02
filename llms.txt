@@ -1,4 +1,4 @@
-# fhir.education.kursig#0.1.0: FHIR-utbildning – Kurs-IG
+# fhir.education.kursig#0.1.0: Oskars test-IG
 
 ## Pages
 
@@ -13,7 +13,7 @@
 
 ### ImplementationGuides
 
-* [FHIR-utbildning – Kurs-IG](index.md)
+* [Oskars test-IG](index.md)
 
 ### Examples
 

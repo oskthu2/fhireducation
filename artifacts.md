@@ -1,4 +1,4 @@
-# Artifacts Summary - FHIR-utbildning – Kurs-IG v0.1.0
+# Artifacts Summary - Oskars test-IG v0.1.0
 
 * [**Table of Contents**](toc.md)
 * **Artifacts Summary**

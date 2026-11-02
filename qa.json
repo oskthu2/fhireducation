@@ -1,13 +1,13 @@
 {
   "url" : "http://example.org/fhir/education/kursig/ImplementationGuide/fhir.education.kursig",
   "name" : "FhirEducationKursIG",
-  "title" : "FHIR-utbildning – Kurs-IG",
+  "title" : "Oskars test-IG",
   "description" : "En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen.",
   "status" : "draft",
   "package-id" : "fhir.education.kursig",
   "ig-ver" : "0.1.0",
-  "date" : "Sat, 17 Oct, 2026 12:59:36 +0000",
-  "dateISO8601" : "2026-10-17T12:59:36+00:00",
+  "date" : "Mon, 02 Nov, 2026 08:15:40 +0000",
+  "dateISO8601" : "2026-11-02T08:15:40+00:00",
   "errs" : 0,
   "warnings" : 9,
   "hints" : 5,
@@ -16,5 +16,5 @@
   "suppressed-warnings" : 0,
   "version" : "4.0.1",
   "tool" : "6.0.0-snapshot1 (3)",
-  "maxMemory" : 662597840
+  "maxMemory" : 838782976
 }
