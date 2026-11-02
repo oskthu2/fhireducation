@@ -11,7 +11,7 @@
   <name value="FhirEducationKursIG"/>
   <title value="Oskars test-IG"/>
   <status value="draft"/>
-  <date value="2026-11-02T10:49:29+00:00"/>
+  <date value="2026-11-02T12:31:12+00:00"/>
   <publisher value="FHIR-utbildning"/>
   <description value="En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen."/>
   <jurisdiction>
