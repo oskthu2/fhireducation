@@ -17,7 +17,7 @@
   fhir:StructureDefinition.name [ fhir:value "EducationPatient"] ;
   fhir:StructureDefinition.title [ fhir:value "Education Patient"] ;
   fhir:StructureDefinition.status [ fhir:value "draft"] ;
-  fhir:StructureDefinition.date [ fhir:value "2026-11-02T12:33:46+00:00"^^xsd:dateTime] ;
+  fhir:StructureDefinition.date [ fhir:value "2026-11-02T12:38:35+00:00"^^xsd:dateTime] ;
   fhir:StructureDefinition.publisher [ fhir:value "FHIR-utbildning"] ;
   fhir:StructureDefinition.description [ fhir:value "Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen."] ;
   fhir:StructureDefinition.jurisdiction [
@@ -156,7 +156,7 @@
          fhir:ElementDefinition.constraint.key [ fhir:value "edu-pat1" ] ;
          fhir:ElementDefinition.constraint.severity [ fhir:value "error" ] ;
          fhir:ElementDefinition.constraint.human [ fhir:value "Personnummer med 12 siffror" ] ;
-         fhir:ElementDefinition.constraint.expression [ fhir:value "identifier\n  .where(system = $personnummer)\n  .all(value.matches('^[0-9]{12}$'))" ] ;
+         fhir:ElementDefinition.constraint.expression [ fhir:value "identifier\n  .where(system = '$personnummer')\n  .all(value.matches('^[0-9]{12}$'))" ] ;
          fhir:ElementDefinition.constraint.source [
            fhir:value "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient" ;
            fhir:link <http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient>
@@ -3176,7 +3176,7 @@
          fhir:ElementDefinition.constraint.key [ fhir:value "edu-pat1" ] ;
          fhir:ElementDefinition.constraint.severity [ fhir:value "error" ] ;
          fhir:ElementDefinition.constraint.human [ fhir:value "Personnummer med 12 siffror" ] ;
-         fhir:ElementDefinition.constraint.expression [ fhir:value "identifier\n  .where(system = $personnummer)\n  .all(value.matches('^[0-9]{12}$'))" ] ;
+         fhir:ElementDefinition.constraint.expression [ fhir:value "identifier\n  .where(system = '$personnummer')\n  .all(value.matches('^[0-9]{12}$'))" ] ;
          fhir:ElementDefinition.constraint.source [
            fhir:value "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient" ;
            fhir:link <http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient>
