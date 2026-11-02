@@ -4,7 +4,7 @@
 id: fhir.education.kursig
 canonical: http://example.org/fhir/education/kursig
 name: FhirEducationKursIG
-title: FHIR-utbildning – Kurs-IG
+title: Oskars test-IG
 description: En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen.
 status: draft
 version: 0.1.0
