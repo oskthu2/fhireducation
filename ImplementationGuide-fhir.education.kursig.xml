@@ -11,7 +11,7 @@
   <name value="FhirEducationKursIG"/>
   <title value="Oskars test-IG"/>
   <status value="draft"/>
-  <date value="2026-11-02T08:15:40+00:00"/>
+  <date value="2026-11-02T10:49:29+00:00"/>
   <publisher value="FHIR-utbildning"/>
   <description value="En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen."/>
   <jurisdiction>
@@ -277,6 +277,16 @@
       </reference>
       <name value="Education Patient"/>
       <description value="Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen."/>
+      <exampleBoolean value="false"/>
+    </resource>
+    <resource>
+      <extension url="http://hl7.org/fhir/tools/StructureDefinition/resource-information">
+        <valueString value="StructureDefinition:resource"/>
+      </extension>
+      <reference>
+        <reference value="StructureDefinition/EducationEncounter"/>
+      </reference>
+      <name value="Min fina profil"/>
       <exampleBoolean value="false"/>
     </resource>
     <resource>

@@ -17,7 +17,7 @@
   fhir:ImplementationGuide.name [ fhir:value "FhirEducationKursIG"] ;
   fhir:ImplementationGuide.title [ fhir:value "Oskars test-IG"] ;
   fhir:ImplementationGuide.status [ fhir:value "draft"] ;
-  fhir:ImplementationGuide.date [ fhir:value "2026-11-02T08:15:40+00:00"^^xsd:dateTime] ;
+  fhir:ImplementationGuide.date [ fhir:value "2026-11-02T10:49:29+00:00"^^xsd:dateTime] ;
   fhir:ImplementationGuide.publisher [ fhir:value "FHIR-utbildning"] ;
   fhir:ImplementationGuide.description [ fhir:value "En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen."] ;
   fhir:ImplementationGuide.jurisdiction [
@@ -422,6 +422,19 @@
        fhir:ImplementationGuide.definition.resource.exampleBoolean [ fhir:value "false"^^xsd:boolean ]
      ], [
        fhir:index 1 ;
+       fhir:Element.extension [
+         fhir:index 0 ;
+         fhir:Extension.url [ fhir:value "http://hl7.org/fhir/tools/StructureDefinition/resource-information" ] ;
+         fhir:Extension.valueString [ fhir:value "StructureDefinition:resource" ]
+       ] ;
+       fhir:ImplementationGuide.definition.resource.reference [
+         fhir:link <http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter> ;
+         fhir:Reference.reference [ fhir:value "StructureDefinition/EducationEncounter" ]
+       ] ;
+       fhir:ImplementationGuide.definition.resource.name [ fhir:value "Min fina profil" ] ;
+       fhir:ImplementationGuide.definition.resource.exampleBoolean [ fhir:value "false"^^xsd:boolean ]
+     ], [
+       fhir:index 2 ;
        fhir:Element.extension [
          fhir:index 0 ;
          fhir:Extension.url [ fhir:value "http://hl7.org/fhir/tools/StructureDefinition/resource-information" ] ;

@@ -5,6 +5,12 @@
   "jurisdiction": "SE",
   "extensions": [],
   "profiles": {
+    "Encounter": [
+      {
+        "url": "http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter",
+        "title": "Min fina profil"
+      }
+    ],
     "Patient": [
       {
         "url": "http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient",

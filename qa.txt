@@ -1,16 +1,18 @@
 FhirEducationKursIG : Validation Results
 =========================================
 
-err = 0, warn = 9, info = 5, broken links = 0
+err = 0, warn = 11, info = 7, broken links = 0
 IG Publisher Version: 3.0.1
-Generated Mon Nov 02 08:16:40 UTC 2026. FHIR version 4.0.1 for fhir.education.kursig#0.1.0 (canonical = http://example.org/fhir/education/kursig)
- Build Errors : 0 / 8 / 0
+Generated Mon Nov 02 10:50:23 UTC 2026. FHIR version 4.0.1 for fhir.education.kursig#0.1.0 (canonical = http://example.org/fhir/education/kursig)
+ Build Errors : 0 / 9 / 0
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig : 0 / 0 / 3
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan : 0 / 1 / 1
- /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 0 / 0 / 4
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationEncounter : 0 / 1 / 4
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 0 / 0 / 3
 </table>
 
 == n/a ==
+WARNING: Unable to find ImplementationGuide.definition.resource.description for the resource StructureDefinition/EducationEncounter.  Descriptions are strongly encouraged if they cannot be inferred from the resource to allow proper population of the artifact list.
 WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</a>" expecting "</img>" at line 34 column 177
 WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 79 column 10
 WARNING: /home/runner/work/fhireducation/fhireducation/test-ig/output/searchform.html: The html source is not well formed: Found "</div>" expecting "</body>" at line 80 column 9
@@ -30,9 +32,15 @@ INFORMATION: Resource: The resource ImplementationGuide/fhir.education.kursig co
 WARNING: Patient/patient-tolvan: Patient.identifier[0].system: Ingen definition kunde hittas för URL-värdet 'http://electronichealth.se/identifier/personnummer'
 
 
+== fsh-generated/resources/StructureDefinition-EducationEncounter.json ==
+INFORMATION: StructureDefinition/EducationEncounter: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+INFORMATION: StructureDefinition/EducationEncounter: StructureDefinition.snapshot.element[4].binding.extension[0]: extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|5.4.0 är föråldrad med noteringen: 'Use additionalBinding extension or element instead'
+INFORMATION: Resource: The resource StructureDefinition/EducationEncounter could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
+WARNING: StructureDefinition.where(url = 'http://example.org/fhir/education/kursig/StructureDefinition/EducationEncounter'): The Implementation Guide contains no examples for this profile
+
+
 == fsh-generated/resources/StructureDefinition-EducationPatient.json ==
 INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
-INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.snapshot.element[4].binding.extension[0]: extension http://hl7.org/fhir/StructureDefinition/elementdefinition-maxValueSet|5.4.0 är föråldrad med noteringen: 'Use additionalBinding extension or element instead'
 INFORMATION: Resource: The resource StructureDefinition/EducationPatient could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
 
 

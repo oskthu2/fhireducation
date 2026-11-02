@@ -10,7 +10,7 @@
   "name" : "FhirEducationKursIG",
   "title" : "Oskars test-IG",
   "status" : "draft",
-  "date" : "2026-11-02T08:15:40+00:00",
+  "date" : "2026-11-02T10:49:29+00:00",
   "publisher" : "FHIR-utbildning",
   "description" : "En liten Implementation Guide som byggs upp steg för steg under FHIR-utbildningen.",
   "jurisdiction" : [{
@@ -366,6 +366,17 @@
       },
       "name" : "Education Patient",
       "description" : "Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för steg under kursen.",
+      "exampleBoolean" : false
+    },
+    {
+      "extension" : [{
+        "url" : "http://hl7.org/fhir/tools/StructureDefinition/resource-information",
+        "valueString" : "StructureDefinition:resource"
+      }],
+      "reference" : {
+        "reference" : "StructureDefinition/EducationEncounter"
+      },
+      "name" : "Min fina profil",
       "exampleBoolean" : false
     },
     {
