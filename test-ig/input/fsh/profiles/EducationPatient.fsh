@@ -18,3 +18,5 @@ Description: "Patientprofil för FHIR-utbildningen. Profilen byggs ut steg för 
 * name.given MS
 * gender MS
 * birthDate 1..1 MS
+
+* obeys edu-pat1
