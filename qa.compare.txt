@@ -1,14 +1,14 @@
 FhirEducationKursIG : Validation Results
 =========================================
 
-err = 0, warn = 11, info = 7, broken links = 0
+err = 2, warn = 11, info = 7, broken links = 0
 $--
 Generated $--. FHIR version $-- for fhir.education.kursig#$-- (canonical = http://example.org/fhir/education/kursig)
  Build Errors : 0 / 9 / 0
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/ImplementationGuide-fhir.education.kursig : 0 / 0 / 3
- /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan : 0 / 1 / 1
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/Patient-patient-tolvan : 1 / 1 / 1
  /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationEncounter : 0 / 1 / 4
- /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 0 / 0 / 3
+ /home/runner/work/fhireducation/fhireducation/test-ig/fsh-generated/resources/StructureDefinition-EducationPatient : 1 / 0 / 3
 </table>
 
 == n/a ==
@@ -30,6 +30,9 @@ INFORMATION: Resource: The resource ImplementationGuide/fhir.education.kursig co
 
 == fsh-generated/resources/Patient-patient-tolvan.json ==
 WARNING: Patient/patient-tolvan: Patient.identifier[0].system: Ingen definition kunde hittas för URL-värdet 'http://electronichealth.se/identifier/personnummer'
+ERROR: Patient/patient-tolvan: Patient: Problem vid bearbetning av uttryck 'identifier
+  .where(system = $personnummer)
+  .all(value.matches('^[0-9]{12}$'))' i profil 'http://example.org/fhir/education/kursig/StructureDefinition/EducationPatient|0.1.0' vid sökväg 'Patient': Error @2, 33: Found $personnummer expecting a valid token name
 
 
 == fsh-generated/resources/StructureDefinition-EducationEncounter.json ==
@@ -41,6 +44,9 @@ WARNING: StructureDefinition.where(url = 'http://example.org/fhir/education/kurs
 
 == fsh-generated/resources/StructureDefinition-EducationPatient.json ==
 INFORMATION: StructureDefinition/EducationPatient: StructureDefinition.jurisdiction[0].coding[0].display: There are no valid display names found for the code urn:iso:std:iso:3166#SE for language(s) 'sv-SE'. The display is 'Sweden' which is a valid display for the default language
+ERROR: StructureDefinition/EducationPatient: StructureDefinition.snapshot.element[0].constraint[5]: Error in constraint 'edu-pat1' on element Patient with expression 'identifier
+  .where(system = $personnummer)
+  .all(value.matches('^[0-9]{12}$'))': Error @2, 33: Found $personnummer expecting a valid token name
 INFORMATION: Resource: The resource StructureDefinition/EducationPatient could usefully have an OID assigned (OIDs are easy to assign - see https://build.fhir.org/ig/FHIR/ig-guidance/oids.html)
 
 
