@@ -920,6 +920,13 @@ identifier.where(system = 'http://electronichealth.se/identifier/personnummer')
     krockar med specifikationens <code>ele-1</code>, <code>dom-6</code> och andra.</p>
   <p>Ett bra test av en invariant är att skriva två exempel: ett som ska passera och ett som ska fallera. Det felande
     exemplet kan läggas i <code>validering/</code> i ditt repo och kontrolleras med arbetsflödet <em>Validera</em>.</p>
+  <div class="not"><span class="etikett">Två fallgropar</span>
+    <p><strong>Alias fungerar inte i FHIRPath.</strong> <code>$personnummer</code> fungerar i FSH-regler, men
+      <code>Expression</code> är en sträng som SUSHI skickar vidare orörd. Skriv ut hela URL:en i uttrycket.</p>
+    <p><strong>SUSHI kontrollerar inte invarianter.</strong> SUSHI kontrollerar varken syntaxen i uttrycket eller om
+      exemplen uppfyller regeln. Det gör IG Publisher när den validerar exemplen, och validatorn i <em>Validera</em>.
+      Bygget blir grönt även när ett exempel bryter mot en invariant. Felet syns i <code>qa.html</code> och som antal fel
+      i körningens sammanfattning.</p></div>
 
   <h3>Där FHIRPath används</h3>
   <p>FHIRPath är mer än ett regelspråk. Den som lär sig det får nytta av det på många ställen:</p>

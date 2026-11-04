@@ -126,6 +126,11 @@ jobs:
               echo "|-----|-----------|------|"
               echo "| ${ERRS} | ${WARNS} | ${HINTS} |"
               echo ""
+              if [ "$ERRS" != "0" ] && [ "$ERRS" != "?" ]; then
+                echo "> ⚠️ IG:n byggdes men har fel. Ofta bryter ett exempel mot en profil eller invariant."
+                echo "> SUSHI kontrollerar inte sådant, så felen syns bara i **qa.html**."
+                echo ""
+              fi
               if [ "$IS_DEFAULT_BRANCH" = "true" ]; then
                 echo "- 🌐 Publicerad IG: ${PAGES_URL} (det kan ta en minut innan sidan uppdateras)"
                 echo "- 🔎 Kvalitetsrapport (alla fel och varningar): ${PAGES_URL}qa.html"

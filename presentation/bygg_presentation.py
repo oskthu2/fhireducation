@@ -1248,6 +1248,13 @@ vad uttrycket utgår från.
 
 Lägg märke till att edu-pat-1 använder all(): finns det inget personnummer är resultatet sant. Det är kardinaliteten
 som avgör OM ett personnummer krävs, och invarianten som avgör HUR det ser ut.
+
+Två saker som deltagare brukar snubbla på:
+- Alias som $personnummer fungerar inte inne i Expression. Uttrycket är en sträng som SUSHI skickar vidare orörd,
+  så URL:en måste skrivas ut. ($ i '^[0-9]{12}$' är slutet på det reguljära uttrycket, inte ett alias.)
+- SUSHI kontrollerar varken FHIRPath-syntaxen eller om exemplen uppfyller invarianten. Det gör IG Publisher när den
+  validerar exemplen. Bygget blir grönt ändå: felet syns i qa.html och som antal fel i körningens sammanfattning.
+  Arbetsflödet Validera (modul 6) kontrollerar filerna i validering/ på samma sätt.
 """)
 d.code(s, """Invariant: edu-pat-1
 Description: "Ett personnummer ska bestå av exakt 12 siffror."
@@ -1265,7 +1272,7 @@ d.code(s, """// i EducationPatient
 
 // i EducationEncounter
 * obeys edu-enc-1""", I(9.15), CONTENT_TOP + I(0.05), I(3.55), I(2.3), size=14, title="Koppla till profilen")
-d.callout(s, "**Testa!** Ändra personnumret i exemplet till `19121212-1212` och bygg. Felet syns i **qa.html**:\n`Constraint failed: edu-pat-1: 'Ett personnummer ska bestå av exakt 12 siffror'`",
+d.callout(s, "**Testa!** Sätt personnumret i exemplet till `19121212-1212`. SUSHI kontrollerar inte invarianter, så felet syns först i **qa.html**:\n`Constraint failed: edu-pat-1: 'Ett personnummer ska bestå av exakt 12 siffror'`",
           MARGIN, CONTENT_TOP + I(3.95), CONTENT_W, I(1.1), kind="warn", size=16)
 
 s = d.content_slide("Fallgropar", notes="""
@@ -1285,7 +1292,8 @@ d.table(s, [
     ["Reguljära uttryck", "`matches('[0-9]{12}')` matchar även 13 siffror", "Förankra med `^…$`"],
     ["Datumprecision", "`@1912` jämfört med `@1912-12-12` blir tomt", "Var medveten om precisionen"],
     ["Sträng eller kod", "`gender = 'Male'` är **false**", "Skiftlägeskänsligt"],
-], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.3, 5.4, 4.3], size=15, row_height=I(0.65))
+    ["Alias i uttrycket", "`system = $personnummer` i `Expression`", "Skriv hela URL:en. SUSHI byter inte alias i strängar"],
+], MARGIN, CONTENT_TOP, CONTENT_W, col_widths=[2.3, 5.4, 4.3], size=15, row_height=I(0.62))
 
 d.exercise_slide("FHIRPath och invarianter", [
     "**4.0** Läs invarianterna `edu-pat-1` och `edu-pat-2` i **facit-IG:n** (EducationPatient). Vad kontrollerar de?  (3 min)",

@@ -92,6 +92,16 @@ på profilsidan.
 **Testa att invarianten fungerar:** Ändra värdet i `examples/patient-tolvan.fsh` till `"19121212-1212"`.
 Bygg och öppna **qa.html**. Vilket fel får du? Ändra sedan tillbaka.
 
+> **Bra att veta**
+>
+> - **Alias fungerar inte i FHIRPath.** `$personnummer` fungerar i FSH-regler, men `Expression` är en sträng som
+>   SUSHI skickar vidare orörd. Skriv ut hela URL:en i uttrycket. (`$` i `'^[0-9]{12}$'` är slutet på det reguljära
+>   uttrycket, inte ett alias.)
+> - **SUSHI kontrollerar inte invarianter.** SUSHI kontrollerar varken FHIRPath-syntaxen eller om exemplen uppfyller
+>   regeln, så steget *Kör SUSHI* blir grönt även med ett felaktigt personnummer. Det är IG Publisher som validerar
+>   exemplen. Bygget blir grönt ändå, men felet syns i **qa.html** och som antal fel i körningens sammanfattning.
+>   Arbetsflödet *Validera* (modul 6) kontrollerar filerna i `validering/` på samma sätt.
+
 ## Övning 4.3 – Egna invarianter (extra)
 
 Skriv själv:
